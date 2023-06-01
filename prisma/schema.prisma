@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId          String       @id @default(uuid())
+  email           String       @unique
+  name            String
+  password        String
+  level           Int          @default(0)
+  points          Int          @default(0)
+  fraudLevel      Int          @default(0)
+  address         String
+  reportedLitter  LitterSite[] @relation("reportedLitter")
+  collectedLitter LitterSite[] @relation("collectedLitter")
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Municipality {
+  municipalityId String         @id @default(uuid())
+  email          String         @unique
+  name           String
+  password       String
+  phoneNumber    String
+  regions        Region[]
+  disposalSites  DisposalSite[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Region {
+  regionId       String        @id @default(uuid())
+  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId])
+  municipalityId String
+  points         RegionPoint[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model RegionPoint {
+  regionPointId String   @id @default(uuid())
+  region        Region   @relation(fields: [regionId], references: [regionId])
+  regionId      String
+  latitude      Float
+  longitude     Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  @@index([latitude, longitude])
+}
+
+model DisposalSite {
+  disposalSiteId String       @id @default(uuid())
+  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId])
+  municipalityId String
+  latitude       Float
+  longitude      Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  @@index([latitude, longitude])
+}
+
+model LitterSite {
+  litterSiteId    String   @id @default(uuid())
+  reporterUser    User     @relation("reportedLitter", fields: [reporterUserId], references: [userId])
+  reporterUserId  String
+  collectorUser   User?    @relation("collectedLitter", fields: [collectorUserId], references: [userId])
+  collectorUserId String?
+  isCollected     Boolean  @default(false)
+  image           Bytes
+  harmful         Boolean  @default(false)
+  latitude        Float
+  longitude       Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@index([latitude, longitude])
+}
+
+model Reward {
+  rewardId    String   @id @default(uuid())
+  name        String
+  cost        Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
