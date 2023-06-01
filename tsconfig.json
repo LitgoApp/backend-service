@@ -4,6 +4,7 @@
     "lib": ["es6"],
     "module": "commonjs",
     "rootDir": "src",
+    "outDir": "dist",
     "resolveJsonModule": true,
     "allowJs": false,
     "esModuleInterop": true,
