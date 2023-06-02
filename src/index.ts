@@ -1,20 +1,26 @@
-import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
-import express, { Express, Request, Response } from 'express';
+import * as dotenv from 'dotenv';
+import { Express, Request, Response } from 'express';
+const express = require('express');
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3001;
-const prisma = new PrismaClient();
+
+const user = require('./routes/user');
+const reward = require('./routes/reward');
+
+// TODO: Add CORS
+// const cors = require('cors');
+// app.use(cors({
+//   origin: ['']
+// }));
+
+app.use('/api/user', user);
+app.use('/api/reward', reward);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
-});
-
-app.get('/users', async (req: Request, res: Response) => {
-  const users = await prisma.user.findMany()
-  res.json(users)
 });
 
 app.listen(port, () => {
