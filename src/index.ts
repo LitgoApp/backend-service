@@ -9,6 +9,7 @@ const port = process.env.PORT || 3001;
 
 const user = require('./routes/user');
 const reward = require('./routes/reward');
+const region = require('./routes/region');
 
 // TODO: Add CORS
 // const cors = require('cors');
@@ -18,6 +19,7 @@ const reward = require('./routes/reward');
 
 app.use('/api/user', user);
 app.use('/api/reward', reward);
+app.use('/api/region', region);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');

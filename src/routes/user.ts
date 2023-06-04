@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from 'express';
 const router = express.Router();
 const prisma = require("@prisma/client").PrismaClient;
 
-router.get('/users', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany()
         res.json(users)
@@ -11,7 +11,7 @@ router.get('/users', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/users/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const user = await prisma.user.findUnique({
@@ -26,7 +26,7 @@ router.get('/users/:id', async (req: Request, res: Response) => {
 });
 
 
-router.post('/users', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
         const result = await prisma.user.create({
             data: {
@@ -49,7 +49,7 @@ router.post('/users', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/users/:id', async (req: Request, res: Response) => {
+router.put('/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const result = await prisma.user.update({
@@ -76,7 +76,7 @@ router.put('/users/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/users/:id', async (req: Request, res: Response) => {
+router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const result = await prisma.user.delete({
