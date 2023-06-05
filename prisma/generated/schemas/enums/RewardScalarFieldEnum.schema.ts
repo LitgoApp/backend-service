@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const RewardScalarFieldEnumSchema = z.enum([
+export const RewardScalarFieldEnumSchema = Yup.mixed().oneOf([
   'rewardId',
   'name',
   'cost',
   'description',
   'createdAt',
   'updatedAt',
-]);
+])

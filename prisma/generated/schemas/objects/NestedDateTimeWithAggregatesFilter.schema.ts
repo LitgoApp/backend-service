@@ -1,28 +1,21 @@
-import { z } from 'zod';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedDateTimeFilterObjectSchema } from './NestedDateTimeFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { NestedIntFilterObjectSchema } from '../internals'
+import { NestedDateTimeFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NestedDateTimeWithAggregatesFilter> = z
-  .object({
-    equals: z.coerce.date().optional(),
-    in: z.union([z.coerce.date().array(), z.coerce.date()]).optional(),
-    notIn: z.union([z.coerce.date().array(), z.coerce.date()]).optional(),
-    lt: z.coerce.date().optional(),
-    lte: z.coerce.date().optional(),
-    gt: z.coerce.date().optional(),
-    gte: z.coerce.date().optional(),
-    not: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => NestedDateTimeWithAggregatesFilterObjectSchema),
-      ])
-      .optional(),
-    _count: z.lazy(() => NestedIntFilterObjectSchema).optional(),
-    _min: z.lazy(() => NestedDateTimeFilterObjectSchema).optional(),
-    _max: z.lazy(() => NestedDateTimeFilterObjectSchema).optional(),
-  })
-  .strict();
-
-export const NestedDateTimeWithAggregatesFilterObjectSchema = Schema;
+export const NestedDateTimeWithAggregatesFilterObjectSchema = Yup.object({
+  equals: Yup.date(),
+  lt: Yup.date(),
+  lte: Yup.date(),
+  gt: Yup.date(),
+  gte: Yup.date(),
+  not: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      NestedDateTimeWithAggregatesFilterObjectSchema.default(undefined)
+    ),
+  ]),
+  _count: NestedIntFilterObjectSchema,
+  _min: NestedDateTimeFilterObjectSchema,
+  _max: NestedDateTimeFilterObjectSchema,
+})

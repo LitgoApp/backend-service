@@ -1,43 +1,28 @@
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { FloatFieldUpdateOperationsInputObjectSchema } from './FloatFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { FloatFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { DateTimeFieldUpdateOperationsInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointUncheckedUpdateWithoutRegionInput> = z
-  .object({
-    regionPointId: z
-      .union([
-        z.string(),
-        z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    latitude: z
-      .union([
-        z.number(),
-        z.lazy(() => FloatFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    longitude: z
-      .union([
-        z.number(),
-        z.lazy(() => FloatFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    createdAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    updatedAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
+export const RegionPointUncheckedUpdateWithoutRegionInputObjectSchema =
+  Yup.object({
+    regionPointId: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    latitude: Yup.mixed().oneOfSchemas([
+      Yup.number(),
+      FloatFieldUpdateOperationsInputObjectSchema,
+    ]),
+    longitude: Yup.mixed().oneOfSchemas([
+      Yup.number(),
+      FloatFieldUpdateOperationsInputObjectSchema,
+    ]),
+    createdAt: Yup.mixed().oneOfSchemas([
+      DateTimeFieldUpdateOperationsInputObjectSchema,
+    ]),
+    updatedAt: Yup.mixed().oneOfSchemas([
+      DateTimeFieldUpdateOperationsInputObjectSchema,
+    ]),
   })
-  .strict();
-
-export const RegionPointUncheckedUpdateWithoutRegionInputObjectSchema = Schema;

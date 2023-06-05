@@ -1,20 +1,13 @@
-import { z } from 'zod';
-import { LitterSiteCreateManyCollectorUserInputObjectSchema } from './LitterSiteCreateManyCollectorUserInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteCreateManyCollectorUserInputEnvelope> =
-  z
-    .object({
-      data: z.union([
-        z.lazy(() => LitterSiteCreateManyCollectorUserInputObjectSchema),
-        z
-          .lazy(() => LitterSiteCreateManyCollectorUserInputObjectSchema)
-          .array(),
-      ]),
-      skipDuplicates: z.boolean().optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteCreateManyCollectorUserInputObjectSchema } from '../internals'
 
 export const LitterSiteCreateManyCollectorUserInputEnvelopeObjectSchema =
-  Schema;
+  Yup.object({
+    data: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateManyCollectorUserInputObjectSchema,
+      Yup.array().of(LitterSiteCreateManyCollectorUserInputObjectSchema),
+    ]),
+    skipDuplicates: Yup.boolean(),
+  })

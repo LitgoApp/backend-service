@@ -1,28 +1,16 @@
-import { z } from 'zod';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedBytesFilterObjectSchema } from './NestedBytesFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { NestedIntFilterObjectSchema } from '../internals'
+import { NestedBytesFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NestedBytesWithAggregatesFilter> = z
-  .object({
-    equals: z.instanceof(Buffer).optional(),
-    in: z
-      .union([z.instanceof(Buffer).array(), z.instanceof(Buffer)])
-      .optional(),
-    notIn: z
-      .union([z.instanceof(Buffer).array(), z.instanceof(Buffer)])
-      .optional(),
-    not: z
-      .union([
-        z.instanceof(Buffer),
-        z.lazy(() => NestedBytesWithAggregatesFilterObjectSchema),
-      ])
-      .optional(),
-    _count: z.lazy(() => NestedIntFilterObjectSchema).optional(),
-    _min: z.lazy(() => NestedBytesFilterObjectSchema).optional(),
-    _max: z.lazy(() => NestedBytesFilterObjectSchema).optional(),
-  })
-  .strict();
-
-export const NestedBytesWithAggregatesFilterObjectSchema = Schema;
+export const NestedBytesWithAggregatesFilterObjectSchema = Yup.object({
+  not: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      NestedBytesWithAggregatesFilterObjectSchema.default(undefined)
+    ),
+  ]),
+  _count: NestedIntFilterObjectSchema,
+  _min: NestedBytesFilterObjectSchema,
+  _max: NestedBytesFilterObjectSchema,
+})

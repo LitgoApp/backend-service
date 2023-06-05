@@ -1,15 +1,11 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionMinOrderByAggregateInput> = z
-  .object({
-    regionId: z.lazy(() => SortOrderSchema).optional(),
-    municipalityId: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const RegionMinOrderByAggregateInputObjectSchema = Schema;
+export const RegionMinOrderByAggregateInputObjectSchema = Yup.object({
+  regionId: SortOrderSchema,
+  municipalityId: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+})

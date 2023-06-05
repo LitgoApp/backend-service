@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { RegionWhereInputObjectSchema } from './objects/RegionWhereInput.schema';
-import { RegionOrderByWithAggregationInputObjectSchema } from './objects/RegionOrderByWithAggregationInput.schema';
-import { RegionScalarWhereWithAggregatesInputObjectSchema } from './objects/RegionScalarWhereWithAggregatesInput.schema';
-import { RegionScalarFieldEnumSchema } from './enums/RegionScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  RegionWhereInputObjectSchema,
+  RegionOrderByWithAggregationInputObjectSchema,
+  RegionScalarWhereWithAggregatesInputObjectSchema,
+} from './internals'
+import { RegionScalarFieldEnumSchema } from './internals'
 
-export const RegionGroupBySchema = z.object({
-  where: RegionWhereInputObjectSchema.optional(),
-  orderBy: z
-    .union([
-      RegionOrderByWithAggregationInputObjectSchema,
-      RegionOrderByWithAggregationInputObjectSchema.array(),
-    ])
-    .optional(),
-  having: RegionScalarWhereWithAggregatesInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  by: z.array(RegionScalarFieldEnumSchema),
-});
+export const RegionGroupBySchema = Yup.object({
+  where: RegionWhereInputObjectSchema,
+  orderBy: RegionOrderByWithAggregationInputObjectSchema,
+  having: RegionScalarWhereWithAggregatesInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  by: Yup.array().of(RegionScalarFieldEnumSchema).required(),
+}).required()

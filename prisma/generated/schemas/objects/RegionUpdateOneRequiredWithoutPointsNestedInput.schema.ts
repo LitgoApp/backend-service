@@ -1,38 +1,25 @@
-import { z } from 'zod';
-import { RegionCreateWithoutPointsInputObjectSchema } from './RegionCreateWithoutPointsInput.schema';
-import { RegionUncheckedCreateWithoutPointsInputObjectSchema } from './RegionUncheckedCreateWithoutPointsInput.schema';
-import { RegionCreateOrConnectWithoutPointsInputObjectSchema } from './RegionCreateOrConnectWithoutPointsInput.schema';
-import { RegionUpsertWithoutPointsInputObjectSchema } from './RegionUpsertWithoutPointsInput.schema';
-import { RegionWhereUniqueInputObjectSchema } from './RegionWhereUniqueInput.schema';
-import { RegionUpdateWithoutPointsInputObjectSchema } from './RegionUpdateWithoutPointsInput.schema';
-import { RegionUncheckedUpdateWithoutPointsInputObjectSchema } from './RegionUncheckedUpdateWithoutPointsInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUpdateOneRequiredWithoutPointsNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => RegionCreateWithoutPointsInputObjectSchema),
-          z.lazy(() => RegionUncheckedCreateWithoutPointsInputObjectSchema),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => RegionCreateOrConnectWithoutPointsInputObjectSchema)
-        .optional(),
-      upsert: z
-        .lazy(() => RegionUpsertWithoutPointsInputObjectSchema)
-        .optional(),
-      connect: z.lazy(() => RegionWhereUniqueInputObjectSchema).optional(),
-      update: z
-        .union([
-          z.lazy(() => RegionUpdateWithoutPointsInputObjectSchema),
-          z.lazy(() => RegionUncheckedUpdateWithoutPointsInputObjectSchema),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionCreateWithoutPointsInputObjectSchema } from '../internals'
+import { RegionUncheckedCreateWithoutPointsInputObjectSchema } from '../internals'
+import { RegionCreateOrConnectWithoutPointsInputObjectSchema } from '../internals'
+import { RegionUpsertWithoutPointsInputObjectSchema } from '../internals'
+import { RegionWhereUniqueInputObjectSchema } from '../internals'
+import { RegionUpdateWithoutPointsInputObjectSchema } from '../internals'
+import { RegionUncheckedUpdateWithoutPointsInputObjectSchema } from '../internals'
 
 export const RegionUpdateOneRequiredWithoutPointsNestedInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      RegionCreateWithoutPointsInputObjectSchema,
+      RegionUncheckedCreateWithoutPointsInputObjectSchema,
+    ]),
+    connectOrCreate: RegionCreateOrConnectWithoutPointsInputObjectSchema,
+    upsert: RegionUpsertWithoutPointsInputObjectSchema,
+    connect: RegionWhereUniqueInputObjectSchema,
+    update: Yup.mixed().oneOfSchemas([
+      RegionUpdateWithoutPointsInputObjectSchema,
+      RegionUncheckedUpdateWithoutPointsInputObjectSchema,
+    ]),
+  })

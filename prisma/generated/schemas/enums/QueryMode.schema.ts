@@ -1,3 +1,3 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const QueryModeSchema = z.enum(['default', 'insensitive']);
+export const QueryModeSchema = Yup.mixed().oneOf(['default', 'insensitive'])

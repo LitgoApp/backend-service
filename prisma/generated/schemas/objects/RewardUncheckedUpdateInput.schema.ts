@@ -1,49 +1,31 @@
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { IntFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { DateTimeFieldUpdateOperationsInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RewardUncheckedUpdateInput> = z
-  .object({
-    rewardId: z
-      .union([
-        z.string(),
-        z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    name: z
-      .union([
-        z.string(),
-        z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    cost: z
-      .union([
-        z.number(),
-        z.lazy(() => IntFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    description: z
-      .union([
-        z.string(),
-        z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    createdAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    updatedAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-  })
-  .strict();
-
-export const RewardUncheckedUpdateInputObjectSchema = Schema;
+export const RewardUncheckedUpdateInputObjectSchema = Yup.object({
+  rewardId: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    StringFieldUpdateOperationsInputObjectSchema,
+  ]),
+  name: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    StringFieldUpdateOperationsInputObjectSchema,
+  ]),
+  cost: Yup.mixed().oneOfSchemas([
+    Yup.number(),
+    IntFieldUpdateOperationsInputObjectSchema,
+  ]),
+  description: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    StringFieldUpdateOperationsInputObjectSchema,
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([
+    DateTimeFieldUpdateOperationsInputObjectSchema,
+  ]),
+  updatedAt: Yup.mixed().oneOfSchemas([
+    DateTimeFieldUpdateOperationsInputObjectSchema,
+  ]),
+})

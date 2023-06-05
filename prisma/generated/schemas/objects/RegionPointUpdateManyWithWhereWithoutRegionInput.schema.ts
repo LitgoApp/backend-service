@@ -1,22 +1,15 @@
-import { z } from 'zod';
-import { RegionPointScalarWhereInputObjectSchema } from './RegionPointScalarWhereInput.schema';
-import { RegionPointUpdateManyMutationInputObjectSchema } from './RegionPointUpdateManyMutationInput.schema';
-import { RegionPointUncheckedUpdateManyWithoutPointsInputObjectSchema } from './RegionPointUncheckedUpdateManyWithoutPointsInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointUpdateManyWithWhereWithoutRegionInput> =
-  z
-    .object({
-      where: z.lazy(() => RegionPointScalarWhereInputObjectSchema),
-      data: z.union([
-        z.lazy(() => RegionPointUpdateManyMutationInputObjectSchema),
-        z.lazy(
-          () => RegionPointUncheckedUpdateManyWithoutPointsInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionPointScalarWhereInputObjectSchema } from '../internals'
+import { RegionPointUpdateManyMutationInputObjectSchema } from '../internals'
+import { RegionPointUncheckedUpdateManyWithoutPointsInputObjectSchema } from '../internals'
 
 export const RegionPointUpdateManyWithWhereWithoutRegionInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: RegionPointScalarWhereInputObjectSchema,
+    data: Yup.mixed().oneOfSchemas([
+      RegionPointUpdateManyMutationInputObjectSchema,
+      RegionPointUncheckedUpdateManyWithoutPointsInputObjectSchema,
+    ]),
+  })

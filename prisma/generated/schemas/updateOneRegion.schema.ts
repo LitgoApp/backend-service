@@ -1,12 +1,10 @@
-import { z } from 'zod';
-import { RegionUpdateInputObjectSchema } from './objects/RegionUpdateInput.schema';
-import { RegionUncheckedUpdateInputObjectSchema } from './objects/RegionUncheckedUpdateInput.schema';
-import { RegionWhereUniqueInputObjectSchema } from './objects/RegionWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import {
+  RegionUpdateInputObjectSchema,
+  RegionWhereUniqueInputObjectSchema,
+} from './internals'
 
-export const RegionUpdateOneSchema = z.object({
-  data: z.union([
-    RegionUpdateInputObjectSchema,
-    RegionUncheckedUpdateInputObjectSchema,
-  ]),
+export const RegionUpdateOneSchema = Yup.object({
+  data: RegionUpdateInputObjectSchema,
   where: RegionWhereUniqueInputObjectSchema,
-});
+}).required()

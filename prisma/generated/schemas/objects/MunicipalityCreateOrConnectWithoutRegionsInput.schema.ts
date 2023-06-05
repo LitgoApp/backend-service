@@ -1,22 +1,15 @@
-import { z } from 'zod';
-import { MunicipalityWhereUniqueInputObjectSchema } from './MunicipalityWhereUniqueInput.schema';
-import { MunicipalityCreateWithoutRegionsInputObjectSchema } from './MunicipalityCreateWithoutRegionsInput.schema';
-import { MunicipalityUncheckedCreateWithoutRegionsInputObjectSchema } from './MunicipalityUncheckedCreateWithoutRegionsInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityCreateOrConnectWithoutRegionsInput> =
-  z
-    .object({
-      where: z.lazy(() => MunicipalityWhereUniqueInputObjectSchema),
-      create: z.union([
-        z.lazy(() => MunicipalityCreateWithoutRegionsInputObjectSchema),
-        z.lazy(
-          () => MunicipalityUncheckedCreateWithoutRegionsInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityWhereUniqueInputObjectSchema } from '../internals'
+import { MunicipalityCreateWithoutRegionsInputObjectSchema } from '../internals'
+import { MunicipalityUncheckedCreateWithoutRegionsInputObjectSchema } from '../internals'
 
 export const MunicipalityCreateOrConnectWithoutRegionsInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: MunicipalityWhereUniqueInputObjectSchema,
+    create: Yup.mixed().oneOfSchemas([
+      MunicipalityCreateWithoutRegionsInputObjectSchema,
+      MunicipalityUncheckedCreateWithoutRegionsInputObjectSchema,
+    ]),
+  })

@@ -1,15 +1,15 @@
 import * as dotenv from 'dotenv';
-import { Express, Request, Response } from 'express';
-const express = require('express');
+import express, { Express, Request, Response } from "express";
+import { loggerMiddleware } from "./logger";
+import regionRouter from "./routes/region";
+import rewardRouter from "./routes/reward";
+import userRouter from "./routes/user";
 
 dotenv.config();
 
 const app: Express = express();
+const baseRouter = express.Router();
 const port = process.env.PORT || 3001;
-
-const user = require('./routes/user');
-const reward = require('./routes/reward');
-const region = require('./routes/region');
 
 // TODO: Add CORS
 // const cors = require('cors');
@@ -17,9 +17,12 @@ const region = require('./routes/region');
 //   origin: ['']
 // }));
 
-app.use('/api/user', user);
-app.use('/api/reward', reward);
-app.use('/api/region', region);
+baseRouter.use("/user", userRouter);
+baseRouter.use("/reward", rewardRouter);
+baseRouter.use("/region", regionRouter);
+
+app.use(loggerMiddleware);
+app.use("/api", baseRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');

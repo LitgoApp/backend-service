@@ -1,18 +1,12 @@
-import { z } from 'zod';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './objects/DisposalSiteWhereUniqueInput.schema';
-import { DisposalSiteCreateInputObjectSchema } from './objects/DisposalSiteCreateInput.schema';
-import { DisposalSiteUncheckedCreateInputObjectSchema } from './objects/DisposalSiteUncheckedCreateInput.schema';
-import { DisposalSiteUpdateInputObjectSchema } from './objects/DisposalSiteUpdateInput.schema';
-import { DisposalSiteUncheckedUpdateInputObjectSchema } from './objects/DisposalSiteUncheckedUpdateInput.schema';
+import * as Yup from 'yup'
+import {
+  DisposalSiteWhereUniqueInputObjectSchema,
+  DisposalSiteCreateInputObjectSchema,
+  DisposalSiteUpdateInputObjectSchema,
+} from './internals'
 
-export const DisposalSiteUpsertSchema = z.object({
+export const DisposalSiteUpsertSchema = Yup.object({
   where: DisposalSiteWhereUniqueInputObjectSchema,
-  create: z.union([
-    DisposalSiteCreateInputObjectSchema,
-    DisposalSiteUncheckedCreateInputObjectSchema,
-  ]),
-  update: z.union([
-    DisposalSiteUpdateInputObjectSchema,
-    DisposalSiteUncheckedUpdateInputObjectSchema,
-  ]),
-});
+  data: DisposalSiteCreateInputObjectSchema,
+  update: DisposalSiteUpdateInputObjectSchema,
+}).required()

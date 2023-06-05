@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const RegionScalarFieldEnumSchema = z.enum([
+export const RegionScalarFieldEnumSchema = Yup.mixed().oneOf([
   'regionId',
   'municipalityId',
   'createdAt',
   'updatedAt',
-]);
+])

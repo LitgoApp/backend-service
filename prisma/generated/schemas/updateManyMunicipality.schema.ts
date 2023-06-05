@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { MunicipalityUpdateManyMutationInputObjectSchema } from './objects/MunicipalityUpdateManyMutationInput.schema';
-import { MunicipalityWhereInputObjectSchema } from './objects/MunicipalityWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  MunicipalityUpdateManyMutationInputObjectSchema,
+  MunicipalityWhereInputObjectSchema,
+} from './internals'
 
-export const MunicipalityUpdateManySchema = z.object({
+export const MunicipalityUpdateManySchema = Yup.object({
   data: MunicipalityUpdateManyMutationInputObjectSchema,
-  where: MunicipalityWhereInputObjectSchema.optional(),
-});
+  where: MunicipalityWhereInputObjectSchema,
+}).required()

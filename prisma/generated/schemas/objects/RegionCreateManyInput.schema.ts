@@ -1,14 +1,10 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionCreateManyInput> = z
-  .object({
-    regionId: z.string().optional(),
-    municipalityId: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-  })
-  .strict();
-
-export const RegionCreateManyInputObjectSchema = Schema;
+export const RegionCreateManyInputObjectSchema = Yup.object({
+  regionId: Yup.string(),
+  municipalityId: Yup.string().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+})

@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { DisposalSiteOrderByWithRelationInputObjectSchema } from './objects/DisposalSiteOrderByWithRelationInput.schema';
-import { DisposalSiteWhereInputObjectSchema } from './objects/DisposalSiteWhereInput.schema';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './objects/DisposalSiteWhereUniqueInput.schema';
-import { DisposalSiteScalarFieldEnumSchema } from './enums/DisposalSiteScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  DisposalSiteWhereInputObjectSchema,
+  DisposalSiteOrderByWithRelationInputObjectSchema,
+  DisposalSiteWhereUniqueInputObjectSchema,
+} from './internals'
+import { DisposalSiteScalarFieldEnumSchema } from './internals'
 
-export const DisposalSiteFindFirstSchema = z.object({
-  orderBy: z
-    .union([
-      DisposalSiteOrderByWithRelationInputObjectSchema,
-      DisposalSiteOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: DisposalSiteWhereInputObjectSchema.optional(),
-  cursor: DisposalSiteWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(DisposalSiteScalarFieldEnumSchema).optional(),
-});
+export const DisposalSiteFindFirstSchema = Yup.object({
+  where: DisposalSiteWhereInputObjectSchema,
+  orderBy: DisposalSiteOrderByWithRelationInputObjectSchema,
+  cursor: DisposalSiteWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(DisposalSiteScalarFieldEnumSchema),
+}).required()

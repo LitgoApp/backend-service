@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DateTimeFieldUpdateOperationsInput> = z
-  .object({
-    set: z.coerce.date().optional(),
-  })
-  .strict();
-
-export const DateTimeFieldUpdateOperationsInputObjectSchema = Schema;
+export const DateTimeFieldUpdateOperationsInputObjectSchema = Yup.object({
+  set: Yup.date(),
+})

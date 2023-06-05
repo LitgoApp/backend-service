@@ -1,10 +1,6 @@
-import { z } from 'zod';
-import { LitterSiteCreateInputObjectSchema } from './objects/LitterSiteCreateInput.schema';
-import { LitterSiteUncheckedCreateInputObjectSchema } from './objects/LitterSiteUncheckedCreateInput.schema';
+import * as Yup from 'yup'
+import { LitterSiteCreateInputObjectSchema } from './internals'
 
-export const LitterSiteCreateOneSchema = z.object({
-  data: z.union([
-    LitterSiteCreateInputObjectSchema,
-    LitterSiteUncheckedCreateInputObjectSchema,
-  ]),
-});
+export const LitterSiteCreateSchema = Yup.object({
+  data: LitterSiteCreateInputObjectSchema,
+}).required()

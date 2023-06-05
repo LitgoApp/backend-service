@@ -1,17 +1,13 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteCountOrderByAggregateInput> = z
-  .object({
-    disposalSiteId: z.lazy(() => SortOrderSchema).optional(),
-    municipalityId: z.lazy(() => SortOrderSchema).optional(),
-    latitude: z.lazy(() => SortOrderSchema).optional(),
-    longitude: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const DisposalSiteCountOrderByAggregateInputObjectSchema = Schema;
+export const DisposalSiteCountOrderByAggregateInputObjectSchema = Yup.object({
+  disposalSiteId: SortOrderSchema,
+  municipalityId: SortOrderSchema,
+  latitude: SortOrderSchema,
+  longitude: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+})

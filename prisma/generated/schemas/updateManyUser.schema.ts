@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { UserUpdateManyMutationInputObjectSchema } from './objects/UserUpdateManyMutationInput.schema';
-import { UserWhereInputObjectSchema } from './objects/UserWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  UserUpdateManyMutationInputObjectSchema,
+  UserWhereInputObjectSchema,
+} from './internals'
 
-export const UserUpdateManySchema = z.object({
+export const UserUpdateManySchema = Yup.object({
   data: UserUpdateManyMutationInputObjectSchema,
-  where: UserWhereInputObjectSchema.optional(),
-});
+  where: UserWhereInputObjectSchema,
+}).required()

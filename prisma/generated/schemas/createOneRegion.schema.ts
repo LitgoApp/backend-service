@@ -1,10 +1,6 @@
-import { z } from 'zod';
-import { RegionCreateInputObjectSchema } from './objects/RegionCreateInput.schema';
-import { RegionUncheckedCreateInputObjectSchema } from './objects/RegionUncheckedCreateInput.schema';
+import * as Yup from 'yup'
+import { RegionCreateInputObjectSchema } from './internals'
 
-export const RegionCreateOneSchema = z.object({
-  data: z.union([
-    RegionCreateInputObjectSchema,
-    RegionUncheckedCreateInputObjectSchema,
-  ]),
-});
+export const RegionCreateSchema = Yup.object({
+  data: RegionCreateInputObjectSchema,
+}).required()

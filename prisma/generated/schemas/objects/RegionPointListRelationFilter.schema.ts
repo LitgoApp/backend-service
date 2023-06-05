@@ -1,14 +1,10 @@
-import { z } from 'zod';
-import { RegionPointWhereInputObjectSchema } from './RegionPointWhereInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionPointWhereInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointListRelationFilter> = z
-  .object({
-    every: z.lazy(() => RegionPointWhereInputObjectSchema).optional(),
-    some: z.lazy(() => RegionPointWhereInputObjectSchema).optional(),
-    none: z.lazy(() => RegionPointWhereInputObjectSchema).optional(),
-  })
-  .strict();
-
-export const RegionPointListRelationFilterObjectSchema = Schema;
+export const RegionPointListRelationFilterObjectSchema = Yup.object({
+  every: RegionPointWhereInputObjectSchema,
+  some: RegionPointWhereInputObjectSchema,
+  none: RegionPointWhereInputObjectSchema,
+})

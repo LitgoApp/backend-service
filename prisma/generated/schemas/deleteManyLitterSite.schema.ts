@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { LitterSiteWhereInputObjectSchema } from './objects/LitterSiteWhereInput.schema';
+import * as Yup from 'yup'
+import { LitterSiteWhereInputObjectSchema } from './internals'
 
-export const LitterSiteDeleteManySchema = z.object({
-  where: LitterSiteWhereInputObjectSchema.optional(),
-});
+export const LitterSiteDeleteManySchema = Yup.object({
+  LitterSiteWhereInputObjectSchema,
+}).required()

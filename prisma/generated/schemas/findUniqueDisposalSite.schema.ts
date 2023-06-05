@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './objects/DisposalSiteWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import { DisposalSiteWhereUniqueInputObjectSchema } from './internals'
 
-export const DisposalSiteFindUniqueSchema = z.object({
+export const DisposalSiteFindUniqueSchema = Yup.object({
   where: DisposalSiteWhereUniqueInputObjectSchema,
-});
+}).required()

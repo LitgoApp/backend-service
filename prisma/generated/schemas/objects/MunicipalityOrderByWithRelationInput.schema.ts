@@ -1,26 +1,18 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { RegionOrderByRelationAggregateInputObjectSchema } from './RegionOrderByRelationAggregateInput.schema';
-import { DisposalSiteOrderByRelationAggregateInputObjectSchema } from './DisposalSiteOrderByRelationAggregateInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
+import { RegionOrderByRelationAggregateInputObjectSchema } from '../internals'
+import { DisposalSiteOrderByRelationAggregateInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityOrderByWithRelationInput> = z
-  .object({
-    municipalityId: z.lazy(() => SortOrderSchema).optional(),
-    email: z.lazy(() => SortOrderSchema).optional(),
-    name: z.lazy(() => SortOrderSchema).optional(),
-    password: z.lazy(() => SortOrderSchema).optional(),
-    phoneNumber: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    regions: z
-      .lazy(() => RegionOrderByRelationAggregateInputObjectSchema)
-      .optional(),
-    disposalSites: z
-      .lazy(() => DisposalSiteOrderByRelationAggregateInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const MunicipalityOrderByWithRelationInputObjectSchema = Schema;
+export const MunicipalityOrderByWithRelationInputObjectSchema = Yup.object({
+  municipalityId: SortOrderSchema,
+  email: SortOrderSchema,
+  name: SortOrderSchema,
+  password: SortOrderSchema,
+  phoneNumber: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+  regions: RegionOrderByRelationAggregateInputObjectSchema,
+  disposalSites: DisposalSiteOrderByRelationAggregateInputObjectSchema,
+})

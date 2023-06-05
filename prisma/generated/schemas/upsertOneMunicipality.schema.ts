@@ -1,18 +1,12 @@
-import { z } from 'zod';
-import { MunicipalityWhereUniqueInputObjectSchema } from './objects/MunicipalityWhereUniqueInput.schema';
-import { MunicipalityCreateInputObjectSchema } from './objects/MunicipalityCreateInput.schema';
-import { MunicipalityUncheckedCreateInputObjectSchema } from './objects/MunicipalityUncheckedCreateInput.schema';
-import { MunicipalityUpdateInputObjectSchema } from './objects/MunicipalityUpdateInput.schema';
-import { MunicipalityUncheckedUpdateInputObjectSchema } from './objects/MunicipalityUncheckedUpdateInput.schema';
+import * as Yup from 'yup'
+import {
+  MunicipalityWhereUniqueInputObjectSchema,
+  MunicipalityCreateInputObjectSchema,
+  MunicipalityUpdateInputObjectSchema,
+} from './internals'
 
-export const MunicipalityUpsertSchema = z.object({
+export const MunicipalityUpsertSchema = Yup.object({
   where: MunicipalityWhereUniqueInputObjectSchema,
-  create: z.union([
-    MunicipalityCreateInputObjectSchema,
-    MunicipalityUncheckedCreateInputObjectSchema,
-  ]),
-  update: z.union([
-    MunicipalityUpdateInputObjectSchema,
-    MunicipalityUncheckedUpdateInputObjectSchema,
-  ]),
-});
+  data: MunicipalityCreateInputObjectSchema,
+  update: MunicipalityUpdateInputObjectSchema,
+}).required()

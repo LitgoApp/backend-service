@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { LitterSiteOrderByWithRelationInputObjectSchema } from './objects/LitterSiteOrderByWithRelationInput.schema';
-import { LitterSiteWhereInputObjectSchema } from './objects/LitterSiteWhereInput.schema';
-import { LitterSiteWhereUniqueInputObjectSchema } from './objects/LitterSiteWhereUniqueInput.schema';
-import { LitterSiteScalarFieldEnumSchema } from './enums/LitterSiteScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  LitterSiteWhereInputObjectSchema,
+  LitterSiteOrderByWithRelationInputObjectSchema,
+  LitterSiteWhereUniqueInputObjectSchema,
+} from './internals'
+import { LitterSiteScalarFieldEnumSchema } from './internals'
 
-export const LitterSiteFindFirstSchema = z.object({
-  orderBy: z
-    .union([
-      LitterSiteOrderByWithRelationInputObjectSchema,
-      LitterSiteOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: LitterSiteWhereInputObjectSchema.optional(),
-  cursor: LitterSiteWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(LitterSiteScalarFieldEnumSchema).optional(),
-});
+export const LitterSiteFindFirstSchema = Yup.object({
+  where: LitterSiteWhereInputObjectSchema,
+  orderBy: LitterSiteOrderByWithRelationInputObjectSchema,
+  cursor: LitterSiteWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(LitterSiteScalarFieldEnumSchema),
+}).required()

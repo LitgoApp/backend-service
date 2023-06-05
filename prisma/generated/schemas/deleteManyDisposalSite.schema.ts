@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { DisposalSiteWhereInputObjectSchema } from './objects/DisposalSiteWhereInput.schema';
+import * as Yup from 'yup'
+import { DisposalSiteWhereInputObjectSchema } from './internals'
 
-export const DisposalSiteDeleteManySchema = z.object({
-  where: DisposalSiteWhereInputObjectSchema.optional(),
-});
+export const DisposalSiteDeleteManySchema = Yup.object({
+  DisposalSiteWhereInputObjectSchema,
+}).required()

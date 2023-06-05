@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { RegionPointOrderByWithRelationInputObjectSchema } from './objects/RegionPointOrderByWithRelationInput.schema';
-import { RegionPointWhereInputObjectSchema } from './objects/RegionPointWhereInput.schema';
-import { RegionPointWhereUniqueInputObjectSchema } from './objects/RegionPointWhereUniqueInput.schema';
-import { RegionPointScalarFieldEnumSchema } from './enums/RegionPointScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  RegionPointWhereInputObjectSchema,
+  RegionPointOrderByWithRelationInputObjectSchema,
+  RegionPointWhereUniqueInputObjectSchema,
+} from './internals'
+import { RegionPointScalarFieldEnumSchema } from './internals'
 
-export const RegionPointFindFirstSchema = z.object({
-  orderBy: z
-    .union([
-      RegionPointOrderByWithRelationInputObjectSchema,
-      RegionPointOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: RegionPointWhereInputObjectSchema.optional(),
-  cursor: RegionPointWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(RegionPointScalarFieldEnumSchema).optional(),
-});
+export const RegionPointFindFirstSchema = Yup.object({
+  where: RegionPointWhereInputObjectSchema,
+  orderBy: RegionPointOrderByWithRelationInputObjectSchema,
+  cursor: RegionPointWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(RegionPointScalarFieldEnumSchema),
+}).required()

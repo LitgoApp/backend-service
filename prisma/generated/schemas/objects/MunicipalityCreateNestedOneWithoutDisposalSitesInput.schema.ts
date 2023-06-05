@@ -1,34 +1,18 @@
-import { z } from 'zod';
-import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityCreateWithoutDisposalSitesInput.schema';
-import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityUncheckedCreateWithoutDisposalSitesInput.schema';
-import { MunicipalityCreateOrConnectWithoutDisposalSitesInputObjectSchema } from './MunicipalityCreateOrConnectWithoutDisposalSitesInput.schema';
-import { MunicipalityWhereUniqueInputObjectSchema } from './MunicipalityWhereUniqueInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityCreateNestedOneWithoutDisposalSitesInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => MunicipalityCreateWithoutDisposalSitesInputObjectSchema),
-          z.lazy(
-            () =>
-              MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
-          ),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(
-          () =>
-            MunicipalityCreateOrConnectWithoutDisposalSitesInputObjectSchema,
-        )
-        .optional(),
-      connect: z
-        .lazy(() => MunicipalityWhereUniqueInputObjectSchema)
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityCreateOrConnectWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityWhereUniqueInputObjectSchema } from '../internals'
 
 export const MunicipalityCreateNestedOneWithoutDisposalSitesInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      MunicipalityCreateWithoutDisposalSitesInputObjectSchema,
+      MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
+    ]),
+    connectOrCreate:
+      MunicipalityCreateOrConnectWithoutDisposalSitesInputObjectSchema,
+    connect: MunicipalityWhereUniqueInputObjectSchema,
+  })

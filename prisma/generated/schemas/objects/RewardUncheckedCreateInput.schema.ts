@@ -1,16 +1,12 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RewardUncheckedCreateInput> = z
-  .object({
-    rewardId: z.string().optional(),
-    name: z.string(),
-    cost: z.number(),
-    description: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-  })
-  .strict();
-
-export const RewardUncheckedCreateInputObjectSchema = Schema;
+export const RewardUncheckedCreateInputObjectSchema = Yup.object({
+  rewardId: Yup.string(),
+  name: Yup.string().required(),
+  cost: Yup.number().required(),
+  description: Yup.string().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+})

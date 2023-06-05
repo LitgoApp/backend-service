@@ -1,31 +1,25 @@
-import { z } from 'zod';
-import { NestedFloatWithAggregatesFilterObjectSchema } from './NestedFloatWithAggregatesFilter.schema';
-import { NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
-import { NestedFloatFilterObjectSchema } from './NestedFloatFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { NestedFloatWithAggregatesFilterObjectSchema } from '../internals'
+import { NestedIntFilterObjectSchema } from '../internals'
+import { NestedFloatFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.FloatWithAggregatesFilter> = z
-  .object({
-    equals: z.number().optional(),
-    in: z.union([z.number().array(), z.number()]).optional(),
-    notIn: z.union([z.number().array(), z.number()]).optional(),
-    lt: z.number().optional(),
-    lte: z.number().optional(),
-    gt: z.number().optional(),
-    gte: z.number().optional(),
-    not: z
-      .union([
-        z.number(),
-        z.lazy(() => NestedFloatWithAggregatesFilterObjectSchema),
-      ])
-      .optional(),
-    _count: z.lazy(() => NestedIntFilterObjectSchema).optional(),
-    _avg: z.lazy(() => NestedFloatFilterObjectSchema).optional(),
-    _sum: z.lazy(() => NestedFloatFilterObjectSchema).optional(),
-    _min: z.lazy(() => NestedFloatFilterObjectSchema).optional(),
-    _max: z.lazy(() => NestedFloatFilterObjectSchema).optional(),
-  })
-  .strict();
-
-export const FloatWithAggregatesFilterObjectSchema = Schema;
+export const FloatWithAggregatesFilterObjectSchema = Yup.object({
+  equals: Yup.number(),
+  in: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.number()), Yup.number()]),
+  notIn: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.number()), Yup.number()]),
+  lt: Yup.number(),
+  lte: Yup.number(),
+  gt: Yup.number(),
+  gte: Yup.number(),
+  not: Yup.mixed().oneOfSchemas([
+    Yup.number(),
+    NestedFloatWithAggregatesFilterObjectSchema,
+  ]),
+  _count: NestedIntFilterObjectSchema,
+  _avg: NestedFloatFilterObjectSchema,
+  _sum: NestedFloatFilterObjectSchema,
+  _min: NestedFloatFilterObjectSchema,
+  _max: NestedFloatFilterObjectSchema,
+})

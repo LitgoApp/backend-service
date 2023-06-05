@@ -1,18 +1,12 @@
-import { z } from 'zod';
-import { RegionPointWhereUniqueInputObjectSchema } from './objects/RegionPointWhereUniqueInput.schema';
-import { RegionPointCreateInputObjectSchema } from './objects/RegionPointCreateInput.schema';
-import { RegionPointUncheckedCreateInputObjectSchema } from './objects/RegionPointUncheckedCreateInput.schema';
-import { RegionPointUpdateInputObjectSchema } from './objects/RegionPointUpdateInput.schema';
-import { RegionPointUncheckedUpdateInputObjectSchema } from './objects/RegionPointUncheckedUpdateInput.schema';
+import * as Yup from 'yup'
+import {
+  RegionPointWhereUniqueInputObjectSchema,
+  RegionPointCreateInputObjectSchema,
+  RegionPointUpdateInputObjectSchema,
+} from './internals'
 
-export const RegionPointUpsertSchema = z.object({
+export const RegionPointUpsertSchema = Yup.object({
   where: RegionPointWhereUniqueInputObjectSchema,
-  create: z.union([
-    RegionPointCreateInputObjectSchema,
-    RegionPointUncheckedCreateInputObjectSchema,
-  ]),
-  update: z.union([
-    RegionPointUpdateInputObjectSchema,
-    RegionPointUncheckedUpdateInputObjectSchema,
-  ]),
-});
+  data: RegionPointCreateInputObjectSchema,
+  update: RegionPointUpdateInputObjectSchema,
+}).required()

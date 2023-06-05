@@ -1,128 +1,69 @@
-import { z } from 'zod';
-import { LitterSiteCreateWithoutCollectorUserInputObjectSchema } from './LitterSiteCreateWithoutCollectorUserInput.schema';
-import { LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema } from './LitterSiteUncheckedCreateWithoutCollectorUserInput.schema';
-import { LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema } from './LitterSiteCreateOrConnectWithoutCollectorUserInput.schema';
-import { LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema } from './LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInput.schema';
-import { LitterSiteCreateManyCollectorUserInputEnvelopeObjectSchema } from './LitterSiteCreateManyCollectorUserInputEnvelope.schema';
-import { LitterSiteWhereUniqueInputObjectSchema } from './LitterSiteWhereUniqueInput.schema';
-import { LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema } from './LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInput.schema';
-import { LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema } from './LitterSiteUpdateManyWithWhereWithoutCollectorUserInput.schema';
-import { LitterSiteScalarWhereInputObjectSchema } from './LitterSiteScalarWhereInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteUpdateManyWithoutCollectorUserNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => LitterSiteCreateWithoutCollectorUserInputObjectSchema),
-          z
-            .lazy(() => LitterSiteCreateWithoutCollectorUserInputObjectSchema)
-            .array(),
-          z.lazy(
-            () =>
-              LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(
-            () =>
-              LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(
-            () =>
-              LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => LitterSiteCreateManyCollectorUserInputEnvelopeObjectSchema)
-        .optional(),
-      set: z
-        .union([
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(
-            () =>
-              LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(
-            () =>
-              LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => LitterSiteScalarWhereInputObjectSchema),
-          z.lazy(() => LitterSiteScalarWhereInputObjectSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteCreateWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteCreateManyCollectorUserInputEnvelopeObjectSchema } from '../internals'
+import { LitterSiteWhereUniqueInputObjectSchema } from '../internals'
+import { LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema } from '../internals'
+import { LitterSiteScalarWhereInputObjectSchema } from '../internals'
 
 export const LitterSiteUpdateManyWithoutCollectorUserNestedInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(LitterSiteCreateWithoutCollectorUserInputObjectSchema),
+      LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema
+      ),
+    ]),
+    connectOrCreate: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteCreateOrConnectWithoutCollectorUserInputObjectSchema
+      ),
+    ]),
+    upsert: Yup.mixed().oneOfSchemas([
+      LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteUpsertWithWhereUniqueWithoutCollectorUserInputObjectSchema
+      ),
+    ]),
+    createMany: LitterSiteCreateManyCollectorUserInputEnvelopeObjectSchema,
+    set: Yup.mixed().oneOfSchemas([
+      LitterSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(LitterSiteWhereUniqueInputObjectSchema),
+    ]),
+    disconnect: Yup.mixed().oneOfSchemas([
+      LitterSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(LitterSiteWhereUniqueInputObjectSchema),
+    ]),
+    delete: Yup.mixed().oneOfSchemas([
+      LitterSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(LitterSiteWhereUniqueInputObjectSchema),
+    ]),
+    connect: Yup.mixed().oneOfSchemas([
+      LitterSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(LitterSiteWhereUniqueInputObjectSchema),
+    ]),
+    update: Yup.mixed().oneOfSchemas([
+      LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteUpdateWithWhereUniqueWithoutCollectorUserInputObjectSchema
+      ),
+    ]),
+    updateMany: Yup.mixed().oneOfSchemas([
+      LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema
+      ),
+    ]),
+    deleteMany: Yup.mixed().oneOfSchemas([
+      LitterSiteScalarWhereInputObjectSchema,
+      Yup.array().of(LitterSiteScalarWhereInputObjectSchema),
+    ]),
+  })

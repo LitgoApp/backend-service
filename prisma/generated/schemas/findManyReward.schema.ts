@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { RewardOrderByWithRelationInputObjectSchema } from './objects/RewardOrderByWithRelationInput.schema';
-import { RewardWhereInputObjectSchema } from './objects/RewardWhereInput.schema';
-import { RewardWhereUniqueInputObjectSchema } from './objects/RewardWhereUniqueInput.schema';
-import { RewardScalarFieldEnumSchema } from './enums/RewardScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  RewardWhereInputObjectSchema,
+  RewardOrderByWithRelationInputObjectSchema,
+  RewardWhereUniqueInputObjectSchema,
+} from './internals'
+import { RewardScalarFieldEnumSchema } from './internals'
 
-export const RewardFindManySchema = z.object({
-  orderBy: z
-    .union([
-      RewardOrderByWithRelationInputObjectSchema,
-      RewardOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: RewardWhereInputObjectSchema.optional(),
-  cursor: RewardWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(RewardScalarFieldEnumSchema).optional(),
-});
+export const RewardFindManySchema = Yup.object({
+  where: RewardWhereInputObjectSchema,
+  orderBy: RewardOrderByWithRelationInputObjectSchema,
+  cursor: RewardWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(RewardScalarFieldEnumSchema),
+}).required()

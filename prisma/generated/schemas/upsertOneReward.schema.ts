@@ -1,18 +1,12 @@
-import { z } from 'zod';
-import { RewardWhereUniqueInputObjectSchema } from './objects/RewardWhereUniqueInput.schema';
-import { RewardCreateInputObjectSchema } from './objects/RewardCreateInput.schema';
-import { RewardUncheckedCreateInputObjectSchema } from './objects/RewardUncheckedCreateInput.schema';
-import { RewardUpdateInputObjectSchema } from './objects/RewardUpdateInput.schema';
-import { RewardUncheckedUpdateInputObjectSchema } from './objects/RewardUncheckedUpdateInput.schema';
+import * as Yup from 'yup'
+import {
+  RewardWhereUniqueInputObjectSchema,
+  RewardCreateInputObjectSchema,
+  RewardUpdateInputObjectSchema,
+} from './internals'
 
-export const RewardUpsertSchema = z.object({
+export const RewardUpsertSchema = Yup.object({
   where: RewardWhereUniqueInputObjectSchema,
-  create: z.union([
-    RewardCreateInputObjectSchema,
-    RewardUncheckedCreateInputObjectSchema,
-  ]),
-  update: z.union([
-    RewardUpdateInputObjectSchema,
-    RewardUncheckedUpdateInputObjectSchema,
-  ]),
-});
+  data: RewardCreateInputObjectSchema,
+  update: RewardUpdateInputObjectSchema,
+}).required()

@@ -1,66 +1,37 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { IntFilterObjectSchema } from './IntFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { LitterSiteListRelationFilterObjectSchema } from './LitterSiteListRelationFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { IntFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
+import { LitterSiteListRelationFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => UserWhereInputObjectSchema),
-        z.lazy(() => UserWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => UserWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => UserWhereInputObjectSchema),
-        z.lazy(() => UserWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    userId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    email: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    name: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    password: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    level: z
-      .union([z.lazy(() => IntFilterObjectSchema), z.number()])
-      .optional(),
-    points: z
-      .union([z.lazy(() => IntFilterObjectSchema), z.number()])
-      .optional(),
-    fraudLevel: z
-      .union([z.lazy(() => IntFilterObjectSchema), z.number()])
-      .optional(),
-    address: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    reportedLitter: z
-      .lazy(() => LitterSiteListRelationFilterObjectSchema)
-      .optional(),
-    collectedLitter: z
-      .lazy(() => LitterSiteListRelationFilterObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const UserWhereInputObjectSchema = Schema;
+export const UserWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => UserWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => UserWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => UserWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => UserWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => UserWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  userId: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  email: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  name: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  password: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  level: Yup.mixed().oneOfSchemas([IntFilterObjectSchema, Yup.number()]),
+  points: Yup.mixed().oneOfSchemas([IntFilterObjectSchema, Yup.number()]),
+  fraudLevel: Yup.mixed().oneOfSchemas([IntFilterObjectSchema, Yup.number()]),
+  address: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  reportedLitter: LitterSiteListRelationFilterObjectSchema,
+  collectedLitter: LitterSiteListRelationFilterObjectSchema,
+})

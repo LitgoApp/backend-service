@@ -1,50 +1,38 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { MunicipalityRelationFilterObjectSchema } from './MunicipalityRelationFilter.schema';
-import { MunicipalityWhereInputObjectSchema } from './MunicipalityWhereInput.schema';
-import { RegionPointListRelationFilterObjectSchema } from './RegionPointListRelationFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
+import { MunicipalityRelationFilterObjectSchema } from '../internals'
+import { MunicipalityWhereInputObjectSchema } from '../internals'
+import { RegionPointListRelationFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => RegionWhereInputObjectSchema),
-        z.lazy(() => RegionWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => RegionWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => RegionWhereInputObjectSchema),
-        z.lazy(() => RegionWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    regionId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    municipalityId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    municipality: z
-      .union([
-        z.lazy(() => MunicipalityRelationFilterObjectSchema),
-        z.lazy(() => MunicipalityWhereInputObjectSchema),
-      ])
-      .optional(),
-    points: z.lazy(() => RegionPointListRelationFilterObjectSchema).optional(),
-  })
-  .strict();
-
-export const RegionWhereInputObjectSchema = Schema;
+export const RegionWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => RegionWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => RegionWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => RegionWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => RegionWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => RegionWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  regionId: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  municipalityId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  municipality: Yup.mixed().oneOfSchemas([
+    MunicipalityRelationFilterObjectSchema,
+    MunicipalityWhereInputObjectSchema,
+  ]),
+  points: RegionPointListRelationFilterObjectSchema,
+})

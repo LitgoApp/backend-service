@@ -1,20 +1,14 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NestedDateTimeFilter> = z
-  .object({
-    equals: z.coerce.date().optional(),
-    in: z.union([z.coerce.date().array(), z.coerce.date()]).optional(),
-    notIn: z.union([z.coerce.date().array(), z.coerce.date()]).optional(),
-    lt: z.coerce.date().optional(),
-    lte: z.coerce.date().optional(),
-    gt: z.coerce.date().optional(),
-    gte: z.coerce.date().optional(),
-    not: z
-      .union([z.coerce.date(), z.lazy(() => NestedDateTimeFilterObjectSchema)])
-      .optional(),
-  })
-  .strict();
-
-export const NestedDateTimeFilterObjectSchema = Schema;
+export const NestedDateTimeFilterObjectSchema = Yup.object({
+  equals: Yup.date(),
+  lt: Yup.date(),
+  lte: Yup.date(),
+  gt: Yup.date(),
+  gte: Yup.date(),
+  not: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => NestedDateTimeFilterObjectSchema.default(undefined)),
+  ]),
+})

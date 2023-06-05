@@ -1,12 +1,10 @@
-import { z } from 'zod';
-import { DisposalSiteUpdateInputObjectSchema } from './objects/DisposalSiteUpdateInput.schema';
-import { DisposalSiteUncheckedUpdateInputObjectSchema } from './objects/DisposalSiteUncheckedUpdateInput.schema';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './objects/DisposalSiteWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import {
+  DisposalSiteUpdateInputObjectSchema,
+  DisposalSiteWhereUniqueInputObjectSchema,
+} from './internals'
 
-export const DisposalSiteUpdateOneSchema = z.object({
-  data: z.union([
-    DisposalSiteUpdateInputObjectSchema,
-    DisposalSiteUncheckedUpdateInputObjectSchema,
-  ]),
+export const DisposalSiteUpdateOneSchema = Yup.object({
+  data: DisposalSiteUpdateInputObjectSchema,
   where: DisposalSiteWhereUniqueInputObjectSchema,
-});
+}).required()

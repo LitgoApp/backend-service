@@ -1,30 +1,21 @@
-import { z } from 'zod';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './DisposalSiteWhereUniqueInput.schema';
-import { DisposalSiteUpdateWithoutMunicipalityInputObjectSchema } from './DisposalSiteUpdateWithoutMunicipalityInput.schema';
-import { DisposalSiteUncheckedUpdateWithoutMunicipalityInputObjectSchema } from './DisposalSiteUncheckedUpdateWithoutMunicipalityInput.schema';
-import { DisposalSiteCreateWithoutMunicipalityInputObjectSchema } from './DisposalSiteCreateWithoutMunicipalityInput.schema';
-import { DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema } from './DisposalSiteUncheckedCreateWithoutMunicipalityInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteUpsertWithWhereUniqueWithoutMunicipalityInput> =
-  z
-    .object({
-      where: z.lazy(() => DisposalSiteWhereUniqueInputObjectSchema),
-      update: z.union([
-        z.lazy(() => DisposalSiteUpdateWithoutMunicipalityInputObjectSchema),
-        z.lazy(
-          () => DisposalSiteUncheckedUpdateWithoutMunicipalityInputObjectSchema,
-        ),
-      ]),
-      create: z.union([
-        z.lazy(() => DisposalSiteCreateWithoutMunicipalityInputObjectSchema),
-        z.lazy(
-          () => DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { DisposalSiteWhereUniqueInputObjectSchema } from '../internals'
+import { DisposalSiteUpdateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteUncheckedUpdateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema } from '../internals'
 
 export const DisposalSiteUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: DisposalSiteWhereUniqueInputObjectSchema,
+    update: Yup.mixed().oneOfSchemas([
+      DisposalSiteUpdateWithoutMunicipalityInputObjectSchema,
+      DisposalSiteUncheckedUpdateWithoutMunicipalityInputObjectSchema,
+    ]),
+    create: Yup.mixed().oneOfSchemas([
+      DisposalSiteCreateWithoutMunicipalityInputObjectSchema,
+      DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema,
+    ]),
+  })

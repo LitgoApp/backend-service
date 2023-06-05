@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const LitterSiteScalarFieldEnumSchema = z.enum([
+export const LitterSiteScalarFieldEnumSchema = Yup.mixed().oneOf([
   'litterSiteId',
   'reporterUserId',
   'collectorUserId',
@@ -11,4 +11,4 @@ export const LitterSiteScalarFieldEnumSchema = z.enum([
   'longitude',
   'createdAt',
   'updatedAt',
-]);
+])

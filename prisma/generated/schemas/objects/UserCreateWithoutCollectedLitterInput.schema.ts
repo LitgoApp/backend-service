@@ -1,26 +1,19 @@
-import { z } from 'zod';
-import { LitterSiteCreateNestedManyWithoutReporterUserInputObjectSchema } from './LitterSiteCreateNestedManyWithoutReporterUserInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteCreateNestedManyWithoutReporterUserInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserCreateWithoutCollectedLitterInput> = z
-  .object({
-    userId: z.string().optional(),
-    email: z.string(),
-    name: z.string(),
-    password: z.string(),
-    level: z.number().optional(),
-    points: z.number().optional(),
-    fraudLevel: z.number().optional(),
-    address: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    reportedLitter: z
-      .lazy(
-        () => LitterSiteCreateNestedManyWithoutReporterUserInputObjectSchema,
-      )
-      .optional(),
-  })
-  .strict();
-
-export const UserCreateWithoutCollectedLitterInputObjectSchema = Schema;
+export const UserCreateWithoutCollectedLitterInputObjectSchema = Yup.object({
+  userId: Yup.string(),
+  email: Yup.string().required(),
+  name: Yup.string().required(),
+  password: Yup.string().required(),
+  level: Yup.number(),
+  points: Yup.number(),
+  fraudLevel: Yup.number(),
+  address: Yup.string().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  reportedLitter:
+    LitterSiteCreateNestedManyWithoutReporterUserInputObjectSchema,
+})

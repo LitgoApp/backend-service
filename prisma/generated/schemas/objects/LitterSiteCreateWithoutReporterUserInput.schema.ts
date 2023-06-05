@@ -1,22 +1,15 @@
-import { z } from 'zod';
-import { UserCreateNestedOneWithoutCollectedLitterInputObjectSchema } from './UserCreateNestedOneWithoutCollectedLitterInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { UserCreateNestedOneWithoutCollectedLitterInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteCreateWithoutReporterUserInput> = z
-  .object({
-    litterSiteId: z.string().optional(),
-    isCollected: z.boolean().optional(),
-    image: z.instanceof(Buffer),
-    harmful: z.boolean().optional(),
-    latitude: z.number(),
-    longitude: z.number(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    collectorUser: z
-      .lazy(() => UserCreateNestedOneWithoutCollectedLitterInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const LitterSiteCreateWithoutReporterUserInputObjectSchema = Schema;
+export const LitterSiteCreateWithoutReporterUserInputObjectSchema = Yup.object({
+  litterSiteId: Yup.string(),
+  isCollected: Yup.boolean(),
+  harmful: Yup.boolean(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  collectorUser: UserCreateNestedOneWithoutCollectedLitterInputObjectSchema,
+})

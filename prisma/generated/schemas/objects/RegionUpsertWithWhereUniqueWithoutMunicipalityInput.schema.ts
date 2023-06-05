@@ -1,26 +1,21 @@
-import { z } from 'zod';
-import { RegionWhereUniqueInputObjectSchema } from './RegionWhereUniqueInput.schema';
-import { RegionUpdateWithoutMunicipalityInputObjectSchema } from './RegionUpdateWithoutMunicipalityInput.schema';
-import { RegionUncheckedUpdateWithoutMunicipalityInputObjectSchema } from './RegionUncheckedUpdateWithoutMunicipalityInput.schema';
-import { RegionCreateWithoutMunicipalityInputObjectSchema } from './RegionCreateWithoutMunicipalityInput.schema';
-import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from './RegionUncheckedCreateWithoutMunicipalityInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUpsertWithWhereUniqueWithoutMunicipalityInput> =
-  z
-    .object({
-      where: z.lazy(() => RegionWhereUniqueInputObjectSchema),
-      update: z.union([
-        z.lazy(() => RegionUpdateWithoutMunicipalityInputObjectSchema),
-        z.lazy(() => RegionUncheckedUpdateWithoutMunicipalityInputObjectSchema),
-      ]),
-      create: z.union([
-        z.lazy(() => RegionCreateWithoutMunicipalityInputObjectSchema),
-        z.lazy(() => RegionUncheckedCreateWithoutMunicipalityInputObjectSchema),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionWhereUniqueInputObjectSchema } from '../internals'
+import { RegionUpdateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUncheckedUpdateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from '../internals'
 
 export const RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: RegionWhereUniqueInputObjectSchema,
+    update: Yup.mixed().oneOfSchemas([
+      RegionUpdateWithoutMunicipalityInputObjectSchema,
+      RegionUncheckedUpdateWithoutMunicipalityInputObjectSchema,
+    ]),
+    create: Yup.mixed().oneOfSchemas([
+      RegionCreateWithoutMunicipalityInputObjectSchema,
+      RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
+    ]),
+  })

@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { RegionWhereInputObjectSchema } from './objects/RegionWhereInput.schema';
+import * as Yup from 'yup'
+import { RegionWhereInputObjectSchema } from './internals'
 
-export const RegionDeleteManySchema = z.object({
-  where: RegionWhereInputObjectSchema.optional(),
-});
+export const RegionDeleteManySchema = Yup.object({
+  RegionWhereInputObjectSchema,
+}).required()

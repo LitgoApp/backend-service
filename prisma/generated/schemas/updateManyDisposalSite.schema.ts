@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { DisposalSiteUpdateManyMutationInputObjectSchema } from './objects/DisposalSiteUpdateManyMutationInput.schema';
-import { DisposalSiteWhereInputObjectSchema } from './objects/DisposalSiteWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  DisposalSiteUpdateManyMutationInputObjectSchema,
+  DisposalSiteWhereInputObjectSchema,
+} from './internals'
 
-export const DisposalSiteUpdateManySchema = z.object({
+export const DisposalSiteUpdateManySchema = Yup.object({
   data: DisposalSiteUpdateManyMutationInputObjectSchema,
-  where: DisposalSiteWhereInputObjectSchema.optional(),
-});
+  where: DisposalSiteWhereInputObjectSchema,
+}).required()

@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { RegionWhereUniqueInputObjectSchema } from './objects/RegionWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import { RegionWhereUniqueInputObjectSchema } from './internals'
 
-export const RegionDeleteOneSchema = z.object({
+export const RegionDeleteOneSchema = Yup.object({
   where: RegionWhereUniqueInputObjectSchema,
-});
+}).required()

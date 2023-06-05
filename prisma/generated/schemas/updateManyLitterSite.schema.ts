@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { LitterSiteUpdateManyMutationInputObjectSchema } from './objects/LitterSiteUpdateManyMutationInput.schema';
-import { LitterSiteWhereInputObjectSchema } from './objects/LitterSiteWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  LitterSiteUpdateManyMutationInputObjectSchema,
+  LitterSiteWhereInputObjectSchema,
+} from './internals'
 
-export const LitterSiteUpdateManySchema = z.object({
+export const LitterSiteUpdateManySchema = Yup.object({
   data: LitterSiteUpdateManyMutationInputObjectSchema,
-  where: LitterSiteWhereInputObjectSchema.optional(),
-});
+  where: LitterSiteWhereInputObjectSchema,
+}).required()

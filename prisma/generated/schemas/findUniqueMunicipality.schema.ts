@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { MunicipalityWhereUniqueInputObjectSchema } from './objects/MunicipalityWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import { MunicipalityWhereUniqueInputObjectSchema } from './internals'
 
-export const MunicipalityFindUniqueSchema = z.object({
+export const MunicipalityFindUniqueSchema = Yup.object({
   where: MunicipalityWhereUniqueInputObjectSchema,
-});
+}).required()

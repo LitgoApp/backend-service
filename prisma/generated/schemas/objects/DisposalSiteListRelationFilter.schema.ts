@@ -1,14 +1,10 @@
-import { z } from 'zod';
-import { DisposalSiteWhereInputObjectSchema } from './DisposalSiteWhereInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { DisposalSiteWhereInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteListRelationFilter> = z
-  .object({
-    every: z.lazy(() => DisposalSiteWhereInputObjectSchema).optional(),
-    some: z.lazy(() => DisposalSiteWhereInputObjectSchema).optional(),
-    none: z.lazy(() => DisposalSiteWhereInputObjectSchema).optional(),
-  })
-  .strict();
-
-export const DisposalSiteListRelationFilterObjectSchema = Schema;
+export const DisposalSiteListRelationFilterObjectSchema = Yup.object({
+  every: DisposalSiteWhereInputObjectSchema,
+  some: DisposalSiteWhereInputObjectSchema,
+  none: DisposalSiteWhereInputObjectSchema,
+})

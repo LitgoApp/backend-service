@@ -1,123 +1,65 @@
-import { z } from 'zod';
-import { RegionCreateWithoutMunicipalityInputObjectSchema } from './RegionCreateWithoutMunicipalityInput.schema';
-import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from './RegionUncheckedCreateWithoutMunicipalityInput.schema';
-import { RegionCreateOrConnectWithoutMunicipalityInputObjectSchema } from './RegionCreateOrConnectWithoutMunicipalityInput.schema';
-import { RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema } from './RegionUpsertWithWhereUniqueWithoutMunicipalityInput.schema';
-import { RegionCreateManyMunicipalityInputEnvelopeObjectSchema } from './RegionCreateManyMunicipalityInputEnvelope.schema';
-import { RegionWhereUniqueInputObjectSchema } from './RegionWhereUniqueInput.schema';
-import { RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema } from './RegionUpdateWithWhereUniqueWithoutMunicipalityInput.schema';
-import { RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema } from './RegionUpdateManyWithWhereWithoutMunicipalityInput.schema';
-import { RegionScalarWhereInputObjectSchema } from './RegionScalarWhereInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUncheckedUpdateManyWithoutMunicipalityNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => RegionCreateWithoutMunicipalityInputObjectSchema),
-          z
-            .lazy(() => RegionCreateWithoutMunicipalityInputObjectSchema)
-            .array(),
-          z.lazy(
-            () => RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () => RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(
-            () => RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () => RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(
-            () =>
-              RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => RegionCreateManyMunicipalityInputEnvelopeObjectSchema)
-        .optional(),
-      set: z
-        .union([
-          z.lazy(() => RegionWhereUniqueInputObjectSchema),
-          z.lazy(() => RegionWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => RegionWhereUniqueInputObjectSchema),
-          z.lazy(() => RegionWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => RegionWhereUniqueInputObjectSchema),
-          z.lazy(() => RegionWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => RegionWhereUniqueInputObjectSchema),
-          z.lazy(() => RegionWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(
-            () =>
-              RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(
-            () => RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => RegionScalarWhereInputObjectSchema),
-          z.lazy(() => RegionScalarWhereInputObjectSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionCreateOrConnectWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionCreateManyMunicipalityInputEnvelopeObjectSchema } from '../internals'
+import { RegionWhereUniqueInputObjectSchema } from '../internals'
+import { RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionScalarWhereInputObjectSchema } from '../internals'
 
 export const RegionUncheckedUpdateManyWithoutMunicipalityNestedInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      RegionCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionCreateWithoutMunicipalityInputObjectSchema),
+      RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionUncheckedCreateWithoutMunicipalityInputObjectSchema),
+    ]),
+    connectOrCreate: Yup.mixed().oneOfSchemas([
+      RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionCreateOrConnectWithoutMunicipalityInputObjectSchema),
+    ]),
+    upsert: Yup.mixed().oneOfSchemas([
+      RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(
+        RegionUpsertWithWhereUniqueWithoutMunicipalityInputObjectSchema
+      ),
+    ]),
+    createMany: RegionCreateManyMunicipalityInputEnvelopeObjectSchema,
+    set: Yup.mixed().oneOfSchemas([
+      RegionWhereUniqueInputObjectSchema,
+      Yup.array().of(RegionWhereUniqueInputObjectSchema),
+    ]),
+    disconnect: Yup.mixed().oneOfSchemas([
+      RegionWhereUniqueInputObjectSchema,
+      Yup.array().of(RegionWhereUniqueInputObjectSchema),
+    ]),
+    delete: Yup.mixed().oneOfSchemas([
+      RegionWhereUniqueInputObjectSchema,
+      Yup.array().of(RegionWhereUniqueInputObjectSchema),
+    ]),
+    connect: Yup.mixed().oneOfSchemas([
+      RegionWhereUniqueInputObjectSchema,
+      Yup.array().of(RegionWhereUniqueInputObjectSchema),
+    ]),
+    update: Yup.mixed().oneOfSchemas([
+      RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(
+        RegionUpdateWithWhereUniqueWithoutMunicipalityInputObjectSchema
+      ),
+    ]),
+    updateMany: Yup.mixed().oneOfSchemas([
+      RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(
+        RegionUpdateManyWithWhereWithoutMunicipalityInputObjectSchema
+      ),
+    ]),
+    deleteMany: Yup.mixed().oneOfSchemas([
+      RegionScalarWhereInputObjectSchema,
+      Yup.array().of(RegionScalarWhereInputObjectSchema),
+    ]),
+  })

@@ -1,12 +1,10 @@
-import { z } from 'zod';
-import { RewardUpdateInputObjectSchema } from './objects/RewardUpdateInput.schema';
-import { RewardUncheckedUpdateInputObjectSchema } from './objects/RewardUncheckedUpdateInput.schema';
-import { RewardWhereUniqueInputObjectSchema } from './objects/RewardWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import {
+  RewardUpdateInputObjectSchema,
+  RewardWhereUniqueInputObjectSchema,
+} from './internals'
 
-export const RewardUpdateOneSchema = z.object({
-  data: z.union([
-    RewardUpdateInputObjectSchema,
-    RewardUncheckedUpdateInputObjectSchema,
-  ]),
+export const RewardUpdateOneSchema = Yup.object({
+  data: RewardUpdateInputObjectSchema,
   where: RewardWhereUniqueInputObjectSchema,
-});
+}).required()

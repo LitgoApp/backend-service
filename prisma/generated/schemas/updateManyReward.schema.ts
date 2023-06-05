@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { RewardUpdateManyMutationInputObjectSchema } from './objects/RewardUpdateManyMutationInput.schema';
-import { RewardWhereInputObjectSchema } from './objects/RewardWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  RewardUpdateManyMutationInputObjectSchema,
+  RewardWhereInputObjectSchema,
+} from './internals'
 
-export const RewardUpdateManySchema = z.object({
+export const RewardUpdateManySchema = Yup.object({
   data: RewardUpdateManyMutationInputObjectSchema,
-  where: RewardWhereInputObjectSchema.optional(),
-});
+  where: RewardWhereInputObjectSchema,
+}).required()
