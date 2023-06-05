@@ -39,8 +39,6 @@ router.post('/', async (req: Request, res: Response) => {
                 address: req.body.address,
                 reportedLitter: req.body.reportedLitter,
                 collectedLitter: req.body.collectedLitter,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)
@@ -66,8 +64,6 @@ router.put('/:id', async (req: Request, res: Response) => {
                 address: req.body.address,
                 reportedLitter: req.body.reportedLitter,
                 collectedLitter: req.body.collectedLitter,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)
