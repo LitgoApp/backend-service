@@ -1,6 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import express, { Express, Request, Response } from 'express';
 const router = express.Router();
-const prisma = require("@prisma/client").PrismaClient;
+const prisma = new PrismaClient();
 
 router.get('/', async (req: Request, res: Response) => {
     try {
@@ -16,7 +17,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const region = await prisma.region.findUnique({
             where: {
-                id: Number(id)
+                regionId: id
             }
         })
         res.json(region)
@@ -47,7 +48,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const result = await prisma.region.update({
             where: {
-                id: Number(id)
+                regionId: id
             },
             data: {
                 regionId: req.body.regionId,
@@ -68,7 +69,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const result = await prisma.region.delete({
             where: {
-                id: Number(id)
+                regionId: id
             }
         })
         res.json(result)
