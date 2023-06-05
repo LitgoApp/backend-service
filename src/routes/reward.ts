@@ -1,6 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import express, { Express, Request, Response } from 'express';
 const router = express.Router();
-const prisma = require("@prisma/client").PrismaClient;
+const prisma = new PrismaClient();
 
 router.get('/', async (req: Request, res: Response) => {
     try {
@@ -16,7 +17,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const reward = await prisma.reward.findUnique({
             where: {
-                id: Number(id)
+                rewardId: id
             }
         })
         res.json(reward)
@@ -47,7 +48,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const result = await prisma.reward.update({
             where: {
-                id: Number(id)
+                rewardId: id
             },
             data: {
                 name: req.body.name,
@@ -68,7 +69,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const result = await prisma.reward.delete({
             where: {
-                id: Number(id)
+                rewardId: id
             }
         })
         res.json(result)
