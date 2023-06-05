@@ -1,16 +1,12 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteUncheckedCreateInput> = z
-  .object({
-    disposalSiteId: z.string().optional(),
-    municipalityId: z.string(),
-    latitude: z.number(),
-    longitude: z.number(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-  })
-  .strict();
-
-export const DisposalSiteUncheckedCreateInputObjectSchema = Schema;
+export const DisposalSiteUncheckedCreateInputObjectSchema = Yup.object({
+  disposalSiteId: Yup.string(),
+  municipalityId: Yup.string().required(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+})

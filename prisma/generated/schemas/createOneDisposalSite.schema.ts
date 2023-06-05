@@ -1,10 +1,6 @@
-import { z } from 'zod';
-import { DisposalSiteCreateInputObjectSchema } from './objects/DisposalSiteCreateInput.schema';
-import { DisposalSiteUncheckedCreateInputObjectSchema } from './objects/DisposalSiteUncheckedCreateInput.schema';
+import * as Yup from 'yup'
+import { DisposalSiteCreateInputObjectSchema } from './internals'
 
-export const DisposalSiteCreateOneSchema = z.object({
-  data: z.union([
-    DisposalSiteCreateInputObjectSchema,
-    DisposalSiteUncheckedCreateInputObjectSchema,
-  ]),
-});
+export const DisposalSiteCreateSchema = Yup.object({
+  data: DisposalSiteCreateInputObjectSchema,
+}).required()

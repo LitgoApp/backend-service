@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.BoolFieldUpdateOperationsInput> = z
-  .object({
-    set: z.boolean().optional(),
-  })
-  .strict();
-
-export const BoolFieldUpdateOperationsInputObjectSchema = Schema;
+export const BoolFieldUpdateOperationsInputObjectSchema = Yup.object({
+  set: Yup.boolean(),
+})

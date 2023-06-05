@@ -1,55 +1,40 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
-import { RegionListRelationFilterObjectSchema } from './RegionListRelationFilter.schema';
-import { DisposalSiteListRelationFilterObjectSchema } from './DisposalSiteListRelationFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
+import { RegionListRelationFilterObjectSchema } from '../internals'
+import { DisposalSiteListRelationFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => MunicipalityWhereInputObjectSchema),
-        z.lazy(() => MunicipalityWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => MunicipalityWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => MunicipalityWhereInputObjectSchema),
-        z.lazy(() => MunicipalityWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    municipalityId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    email: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    name: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    password: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    phoneNumber: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    regions: z.lazy(() => RegionListRelationFilterObjectSchema).optional(),
-    disposalSites: z
-      .lazy(() => DisposalSiteListRelationFilterObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const MunicipalityWhereInputObjectSchema = Schema;
+export const MunicipalityWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => MunicipalityWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => MunicipalityWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => MunicipalityWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => MunicipalityWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => MunicipalityWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  municipalityId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  email: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  name: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  password: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  phoneNumber: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  regions: RegionListRelationFilterObjectSchema,
+  disposalSites: DisposalSiteListRelationFilterObjectSchema,
+})

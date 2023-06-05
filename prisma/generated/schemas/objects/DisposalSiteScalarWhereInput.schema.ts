@@ -1,47 +1,40 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { FloatFilterObjectSchema } from './FloatFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { FloatFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteScalarWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => DisposalSiteScalarWhereInputObjectSchema),
-        z.lazy(() => DisposalSiteScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => DisposalSiteScalarWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => DisposalSiteScalarWhereInputObjectSchema),
-        z.lazy(() => DisposalSiteScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    disposalSiteId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    municipalityId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    latitude: z
-      .union([z.lazy(() => FloatFilterObjectSchema), z.number()])
-      .optional(),
-    longitude: z
-      .union([z.lazy(() => FloatFilterObjectSchema), z.number()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-  })
-  .strict();
-
-export const DisposalSiteScalarWhereInputObjectSchema = Schema;
+export const DisposalSiteScalarWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => DisposalSiteScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() =>
+        DisposalSiteScalarWhereInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => DisposalSiteScalarWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => DisposalSiteScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() =>
+        DisposalSiteScalarWhereInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  disposalSiteId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  municipalityId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  latitude: Yup.mixed().oneOfSchemas([FloatFilterObjectSchema, Yup.number()]),
+  longitude: Yup.mixed().oneOfSchemas([FloatFilterObjectSchema, Yup.number()]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+})

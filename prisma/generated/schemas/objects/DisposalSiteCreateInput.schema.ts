@@ -1,19 +1,14 @@
-import { z } from 'zod';
-import { MunicipalityCreateNestedOneWithoutDisposalSitesInputObjectSchema } from './MunicipalityCreateNestedOneWithoutDisposalSitesInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityCreateNestedOneWithoutDisposalSitesInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteCreateInput> = z
-  .object({
-    disposalSiteId: z.string().optional(),
-    latitude: z.number(),
-    longitude: z.number(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    municipality: z.lazy(
-      () => MunicipalityCreateNestedOneWithoutDisposalSitesInputObjectSchema,
-    ),
-  })
-  .strict();
-
-export const DisposalSiteCreateInputObjectSchema = Schema;
+export const DisposalSiteCreateInputObjectSchema = Yup.object({
+  disposalSiteId: Yup.string(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  municipality:
+    MunicipalityCreateNestedOneWithoutDisposalSitesInputObjectSchema,
+})

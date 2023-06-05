@@ -10,8 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator zod {
-  provider = "prisma-zod-generator"
+generator yup {
+  provider = "prisma-yup-generator"
 }
 
 model User {

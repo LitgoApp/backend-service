@@ -1,30 +1,20 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { MunicipalityCountOrderByAggregateInputObjectSchema } from './MunicipalityCountOrderByAggregateInput.schema';
-import { MunicipalityMaxOrderByAggregateInputObjectSchema } from './MunicipalityMaxOrderByAggregateInput.schema';
-import { MunicipalityMinOrderByAggregateInputObjectSchema } from './MunicipalityMinOrderByAggregateInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
+import { MunicipalityCountOrderByAggregateInputObjectSchema } from '../internals'
+import { MunicipalityMaxOrderByAggregateInputObjectSchema } from '../internals'
+import { MunicipalityMinOrderByAggregateInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityOrderByWithAggregationInput> = z
-  .object({
-    municipalityId: z.lazy(() => SortOrderSchema).optional(),
-    email: z.lazy(() => SortOrderSchema).optional(),
-    name: z.lazy(() => SortOrderSchema).optional(),
-    password: z.lazy(() => SortOrderSchema).optional(),
-    phoneNumber: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    _count: z
-      .lazy(() => MunicipalityCountOrderByAggregateInputObjectSchema)
-      .optional(),
-    _max: z
-      .lazy(() => MunicipalityMaxOrderByAggregateInputObjectSchema)
-      .optional(),
-    _min: z
-      .lazy(() => MunicipalityMinOrderByAggregateInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const MunicipalityOrderByWithAggregationInputObjectSchema = Schema;
+export const MunicipalityOrderByWithAggregationInputObjectSchema = Yup.object({
+  municipalityId: SortOrderSchema,
+  email: SortOrderSchema,
+  name: SortOrderSchema,
+  password: SortOrderSchema,
+  phoneNumber: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+  _count: MunicipalityCountOrderByAggregateInputObjectSchema,
+  _max: MunicipalityMaxOrderByAggregateInputObjectSchema,
+  _min: MunicipalityMinOrderByAggregateInputObjectSchema,
+})

@@ -1,30 +1,18 @@
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { DateTimeFieldUpdateOperationsInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUpdateManyMutationInput> = z
-  .object({
-    regionId: z
-      .union([
-        z.string(),
-        z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    createdAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-    updatedAt: z
-      .union([
-        z.coerce.date(),
-        z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-      ])
-      .optional(),
-  })
-  .strict();
-
-export const RegionUpdateManyMutationInputObjectSchema = Schema;
+export const RegionUpdateManyMutationInputObjectSchema = Yup.object({
+  regionId: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    StringFieldUpdateOperationsInputObjectSchema,
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([
+    DateTimeFieldUpdateOperationsInputObjectSchema,
+  ]),
+  updatedAt: Yup.mixed().oneOfSchemas([
+    DateTimeFieldUpdateOperationsInputObjectSchema,
+  ]),
+})

@@ -1,79 +1,72 @@
-import { z } from 'zod';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { StringNullableWithAggregatesFilterObjectSchema } from './StringNullableWithAggregatesFilter.schema';
-import { BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema';
-import { BytesWithAggregatesFilterObjectSchema } from './BytesWithAggregatesFilter.schema';
-import { FloatWithAggregatesFilterObjectSchema } from './FloatWithAggregatesFilter.schema';
-import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringWithAggregatesFilterObjectSchema } from '../internals'
+import { StringNullableWithAggregatesFilterObjectSchema } from '../internals'
+import { BoolWithAggregatesFilterObjectSchema } from '../internals'
+import { BytesWithAggregatesFilterObjectSchema } from '../internals'
+import { FloatWithAggregatesFilterObjectSchema } from '../internals'
+import { DateTimeWithAggregatesFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteScalarWhereWithAggregatesInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => LitterSiteScalarWhereWithAggregatesInputObjectSchema),
-        z
-          .lazy(() => LitterSiteScalarWhereWithAggregatesInputObjectSchema)
-          .array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => LitterSiteScalarWhereWithAggregatesInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => LitterSiteScalarWhereWithAggregatesInputObjectSchema),
-        z
-          .lazy(() => LitterSiteScalarWhereWithAggregatesInputObjectSchema)
-          .array(),
-      ])
-      .optional(),
-    litterSiteId: z
-      .union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()])
-      .optional(),
-    reporterUserId: z
-      .union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()])
-      .optional(),
-    collectorUserId: z
-      .union([
-        z.lazy(() => StringNullableWithAggregatesFilterObjectSchema),
-        z.string(),
-      ])
-      .optional()
-      .nullable(),
-    isCollected: z
-      .union([z.lazy(() => BoolWithAggregatesFilterObjectSchema), z.boolean()])
-      .optional(),
-    image: z
-      .union([
-        z.lazy(() => BytesWithAggregatesFilterObjectSchema),
-        z.instanceof(Buffer),
-      ])
-      .optional(),
-    harmful: z
-      .union([z.lazy(() => BoolWithAggregatesFilterObjectSchema), z.boolean()])
-      .optional(),
-    latitude: z
-      .union([z.lazy(() => FloatWithAggregatesFilterObjectSchema), z.number()])
-      .optional(),
-    longitude: z
-      .union([z.lazy(() => FloatWithAggregatesFilterObjectSchema), z.number()])
-      .optional(),
-    createdAt: z
-      .union([
-        z.lazy(() => DateTimeWithAggregatesFilterObjectSchema),
-        z.coerce.date(),
-      ])
-      .optional(),
-    updatedAt: z
-      .union([
-        z.lazy(() => DateTimeWithAggregatesFilterObjectSchema),
-        z.coerce.date(),
-      ])
-      .optional(),
-  })
-  .strict();
-
-export const LitterSiteScalarWhereWithAggregatesInputObjectSchema = Schema;
+export const LitterSiteScalarWhereWithAggregatesInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      LitterSiteScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    ),
+    Yup.array().of(
+      Yup.lazy(() =>
+        LitterSiteScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() =>
+      LitterSiteScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    )
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      LitterSiteScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    ),
+    Yup.array().of(
+      Yup.lazy(() =>
+        LitterSiteScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  litterSiteId: Yup.mixed().oneOfSchemas([
+    StringWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  reporterUserId: Yup.mixed().oneOfSchemas([
+    StringWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  collectorUserId: Yup.mixed().oneOfSchemas([
+    StringNullableWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  isCollected: Yup.mixed().oneOfSchemas([
+    BoolWithAggregatesFilterObjectSchema,
+    Yup.boolean(),
+  ]),
+  image: Yup.mixed().oneOfSchemas([BytesWithAggregatesFilterObjectSchema]),
+  harmful: Yup.mixed().oneOfSchemas([
+    BoolWithAggregatesFilterObjectSchema,
+    Yup.boolean(),
+  ]),
+  latitude: Yup.mixed().oneOfSchemas([
+    FloatWithAggregatesFilterObjectSchema,
+    Yup.number(),
+  ]),
+  longitude: Yup.mixed().oneOfSchemas([
+    FloatWithAggregatesFilterObjectSchema,
+    Yup.number(),
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([
+    DateTimeWithAggregatesFilterObjectSchema,
+  ]),
+  updatedAt: Yup.mixed().oneOfSchemas([
+    DateTimeWithAggregatesFilterObjectSchema,
+  ]),
+})

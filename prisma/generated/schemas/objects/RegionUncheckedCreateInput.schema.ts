@@ -1,21 +1,12 @@
-import { z } from 'zod';
-import { RegionPointUncheckedCreateNestedManyWithoutRegionInputObjectSchema } from './RegionPointUncheckedCreateNestedManyWithoutRegionInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionPointUncheckedCreateNestedManyWithoutRegionInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUncheckedCreateInput> = z
-  .object({
-    regionId: z.string().optional(),
-    municipalityId: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    points: z
-      .lazy(
-        () =>
-          RegionPointUncheckedCreateNestedManyWithoutRegionInputObjectSchema,
-      )
-      .optional(),
-  })
-  .strict();
-
-export const RegionUncheckedCreateInputObjectSchema = Schema;
+export const RegionUncheckedCreateInputObjectSchema = Yup.object({
+  regionId: Yup.string(),
+  municipalityId: Yup.string().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  points: RegionPointUncheckedCreateNestedManyWithoutRegionInputObjectSchema,
+})

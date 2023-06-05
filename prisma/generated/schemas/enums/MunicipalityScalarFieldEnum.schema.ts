@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const MunicipalityScalarFieldEnumSchema = z.enum([
+export const MunicipalityScalarFieldEnumSchema = Yup.mixed().oneOf([
   'municipalityId',
   'email',
   'name',
@@ -8,4 +8,4 @@ export const MunicipalityScalarFieldEnumSchema = z.enum([
   'phoneNumber',
   'createdAt',
   'updatedAt',
-]);
+])

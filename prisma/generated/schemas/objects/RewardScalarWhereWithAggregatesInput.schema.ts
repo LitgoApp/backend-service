@@ -1,53 +1,56 @@
-import { z } from 'zod';
-import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFilter.schema';
-import { IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema';
-import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringWithAggregatesFilterObjectSchema } from '../internals'
+import { IntWithAggregatesFilterObjectSchema } from '../internals'
+import { DateTimeWithAggregatesFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RewardScalarWhereWithAggregatesInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => RewardScalarWhereWithAggregatesInputObjectSchema),
-        z.lazy(() => RewardScalarWhereWithAggregatesInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => RewardScalarWhereWithAggregatesInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => RewardScalarWhereWithAggregatesInputObjectSchema),
-        z.lazy(() => RewardScalarWhereWithAggregatesInputObjectSchema).array(),
-      ])
-      .optional(),
-    rewardId: z
-      .union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()])
-      .optional(),
-    name: z
-      .union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()])
-      .optional(),
-    cost: z
-      .union([z.lazy(() => IntWithAggregatesFilterObjectSchema), z.number()])
-      .optional(),
-    description: z
-      .union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()])
-      .optional(),
-    createdAt: z
-      .union([
-        z.lazy(() => DateTimeWithAggregatesFilterObjectSchema),
-        z.coerce.date(),
-      ])
-      .optional(),
-    updatedAt: z
-      .union([
-        z.lazy(() => DateTimeWithAggregatesFilterObjectSchema),
-        z.coerce.date(),
-      ])
-      .optional(),
-  })
-  .strict();
-
-export const RewardScalarWhereWithAggregatesInputObjectSchema = Schema;
+export const RewardScalarWhereWithAggregatesInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      RewardScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    ),
+    Yup.array().of(
+      Yup.lazy(() =>
+        RewardScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() =>
+      RewardScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    )
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() =>
+      RewardScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+    ),
+    Yup.array().of(
+      Yup.lazy(() =>
+        RewardScalarWhereWithAggregatesInputObjectSchema.default(undefined)
+      )
+    ),
+  ]),
+  rewardId: Yup.mixed().oneOfSchemas([
+    StringWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  name: Yup.mixed().oneOfSchemas([
+    StringWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  cost: Yup.mixed().oneOfSchemas([
+    IntWithAggregatesFilterObjectSchema,
+    Yup.number(),
+  ]),
+  description: Yup.mixed().oneOfSchemas([
+    StringWithAggregatesFilterObjectSchema,
+    Yup.string(),
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([
+    DateTimeWithAggregatesFilterObjectSchema,
+  ]),
+  updatedAt: Yup.mixed().oneOfSchemas([
+    DateTimeWithAggregatesFilterObjectSchema,
+  ]),
+})

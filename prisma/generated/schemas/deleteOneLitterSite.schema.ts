@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { LitterSiteWhereUniqueInputObjectSchema } from './objects/LitterSiteWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import { LitterSiteWhereUniqueInputObjectSchema } from './internals'
 
-export const LitterSiteDeleteOneSchema = z.object({
+export const LitterSiteDeleteOneSchema = Yup.object({
   where: LitterSiteWhereUniqueInputObjectSchema,
-});
+}).required()

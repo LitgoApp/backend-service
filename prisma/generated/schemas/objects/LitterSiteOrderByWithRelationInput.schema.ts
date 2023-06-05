@@ -1,28 +1,20 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { UserOrderByWithRelationInputObjectSchema } from './UserOrderByWithRelationInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
+import { UserOrderByWithRelationInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteOrderByWithRelationInput> = z
-  .object({
-    litterSiteId: z.lazy(() => SortOrderSchema).optional(),
-    reporterUserId: z.lazy(() => SortOrderSchema).optional(),
-    collectorUserId: z.lazy(() => SortOrderSchema).optional(),
-    isCollected: z.lazy(() => SortOrderSchema).optional(),
-    image: z.lazy(() => SortOrderSchema).optional(),
-    harmful: z.lazy(() => SortOrderSchema).optional(),
-    latitude: z.lazy(() => SortOrderSchema).optional(),
-    longitude: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    reporterUser: z
-      .lazy(() => UserOrderByWithRelationInputObjectSchema)
-      .optional(),
-    collectorUser: z
-      .lazy(() => UserOrderByWithRelationInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const LitterSiteOrderByWithRelationInputObjectSchema = Schema;
+export const LitterSiteOrderByWithRelationInputObjectSchema = Yup.object({
+  litterSiteId: SortOrderSchema,
+  reporterUserId: SortOrderSchema,
+  collectorUserId: SortOrderSchema,
+  isCollected: SortOrderSchema,
+  image: SortOrderSchema,
+  harmful: SortOrderSchema,
+  latitude: SortOrderSchema,
+  longitude: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+  reporterUser: UserOrderByWithRelationInputObjectSchema,
+  collectorUser: UserOrderByWithRelationInputObjectSchema,
+})

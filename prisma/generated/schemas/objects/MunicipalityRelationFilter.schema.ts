@@ -1,13 +1,9 @@
-import { z } from 'zod';
-import { MunicipalityWhereInputObjectSchema } from './MunicipalityWhereInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityWhereInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityRelationFilter> = z
-  .object({
-    is: z.lazy(() => MunicipalityWhereInputObjectSchema).optional(),
-    isNot: z.lazy(() => MunicipalityWhereInputObjectSchema).optional(),
-  })
-  .strict();
-
-export const MunicipalityRelationFilterObjectSchema = Schema;
+export const MunicipalityRelationFilterObjectSchema = Yup.object({
+  is: MunicipalityWhereInputObjectSchema,
+  isNot: MunicipalityWhereInputObjectSchema,
+})

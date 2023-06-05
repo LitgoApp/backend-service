@@ -1,28 +1,17 @@
-import { z } from 'zod';
-import { UserCreateWithoutCollectedLitterInputObjectSchema } from './UserCreateWithoutCollectedLitterInput.schema';
-import { UserUncheckedCreateWithoutCollectedLitterInputObjectSchema } from './UserUncheckedCreateWithoutCollectedLitterInput.schema';
-import { UserCreateOrConnectWithoutCollectedLitterInputObjectSchema } from './UserCreateOrConnectWithoutCollectedLitterInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserCreateNestedOneWithoutCollectedLitterInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutCollectedLitterInputObjectSchema),
-          z.lazy(
-            () => UserUncheckedCreateWithoutCollectedLitterInputObjectSchema,
-          ),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutCollectedLitterInputObjectSchema)
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputObjectSchema).optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { UserCreateWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserUncheckedCreateWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserCreateOrConnectWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserWhereUniqueInputObjectSchema } from '../internals'
 
 export const UserCreateNestedOneWithoutCollectedLitterInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      UserCreateWithoutCollectedLitterInputObjectSchema,
+      UserUncheckedCreateWithoutCollectedLitterInputObjectSchema,
+    ]),
+    connectOrCreate: UserCreateOrConnectWithoutCollectedLitterInputObjectSchema,
+    connect: UserWhereUniqueInputObjectSchema,
+  })

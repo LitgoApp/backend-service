@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { MunicipalityWhereInputObjectSchema } from './objects/MunicipalityWhereInput.schema';
+import * as Yup from 'yup'
+import { MunicipalityWhereInputObjectSchema } from './internals'
 
-export const MunicipalityDeleteManySchema = z.object({
-  where: MunicipalityWhereInputObjectSchema.optional(),
-});
+export const MunicipalityDeleteManySchema = Yup.object({
+  MunicipalityWhereInputObjectSchema,
+}).required()

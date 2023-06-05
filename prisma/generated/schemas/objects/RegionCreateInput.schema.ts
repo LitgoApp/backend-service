@@ -1,21 +1,13 @@
-import { z } from 'zod';
-import { MunicipalityCreateNestedOneWithoutRegionsInputObjectSchema } from './MunicipalityCreateNestedOneWithoutRegionsInput.schema';
-import { RegionPointCreateNestedManyWithoutRegionInputObjectSchema } from './RegionPointCreateNestedManyWithoutRegionInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityCreateNestedOneWithoutRegionsInputObjectSchema } from '../internals'
+import { RegionPointCreateNestedManyWithoutRegionInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionCreateInput> = z
-  .object({
-    regionId: z.string().optional(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    municipality: z.lazy(
-      () => MunicipalityCreateNestedOneWithoutRegionsInputObjectSchema,
-    ),
-    points: z
-      .lazy(() => RegionPointCreateNestedManyWithoutRegionInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const RegionCreateInputObjectSchema = Schema;
+export const RegionCreateInputObjectSchema = Yup.object({
+  regionId: Yup.string(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  municipality: MunicipalityCreateNestedOneWithoutRegionsInputObjectSchema,
+  points: RegionPointCreateNestedManyWithoutRegionInputObjectSchema,
+})

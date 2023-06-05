@@ -1,23 +1,15 @@
-import { z } from 'zod';
-import { LitterSiteScalarWhereInputObjectSchema } from './LitterSiteScalarWhereInput.schema';
-import { LitterSiteUpdateManyMutationInputObjectSchema } from './LitterSiteUpdateManyMutationInput.schema';
-import { LitterSiteUncheckedUpdateManyWithoutCollectedLitterInputObjectSchema } from './LitterSiteUncheckedUpdateManyWithoutCollectedLitterInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteUpdateManyWithWhereWithoutCollectorUserInput> =
-  z
-    .object({
-      where: z.lazy(() => LitterSiteScalarWhereInputObjectSchema),
-      data: z.union([
-        z.lazy(() => LitterSiteUpdateManyMutationInputObjectSchema),
-        z.lazy(
-          () =>
-            LitterSiteUncheckedUpdateManyWithoutCollectedLitterInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteScalarWhereInputObjectSchema } from '../internals'
+import { LitterSiteUpdateManyMutationInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedUpdateManyWithoutCollectedLitterInputObjectSchema } from '../internals'
 
 export const LitterSiteUpdateManyWithWhereWithoutCollectorUserInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: LitterSiteScalarWhereInputObjectSchema,
+    data: Yup.mixed().oneOfSchemas([
+      LitterSiteUpdateManyMutationInputObjectSchema,
+      LitterSiteUncheckedUpdateManyWithoutCollectedLitterInputObjectSchema,
+    ]),
+  })

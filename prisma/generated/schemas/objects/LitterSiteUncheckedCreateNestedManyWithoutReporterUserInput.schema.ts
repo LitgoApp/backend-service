@@ -1,56 +1,31 @@
-import { z } from 'zod';
-import { LitterSiteCreateWithoutReporterUserInputObjectSchema } from './LitterSiteCreateWithoutReporterUserInput.schema';
-import { LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema } from './LitterSiteUncheckedCreateWithoutReporterUserInput.schema';
-import { LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema } from './LitterSiteCreateOrConnectWithoutReporterUserInput.schema';
-import { LitterSiteCreateManyReporterUserInputEnvelopeObjectSchema } from './LitterSiteCreateManyReporterUserInputEnvelope.schema';
-import { LitterSiteWhereUniqueInputObjectSchema } from './LitterSiteWhereUniqueInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteUncheckedCreateNestedManyWithoutReporterUserInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => LitterSiteCreateWithoutReporterUserInputObjectSchema),
-          z
-            .lazy(() => LitterSiteCreateWithoutReporterUserInputObjectSchema)
-            .array(),
-          z.lazy(
-            () => LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(
-            () => LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => LitterSiteCreateManyReporterUserInputEnvelopeObjectSchema)
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => LitterSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteCreateWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteCreateManyReporterUserInputEnvelopeObjectSchema } from '../internals'
+import { LitterSiteWhereUniqueInputObjectSchema } from '../internals'
 
 export const LitterSiteUncheckedCreateNestedManyWithoutReporterUserInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateWithoutReporterUserInputObjectSchema,
+      Yup.array().of(LitterSiteCreateWithoutReporterUserInputObjectSchema),
+      LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema
+      ),
+    ]),
+    connectOrCreate: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema,
+      Yup.array().of(
+        LitterSiteCreateOrConnectWithoutReporterUserInputObjectSchema
+      ),
+    ]),
+    createMany: LitterSiteCreateManyReporterUserInputEnvelopeObjectSchema,
+    connect: Yup.mixed().oneOfSchemas([
+      LitterSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(LitterSiteWhereUniqueInputObjectSchema),
+    ]),
+  })

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const UserScalarFieldEnumSchema = z.enum([
+export const UserScalarFieldEnumSchema = Yup.mixed().oneOf([
   'userId',
   'email',
   'name',
@@ -11,4 +11,4 @@ export const UserScalarFieldEnumSchema = z.enum([
   'address',
   'createdAt',
   'updatedAt',
-]);
+])

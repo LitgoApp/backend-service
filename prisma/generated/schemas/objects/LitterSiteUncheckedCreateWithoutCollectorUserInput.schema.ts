@@ -1,21 +1,15 @@
-import { z } from 'zod';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteUncheckedCreateWithoutCollectorUserInput> =
-  z
-    .object({
-      litterSiteId: z.string().optional(),
-      reporterUserId: z.string(),
-      isCollected: z.boolean().optional(),
-      image: z.instanceof(Buffer),
-      harmful: z.boolean().optional(),
-      latitude: z.number(),
-      longitude: z.number(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
 export const LitterSiteUncheckedCreateWithoutCollectorUserInputObjectSchema =
-  Schema;
+  Yup.object({
+    litterSiteId: Yup.string(),
+    reporterUserId: Yup.string().required(),
+    isCollected: Yup.boolean(),
+    harmful: Yup.boolean(),
+    latitude: Yup.number().required(),
+    longitude: Yup.number().required(),
+    createdAt: Yup.date(),
+    updatedAt: Yup.date(),
+  })

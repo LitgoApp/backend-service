@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> = z
-  .object({
-    set: z.string().optional().nullable(),
-  })
-  .strict();
-
-export const NullableStringFieldUpdateOperationsInputObjectSchema = Schema;
+export const NullableStringFieldUpdateOperationsInputObjectSchema = Yup.object({
+  set: Yup.mixed().oneOfSchemas([Yup.string()]),
+})

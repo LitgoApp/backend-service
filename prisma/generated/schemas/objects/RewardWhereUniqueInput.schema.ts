@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RewardWhereUniqueInput> = z
-  .object({
-    rewardId: z.string().optional(),
-  })
-  .strict();
-
-export const RewardWhereUniqueInputObjectSchema = Schema;
+export const RewardWhereUniqueInputObjectSchema = Yup.object({
+  rewardId: Yup.string(),
+})

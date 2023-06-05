@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { UserWhereUniqueInputObjectSchema } from './objects/UserWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import { UserWhereUniqueInputObjectSchema } from './internals'
 
-export const UserDeleteOneSchema = z.object({
+export const UserDeleteOneSchema = Yup.object({
   where: UserWhereUniqueInputObjectSchema,
-});
+}).required()

@@ -1,27 +1,17 @@
-import { z } from 'zod';
-import { UserCreateWithoutReportedLitterInputObjectSchema } from './UserCreateWithoutReportedLitterInput.schema';
-import { UserUncheckedCreateWithoutReportedLitterInputObjectSchema } from './UserUncheckedCreateWithoutReportedLitterInput.schema';
-import { UserCreateOrConnectWithoutReportedLitterInputObjectSchema } from './UserCreateOrConnectWithoutReportedLitterInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './UserWhereUniqueInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { UserCreateWithoutReportedLitterInputObjectSchema } from '../internals'
+import { UserUncheckedCreateWithoutReportedLitterInputObjectSchema } from '../internals'
+import { UserCreateOrConnectWithoutReportedLitterInputObjectSchema } from '../internals'
+import { UserWhereUniqueInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserCreateNestedOneWithoutReportedLitterInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutReportedLitterInputObjectSchema),
-          z.lazy(
-            () => UserUncheckedCreateWithoutReportedLitterInputObjectSchema,
-          ),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutReportedLitterInputObjectSchema)
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputObjectSchema).optional(),
-    })
-    .strict();
-
-export const UserCreateNestedOneWithoutReportedLitterInputObjectSchema = Schema;
+export const UserCreateNestedOneWithoutReportedLitterInputObjectSchema =
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      UserCreateWithoutReportedLitterInputObjectSchema,
+      UserUncheckedCreateWithoutReportedLitterInputObjectSchema,
+    ]),
+    connectOrCreate: UserCreateOrConnectWithoutReportedLitterInputObjectSchema,
+    connect: UserWhereUniqueInputObjectSchema,
+  })

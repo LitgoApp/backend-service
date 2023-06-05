@@ -1,40 +1,30 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionScalarWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => RegionScalarWhereInputObjectSchema),
-        z.lazy(() => RegionScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => RegionScalarWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => RegionScalarWhereInputObjectSchema),
-        z.lazy(() => RegionScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    regionId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    municipalityId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-  })
-  .strict();
-
-export const RegionScalarWhereInputObjectSchema = Schema;
+export const RegionScalarWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => RegionScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => RegionScalarWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => RegionScalarWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => RegionScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => RegionScalarWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  regionId: Yup.mixed().oneOfSchemas([StringFilterObjectSchema, Yup.string()]),
+  municipalityId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+})

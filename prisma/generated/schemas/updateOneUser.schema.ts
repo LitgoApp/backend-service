@@ -1,12 +1,10 @@
-import { z } from 'zod';
-import { UserUpdateInputObjectSchema } from './objects/UserUpdateInput.schema';
-import { UserUncheckedUpdateInputObjectSchema } from './objects/UserUncheckedUpdateInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './objects/UserWhereUniqueInput.schema';
+import * as Yup from 'yup'
+import {
+  UserUpdateInputObjectSchema,
+  UserWhereUniqueInputObjectSchema,
+} from './internals'
 
-export const UserUpdateOneSchema = z.object({
-  data: z.union([
-    UserUpdateInputObjectSchema,
-    UserUncheckedUpdateInputObjectSchema,
-  ]),
+export const UserUpdateOneSchema = Yup.object({
+  data: UserUpdateInputObjectSchema,
   where: UserWhereUniqueInputObjectSchema,
-});
+}).required()

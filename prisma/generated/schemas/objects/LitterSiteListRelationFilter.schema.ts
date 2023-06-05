@@ -1,14 +1,10 @@
-import { z } from 'zod';
-import { LitterSiteWhereInputObjectSchema } from './LitterSiteWhereInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteWhereInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteListRelationFilter> = z
-  .object({
-    every: z.lazy(() => LitterSiteWhereInputObjectSchema).optional(),
-    some: z.lazy(() => LitterSiteWhereInputObjectSchema).optional(),
-    none: z.lazy(() => LitterSiteWhereInputObjectSchema).optional(),
-  })
-  .strict();
-
-export const LitterSiteListRelationFilterObjectSchema = Schema;
+export const LitterSiteListRelationFilterObjectSchema = Yup.object({
+  every: LitterSiteWhereInputObjectSchema,
+  some: LitterSiteWhereInputObjectSchema,
+  none: LitterSiteWhereInputObjectSchema,
+})

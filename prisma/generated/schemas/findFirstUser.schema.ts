@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { UserOrderByWithRelationInputObjectSchema } from './objects/UserOrderByWithRelationInput.schema';
-import { UserWhereInputObjectSchema } from './objects/UserWhereInput.schema';
-import { UserWhereUniqueInputObjectSchema } from './objects/UserWhereUniqueInput.schema';
-import { UserScalarFieldEnumSchema } from './enums/UserScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  UserWhereInputObjectSchema,
+  UserOrderByWithRelationInputObjectSchema,
+  UserWhereUniqueInputObjectSchema,
+} from './internals'
+import { UserScalarFieldEnumSchema } from './internals'
 
-export const UserFindFirstSchema = z.object({
-  orderBy: z
-    .union([
-      UserOrderByWithRelationInputObjectSchema,
-      UserOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: UserWhereInputObjectSchema.optional(),
-  cursor: UserWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(UserScalarFieldEnumSchema).optional(),
-});
+export const UserFindFirstSchema = Yup.object({
+  where: UserWhereInputObjectSchema,
+  orderBy: UserOrderByWithRelationInputObjectSchema,
+  cursor: UserWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(UserScalarFieldEnumSchema),
+}).required()

@@ -1,26 +1,19 @@
-import { z } from 'zod';
-import { MunicipalityUpdateWithoutDisposalSitesInputObjectSchema } from './MunicipalityUpdateWithoutDisposalSitesInput.schema';
-import { MunicipalityUncheckedUpdateWithoutDisposalSitesInputObjectSchema } from './MunicipalityUncheckedUpdateWithoutDisposalSitesInput.schema';
-import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityCreateWithoutDisposalSitesInput.schema';
-import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityUncheckedCreateWithoutDisposalSitesInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityUpdateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityUncheckedUpdateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityUpsertWithoutDisposalSitesInput> = z
-  .object({
-    update: z.union([
-      z.lazy(() => MunicipalityUpdateWithoutDisposalSitesInputObjectSchema),
-      z.lazy(
-        () => MunicipalityUncheckedUpdateWithoutDisposalSitesInputObjectSchema,
-      ),
+export const MunicipalityUpsertWithoutDisposalSitesInputObjectSchema =
+  Yup.object({
+    update: Yup.mixed().oneOfSchemas([
+      MunicipalityUpdateWithoutDisposalSitesInputObjectSchema,
+      MunicipalityUncheckedUpdateWithoutDisposalSitesInputObjectSchema,
     ]),
-    create: z.union([
-      z.lazy(() => MunicipalityCreateWithoutDisposalSitesInputObjectSchema),
-      z.lazy(
-        () => MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
-      ),
+    create: Yup.mixed().oneOfSchemas([
+      MunicipalityCreateWithoutDisposalSitesInputObjectSchema,
+      MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
     ]),
   })
-  .strict();
-
-export const MunicipalityUpsertWithoutDisposalSitesInputObjectSchema = Schema;

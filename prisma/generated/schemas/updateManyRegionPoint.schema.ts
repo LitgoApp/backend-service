@@ -1,8 +1,10 @@
-import { z } from 'zod';
-import { RegionPointUpdateManyMutationInputObjectSchema } from './objects/RegionPointUpdateManyMutationInput.schema';
-import { RegionPointWhereInputObjectSchema } from './objects/RegionPointWhereInput.schema';
+import * as Yup from 'yup'
+import {
+  RegionPointUpdateManyMutationInputObjectSchema,
+  RegionPointWhereInputObjectSchema,
+} from './internals'
 
-export const RegionPointUpdateManySchema = z.object({
+export const RegionPointUpdateManySchema = Yup.object({
   data: RegionPointUpdateManyMutationInputObjectSchema,
-  where: RegionPointWhereInputObjectSchema.optional(),
-});
+  where: RegionPointWhereInputObjectSchema,
+}).required()

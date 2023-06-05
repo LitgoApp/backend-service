@@ -1,15 +1,11 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.IntFieldUpdateOperationsInput> = z
-  .object({
-    set: z.number().optional(),
-    increment: z.number().optional(),
-    decrement: z.number().optional(),
-    multiply: z.number().optional(),
-    divide: z.number().optional(),
-  })
-  .strict();
-
-export const IntFieldUpdateOperationsInputObjectSchema = Schema;
+export const IntFieldUpdateOperationsInputObjectSchema = Yup.object({
+  set: Yup.number(),
+  increment: Yup.number(),
+  decrement: Yup.number(),
+  multiply: Yup.number(),
+  divide: Yup.number(),
+})

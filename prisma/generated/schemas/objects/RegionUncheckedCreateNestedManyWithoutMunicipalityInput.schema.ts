@@ -1,54 +1,27 @@
-import { z } from 'zod';
-import { RegionCreateWithoutMunicipalityInputObjectSchema } from './RegionCreateWithoutMunicipalityInput.schema';
-import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from './RegionUncheckedCreateWithoutMunicipalityInput.schema';
-import { RegionCreateOrConnectWithoutMunicipalityInputObjectSchema } from './RegionCreateOrConnectWithoutMunicipalityInput.schema';
-import { RegionCreateManyMunicipalityInputEnvelopeObjectSchema } from './RegionCreateManyMunicipalityInputEnvelope.schema';
-import { RegionWhereUniqueInputObjectSchema } from './RegionWhereUniqueInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionUncheckedCreateNestedManyWithoutMunicipalityInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => RegionCreateWithoutMunicipalityInputObjectSchema),
-          z
-            .lazy(() => RegionCreateWithoutMunicipalityInputObjectSchema)
-            .array(),
-          z.lazy(
-            () => RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () => RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(
-            () => RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () => RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => RegionCreateManyMunicipalityInputEnvelopeObjectSchema)
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => RegionWhereUniqueInputObjectSchema),
-          z.lazy(() => RegionWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionUncheckedCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionCreateOrConnectWithoutMunicipalityInputObjectSchema } from '../internals'
+import { RegionCreateManyMunicipalityInputEnvelopeObjectSchema } from '../internals'
+import { RegionWhereUniqueInputObjectSchema } from '../internals'
 
 export const RegionUncheckedCreateNestedManyWithoutMunicipalityInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      RegionCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionCreateWithoutMunicipalityInputObjectSchema),
+      RegionUncheckedCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionUncheckedCreateWithoutMunicipalityInputObjectSchema),
+    ]),
+    connectOrCreate: Yup.mixed().oneOfSchemas([
+      RegionCreateOrConnectWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(RegionCreateOrConnectWithoutMunicipalityInputObjectSchema),
+    ]),
+    createMany: RegionCreateManyMunicipalityInputEnvelopeObjectSchema,
+    connect: Yup.mixed().oneOfSchemas([
+      RegionWhereUniqueInputObjectSchema,
+      Yup.array().of(RegionWhereUniqueInputObjectSchema),
+    ]),
+  })

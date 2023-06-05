@@ -1,58 +1,31 @@
-import { z } from 'zod';
-import { DisposalSiteCreateWithoutMunicipalityInputObjectSchema } from './DisposalSiteCreateWithoutMunicipalityInput.schema';
-import { DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema } from './DisposalSiteUncheckedCreateWithoutMunicipalityInput.schema';
-import { DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema } from './DisposalSiteCreateOrConnectWithoutMunicipalityInput.schema';
-import { DisposalSiteCreateManyMunicipalityInputEnvelopeObjectSchema } from './DisposalSiteCreateManyMunicipalityInputEnvelope.schema';
-import { DisposalSiteWhereUniqueInputObjectSchema } from './DisposalSiteWhereUniqueInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteCreateNestedManyWithoutMunicipalityInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => DisposalSiteCreateWithoutMunicipalityInputObjectSchema),
-          z
-            .lazy(() => DisposalSiteCreateWithoutMunicipalityInputObjectSchema)
-            .array(),
-          z.lazy(
-            () =>
-              DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(
-            () =>
-              DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema,
-          ),
-          z
-            .lazy(
-              () =>
-                DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema,
-            )
-            .array(),
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => DisposalSiteCreateManyMunicipalityInputEnvelopeObjectSchema)
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => DisposalSiteWhereUniqueInputObjectSchema),
-          z.lazy(() => DisposalSiteWhereUniqueInputObjectSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { DisposalSiteCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema } from '../internals'
+import { DisposalSiteCreateManyMunicipalityInputEnvelopeObjectSchema } from '../internals'
+import { DisposalSiteWhereUniqueInputObjectSchema } from '../internals'
 
 export const DisposalSiteCreateNestedManyWithoutMunicipalityInputObjectSchema =
-  Schema;
+  Yup.object({
+    create: Yup.mixed().oneOfSchemas([
+      DisposalSiteCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(DisposalSiteCreateWithoutMunicipalityInputObjectSchema),
+      DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(
+        DisposalSiteUncheckedCreateWithoutMunicipalityInputObjectSchema
+      ),
+    ]),
+    connectOrCreate: Yup.mixed().oneOfSchemas([
+      DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema,
+      Yup.array().of(
+        DisposalSiteCreateOrConnectWithoutMunicipalityInputObjectSchema
+      ),
+    ]),
+    createMany: DisposalSiteCreateManyMunicipalityInputEnvelopeObjectSchema,
+    connect: Yup.mixed().oneOfSchemas([
+      DisposalSiteWhereUniqueInputObjectSchema,
+      Yup.array().of(DisposalSiteWhereUniqueInputObjectSchema),
+    ]),
+  })

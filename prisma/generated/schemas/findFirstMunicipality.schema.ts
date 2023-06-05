@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { MunicipalityOrderByWithRelationInputObjectSchema } from './objects/MunicipalityOrderByWithRelationInput.schema';
-import { MunicipalityWhereInputObjectSchema } from './objects/MunicipalityWhereInput.schema';
-import { MunicipalityWhereUniqueInputObjectSchema } from './objects/MunicipalityWhereUniqueInput.schema';
-import { MunicipalityScalarFieldEnumSchema } from './enums/MunicipalityScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  MunicipalityWhereInputObjectSchema,
+  MunicipalityOrderByWithRelationInputObjectSchema,
+  MunicipalityWhereUniqueInputObjectSchema,
+} from './internals'
+import { MunicipalityScalarFieldEnumSchema } from './internals'
 
-export const MunicipalityFindFirstSchema = z.object({
-  orderBy: z
-    .union([
-      MunicipalityOrderByWithRelationInputObjectSchema,
-      MunicipalityOrderByWithRelationInputObjectSchema.array(),
-    ])
-    .optional(),
-  where: MunicipalityWhereInputObjectSchema.optional(),
-  cursor: MunicipalityWhereUniqueInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  distinct: z.array(MunicipalityScalarFieldEnumSchema).optional(),
-});
+export const MunicipalityFindFirstSchema = Yup.object({
+  where: MunicipalityWhereInputObjectSchema,
+  orderBy: MunicipalityOrderByWithRelationInputObjectSchema,
+  cursor: MunicipalityWhereUniqueInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  distinct: Yup.array().of(MunicipalityScalarFieldEnumSchema),
+}).required()

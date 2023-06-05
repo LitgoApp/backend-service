@@ -1,20 +1,13 @@
-import { z } from 'zod';
-import { DisposalSiteCreateManyMunicipalityInputObjectSchema } from './DisposalSiteCreateManyMunicipalityInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.DisposalSiteCreateManyMunicipalityInputEnvelope> =
-  z
-    .object({
-      data: z.union([
-        z.lazy(() => DisposalSiteCreateManyMunicipalityInputObjectSchema),
-        z
-          .lazy(() => DisposalSiteCreateManyMunicipalityInputObjectSchema)
-          .array(),
-      ]),
-      skipDuplicates: z.boolean().optional(),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { DisposalSiteCreateManyMunicipalityInputObjectSchema } from '../internals'
 
 export const DisposalSiteCreateManyMunicipalityInputEnvelopeObjectSchema =
-  Schema;
+  Yup.object({
+    data: Yup.mixed().oneOfSchemas([
+      DisposalSiteCreateManyMunicipalityInputObjectSchema,
+      Yup.array().of(DisposalSiteCreateManyMunicipalityInputObjectSchema),
+    ]),
+    skipDuplicates: Yup.boolean(),
+  })

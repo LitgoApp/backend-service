@@ -1,23 +1,15 @@
-import { z } from 'zod';
-import { MunicipalityWhereUniqueInputObjectSchema } from './MunicipalityWhereUniqueInput.schema';
-import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityCreateWithoutDisposalSitesInput.schema';
-import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from './MunicipalityUncheckedCreateWithoutDisposalSitesInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.MunicipalityCreateOrConnectWithoutDisposalSitesInput> =
-  z
-    .object({
-      where: z.lazy(() => MunicipalityWhereUniqueInputObjectSchema),
-      create: z.union([
-        z.lazy(() => MunicipalityCreateWithoutDisposalSitesInputObjectSchema),
-        z.lazy(
-          () =>
-            MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { MunicipalityWhereUniqueInputObjectSchema } from '../internals'
+import { MunicipalityCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
+import { MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema } from '../internals'
 
 export const MunicipalityCreateOrConnectWithoutDisposalSitesInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: MunicipalityWhereUniqueInputObjectSchema,
+    create: Yup.mixed().oneOfSchemas([
+      MunicipalityCreateWithoutDisposalSitesInputObjectSchema,
+      MunicipalityUncheckedCreateWithoutDisposalSitesInputObjectSchema,
+    ]),
+  })

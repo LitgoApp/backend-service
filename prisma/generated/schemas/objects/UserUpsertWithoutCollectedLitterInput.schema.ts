@@ -1,22 +1,18 @@
-import { z } from 'zod';
-import { UserUpdateWithoutCollectedLitterInputObjectSchema } from './UserUpdateWithoutCollectedLitterInput.schema';
-import { UserUncheckedUpdateWithoutCollectedLitterInputObjectSchema } from './UserUncheckedUpdateWithoutCollectedLitterInput.schema';
-import { UserCreateWithoutCollectedLitterInputObjectSchema } from './UserCreateWithoutCollectedLitterInput.schema';
-import { UserUncheckedCreateWithoutCollectedLitterInputObjectSchema } from './UserUncheckedCreateWithoutCollectedLitterInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { UserUpdateWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserUncheckedUpdateWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserCreateWithoutCollectedLitterInputObjectSchema } from '../internals'
+import { UserUncheckedCreateWithoutCollectedLitterInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserUpsertWithoutCollectedLitterInput> = z
-  .object({
-    update: z.union([
-      z.lazy(() => UserUpdateWithoutCollectedLitterInputObjectSchema),
-      z.lazy(() => UserUncheckedUpdateWithoutCollectedLitterInputObjectSchema),
-    ]),
-    create: z.union([
-      z.lazy(() => UserCreateWithoutCollectedLitterInputObjectSchema),
-      z.lazy(() => UserUncheckedCreateWithoutCollectedLitterInputObjectSchema),
-    ]),
-  })
-  .strict();
-
-export const UserUpsertWithoutCollectedLitterInputObjectSchema = Schema;
+export const UserUpsertWithoutCollectedLitterInputObjectSchema = Yup.object({
+  update: Yup.mixed().oneOfSchemas([
+    UserUpdateWithoutCollectedLitterInputObjectSchema,
+    UserUncheckedUpdateWithoutCollectedLitterInputObjectSchema,
+  ]),
+  create: Yup.mixed().oneOfSchemas([
+    UserCreateWithoutCollectedLitterInputObjectSchema,
+    UserUncheckedCreateWithoutCollectedLitterInputObjectSchema,
+  ]),
+})

@@ -1,20 +1,17 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NestedFloatFilter> = z
-  .object({
-    equals: z.number().optional(),
-    in: z.union([z.number().array(), z.number()]).optional(),
-    notIn: z.union([z.number().array(), z.number()]).optional(),
-    lt: z.number().optional(),
-    lte: z.number().optional(),
-    gt: z.number().optional(),
-    gte: z.number().optional(),
-    not: z
-      .union([z.number(), z.lazy(() => NestedFloatFilterObjectSchema)])
-      .optional(),
-  })
-  .strict();
-
-export const NestedFloatFilterObjectSchema = Schema;
+export const NestedFloatFilterObjectSchema = Yup.object({
+  equals: Yup.number(),
+  in: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.number()), Yup.number()]),
+  notIn: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.number()), Yup.number()]),
+  lt: Yup.number(),
+  lte: Yup.number(),
+  gt: Yup.number(),
+  gte: Yup.number(),
+  not: Yup.mixed().oneOfSchemas([
+    Yup.number(),
+    Yup.lazy(() => NestedFloatFilterObjectSchema.default(undefined)),
+  ]),
+})

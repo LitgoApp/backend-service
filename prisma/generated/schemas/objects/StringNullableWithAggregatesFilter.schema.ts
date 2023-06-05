@@ -1,35 +1,28 @@
-import { z } from 'zod';
-import { QueryModeSchema } from '../enums/QueryMode.schema';
-import { NestedStringNullableWithAggregatesFilterObjectSchema } from './NestedStringNullableWithAggregatesFilter.schema';
-import { NestedIntNullableFilterObjectSchema } from './NestedIntNullableFilter.schema';
-import { NestedStringNullableFilterObjectSchema } from './NestedStringNullableFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { QueryModeSchema } from '../internals'
+import { NestedStringNullableWithAggregatesFilterObjectSchema } from '../internals'
+import { NestedIntNullableFilterObjectSchema } from '../internals'
+import { NestedStringNullableFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.StringNullableWithAggregatesFilter> = z
-  .object({
-    equals: z.string().optional().nullable(),
-    in: z.union([z.string().array(), z.string()]).optional().nullable(),
-    notIn: z.union([z.string().array(), z.string()]).optional().nullable(),
-    lt: z.string().optional(),
-    lte: z.string().optional(),
-    gt: z.string().optional(),
-    gte: z.string().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    mode: z.lazy(() => QueryModeSchema).optional(),
-    not: z
-      .union([
-        z.string(),
-        z.lazy(() => NestedStringNullableWithAggregatesFilterObjectSchema),
-      ])
-      .optional()
-      .nullable(),
-    _count: z.lazy(() => NestedIntNullableFilterObjectSchema).optional(),
-    _min: z.lazy(() => NestedStringNullableFilterObjectSchema).optional(),
-    _max: z.lazy(() => NestedStringNullableFilterObjectSchema).optional(),
-  })
-  .strict();
-
-export const StringNullableWithAggregatesFilterObjectSchema = Schema;
+export const StringNullableWithAggregatesFilterObjectSchema = Yup.object({
+  equals: Yup.mixed().oneOfSchemas([Yup.string()]),
+  in: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.string()), Yup.string()]),
+  notIn: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.string()), Yup.string()]),
+  lt: Yup.string(),
+  lte: Yup.string(),
+  gt: Yup.string(),
+  gte: Yup.string(),
+  contains: Yup.string(),
+  startsWith: Yup.string(),
+  endsWith: Yup.string(),
+  mode: QueryModeSchema,
+  not: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    NestedStringNullableWithAggregatesFilterObjectSchema,
+  ]),
+  _count: NestedIntNullableFilterObjectSchema,
+  _min: NestedStringNullableFilterObjectSchema,
+  _max: NestedStringNullableFilterObjectSchema,
+})

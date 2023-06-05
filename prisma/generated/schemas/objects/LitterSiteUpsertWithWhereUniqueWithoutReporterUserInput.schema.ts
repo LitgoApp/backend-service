@@ -1,30 +1,21 @@
-import { z } from 'zod';
-import { LitterSiteWhereUniqueInputObjectSchema } from './LitterSiteWhereUniqueInput.schema';
-import { LitterSiteUpdateWithoutReporterUserInputObjectSchema } from './LitterSiteUpdateWithoutReporterUserInput.schema';
-import { LitterSiteUncheckedUpdateWithoutReporterUserInputObjectSchema } from './LitterSiteUncheckedUpdateWithoutReporterUserInput.schema';
-import { LitterSiteCreateWithoutReporterUserInputObjectSchema } from './LitterSiteCreateWithoutReporterUserInput.schema';
-import { LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema } from './LitterSiteUncheckedCreateWithoutReporterUserInput.schema';
-
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteUpsertWithWhereUniqueWithoutReporterUserInput> =
-  z
-    .object({
-      where: z.lazy(() => LitterSiteWhereUniqueInputObjectSchema),
-      update: z.union([
-        z.lazy(() => LitterSiteUpdateWithoutReporterUserInputObjectSchema),
-        z.lazy(
-          () => LitterSiteUncheckedUpdateWithoutReporterUserInputObjectSchema,
-        ),
-      ]),
-      create: z.union([
-        z.lazy(() => LitterSiteCreateWithoutReporterUserInputObjectSchema),
-        z.lazy(
-          () => LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema,
-        ),
-      ]),
-    })
-    .strict();
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { LitterSiteWhereUniqueInputObjectSchema } from '../internals'
+import { LitterSiteUpdateWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedUpdateWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteCreateWithoutReporterUserInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema } from '../internals'
 
 export const LitterSiteUpsertWithWhereUniqueWithoutReporterUserInputObjectSchema =
-  Schema;
+  Yup.object({
+    where: LitterSiteWhereUniqueInputObjectSchema,
+    update: Yup.mixed().oneOfSchemas([
+      LitterSiteUpdateWithoutReporterUserInputObjectSchema,
+      LitterSiteUncheckedUpdateWithoutReporterUserInputObjectSchema,
+    ]),
+    create: Yup.mixed().oneOfSchemas([
+      LitterSiteCreateWithoutReporterUserInputObjectSchema,
+      LitterSiteUncheckedCreateWithoutReporterUserInputObjectSchema,
+    ]),
+  })

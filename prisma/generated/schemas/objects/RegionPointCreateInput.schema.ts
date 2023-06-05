@@ -1,17 +1,13 @@
-import { z } from 'zod';
-import { RegionCreateNestedOneWithoutPointsInputObjectSchema } from './RegionCreateNestedOneWithoutPointsInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionCreateNestedOneWithoutPointsInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointCreateInput> = z
-  .object({
-    regionPointId: z.string().optional(),
-    latitude: z.number(),
-    longitude: z.number(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    region: z.lazy(() => RegionCreateNestedOneWithoutPointsInputObjectSchema),
-  })
-  .strict();
-
-export const RegionPointCreateInputObjectSchema = Schema;
+export const RegionPointCreateInputObjectSchema = Yup.object({
+  regionPointId: Yup.string(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+  region: RegionCreateNestedOneWithoutPointsInputObjectSchema,
+})

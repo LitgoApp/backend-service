@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteWhereUniqueInput> = z
-  .object({
-    litterSiteId: z.string().optional(),
-  })
-  .strict();
-
-export const LitterSiteWhereUniqueInputObjectSchema = Schema;
+export const LitterSiteWhereUniqueInputObjectSchema = Yup.object({
+  litterSiteId: Yup.string(),
+})

@@ -1,12 +1,8 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointOrderByRelationAggregateInput> = z
-  .object({
-    _count: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const RegionPointOrderByRelationAggregateInputObjectSchema = Schema;
+export const RegionPointOrderByRelationAggregateInputObjectSchema = Yup.object({
+  _count: SortOrderSchema,
+})

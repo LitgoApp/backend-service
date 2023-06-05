@@ -1,13 +1,9 @@
-import { z } from 'zod';
-import { UserWhereInputObjectSchema } from './UserWhereInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { UserWhereInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserRelationFilter> = z
-  .object({
-    is: z.lazy(() => UserWhereInputObjectSchema).optional(),
-    isNot: z.lazy(() => UserWhereInputObjectSchema).optional(),
-  })
-  .strict();
-
-export const UserRelationFilterObjectSchema = Schema;
+export const UserRelationFilterObjectSchema = Yup.object({
+  is: UserWhereInputObjectSchema,
+  isNot: UserWhereInputObjectSchema,
+})

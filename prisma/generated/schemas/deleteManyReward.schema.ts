@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { RewardWhereInputObjectSchema } from './objects/RewardWhereInput.schema';
+import * as Yup from 'yup'
+import { RewardWhereInputObjectSchema } from './internals'
 
-export const RewardDeleteManySchema = z.object({
-  where: RewardWhereInputObjectSchema.optional(),
-});
+export const RewardDeleteManySchema = Yup.object({
+  RewardWhereInputObjectSchema,
+}).required()

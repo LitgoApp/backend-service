@@ -1,23 +1,20 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.NestedStringFilter> = z
-  .object({
-    equals: z.string().optional(),
-    in: z.union([z.string().array(), z.string()]).optional(),
-    notIn: z.union([z.string().array(), z.string()]).optional(),
-    lt: z.string().optional(),
-    lte: z.string().optional(),
-    gt: z.string().optional(),
-    gte: z.string().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    not: z
-      .union([z.string(), z.lazy(() => NestedStringFilterObjectSchema)])
-      .optional(),
-  })
-  .strict();
-
-export const NestedStringFilterObjectSchema = Schema;
+export const NestedStringFilterObjectSchema = Yup.object({
+  equals: Yup.string(),
+  in: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.string()), Yup.string()]),
+  notIn: Yup.mixed().oneOfSchemas([Yup.array().of(Yup.string()), Yup.string()]),
+  lt: Yup.string(),
+  lte: Yup.string(),
+  gt: Yup.string(),
+  gte: Yup.string(),
+  contains: Yup.string(),
+  startsWith: Yup.string(),
+  endsWith: Yup.string(),
+  not: Yup.mixed().oneOfSchemas([
+    Yup.string(),
+    Yup.lazy(() => NestedStringFilterObjectSchema.default(undefined)),
+  ]),
+})

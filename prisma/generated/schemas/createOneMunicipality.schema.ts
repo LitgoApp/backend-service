@@ -1,10 +1,6 @@
-import { z } from 'zod';
-import { MunicipalityCreateInputObjectSchema } from './objects/MunicipalityCreateInput.schema';
-import { MunicipalityUncheckedCreateInputObjectSchema } from './objects/MunicipalityUncheckedCreateInput.schema';
+import * as Yup from 'yup'
+import { MunicipalityCreateInputObjectSchema } from './internals'
 
-export const MunicipalityCreateOneSchema = z.object({
-  data: z.union([
-    MunicipalityCreateInputObjectSchema,
-    MunicipalityUncheckedCreateInputObjectSchema,
-  ]),
-});
+export const MunicipalityCreateSchema = Yup.object({
+  data: MunicipalityCreateInputObjectSchema,
+}).required()

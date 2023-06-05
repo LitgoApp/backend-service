@@ -1,63 +1,49 @@
-import { z } from 'zod';
-import { StringFilterObjectSchema } from './StringFilter.schema';
-import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
-import { BoolFilterObjectSchema } from './BoolFilter.schema';
-import { BytesFilterObjectSchema } from './BytesFilter.schema';
-import { FloatFilterObjectSchema } from './FloatFilter.schema';
-import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFilterObjectSchema } from '../internals'
+import { StringNullableFilterObjectSchema } from '../internals'
+import { BoolFilterObjectSchema } from '../internals'
+import { BytesFilterObjectSchema } from '../internals'
+import { FloatFilterObjectSchema } from '../internals'
+import { DateTimeFilterObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteScalarWhereInput> = z
-  .object({
-    AND: z
-      .union([
-        z.lazy(() => LitterSiteScalarWhereInputObjectSchema),
-        z.lazy(() => LitterSiteScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    OR: z
-      .lazy(() => LitterSiteScalarWhereInputObjectSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([
-        z.lazy(() => LitterSiteScalarWhereInputObjectSchema),
-        z.lazy(() => LitterSiteScalarWhereInputObjectSchema).array(),
-      ])
-      .optional(),
-    litterSiteId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    reporterUserId: z
-      .union([z.lazy(() => StringFilterObjectSchema), z.string()])
-      .optional(),
-    collectorUserId: z
-      .union([z.lazy(() => StringNullableFilterObjectSchema), z.string()])
-      .optional()
-      .nullable(),
-    isCollected: z
-      .union([z.lazy(() => BoolFilterObjectSchema), z.boolean()])
-      .optional(),
-    image: z
-      .union([z.lazy(() => BytesFilterObjectSchema), z.instanceof(Buffer)])
-      .optional(),
-    harmful: z
-      .union([z.lazy(() => BoolFilterObjectSchema), z.boolean()])
-      .optional(),
-    latitude: z
-      .union([z.lazy(() => FloatFilterObjectSchema), z.number()])
-      .optional(),
-    longitude: z
-      .union([z.lazy(() => FloatFilterObjectSchema), z.number()])
-      .optional(),
-    createdAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-    updatedAt: z
-      .union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()])
-      .optional(),
-  })
-  .strict();
-
-export const LitterSiteScalarWhereInputObjectSchema = Schema;
+export const LitterSiteScalarWhereInputObjectSchema = Yup.object({
+  AND: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => LitterSiteScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => LitterSiteScalarWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  OR: Yup.array().of(
+    Yup.lazy(() => LitterSiteScalarWhereInputObjectSchema.default(undefined))
+  ),
+  NOT: Yup.mixed().oneOfSchemas([
+    Yup.lazy(() => LitterSiteScalarWhereInputObjectSchema.default(undefined)),
+    Yup.array().of(
+      Yup.lazy(() => LitterSiteScalarWhereInputObjectSchema.default(undefined))
+    ),
+  ]),
+  litterSiteId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  reporterUserId: Yup.mixed().oneOfSchemas([
+    StringFilterObjectSchema,
+    Yup.string(),
+  ]),
+  collectorUserId: Yup.mixed().oneOfSchemas([
+    StringNullableFilterObjectSchema,
+    Yup.string(),
+  ]),
+  isCollected: Yup.mixed().oneOfSchemas([
+    BoolFilterObjectSchema,
+    Yup.boolean(),
+  ]),
+  image: Yup.mixed().oneOfSchemas([BytesFilterObjectSchema]),
+  harmful: Yup.mixed().oneOfSchemas([BoolFilterObjectSchema, Yup.boolean()]),
+  latitude: Yup.mixed().oneOfSchemas([FloatFilterObjectSchema, Yup.number()]),
+  longitude: Yup.mixed().oneOfSchemas([FloatFilterObjectSchema, Yup.number()]),
+  createdAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+  updatedAt: Yup.mixed().oneOfSchemas([DateTimeFilterObjectSchema]),
+})

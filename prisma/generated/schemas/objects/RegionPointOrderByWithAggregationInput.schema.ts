@@ -1,37 +1,23 @@
-import { z } from 'zod';
-import { SortOrderSchema } from '../enums/SortOrder.schema';
-import { RegionPointCountOrderByAggregateInputObjectSchema } from './RegionPointCountOrderByAggregateInput.schema';
-import { RegionPointAvgOrderByAggregateInputObjectSchema } from './RegionPointAvgOrderByAggregateInput.schema';
-import { RegionPointMaxOrderByAggregateInputObjectSchema } from './RegionPointMaxOrderByAggregateInput.schema';
-import { RegionPointMinOrderByAggregateInputObjectSchema } from './RegionPointMinOrderByAggregateInput.schema';
-import { RegionPointSumOrderByAggregateInputObjectSchema } from './RegionPointSumOrderByAggregateInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { SortOrderSchema } from '../internals'
+import { RegionPointCountOrderByAggregateInputObjectSchema } from '../internals'
+import { RegionPointAvgOrderByAggregateInputObjectSchema } from '../internals'
+import { RegionPointMaxOrderByAggregateInputObjectSchema } from '../internals'
+import { RegionPointMinOrderByAggregateInputObjectSchema } from '../internals'
+import { RegionPointSumOrderByAggregateInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointOrderByWithAggregationInput> = z
-  .object({
-    regionPointId: z.lazy(() => SortOrderSchema).optional(),
-    regionId: z.lazy(() => SortOrderSchema).optional(),
-    latitude: z.lazy(() => SortOrderSchema).optional(),
-    longitude: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    _count: z
-      .lazy(() => RegionPointCountOrderByAggregateInputObjectSchema)
-      .optional(),
-    _avg: z
-      .lazy(() => RegionPointAvgOrderByAggregateInputObjectSchema)
-      .optional(),
-    _max: z
-      .lazy(() => RegionPointMaxOrderByAggregateInputObjectSchema)
-      .optional(),
-    _min: z
-      .lazy(() => RegionPointMinOrderByAggregateInputObjectSchema)
-      .optional(),
-    _sum: z
-      .lazy(() => RegionPointSumOrderByAggregateInputObjectSchema)
-      .optional(),
-  })
-  .strict();
-
-export const RegionPointOrderByWithAggregationInputObjectSchema = Schema;
+export const RegionPointOrderByWithAggregationInputObjectSchema = Yup.object({
+  regionPointId: SortOrderSchema,
+  regionId: SortOrderSchema,
+  latitude: SortOrderSchema,
+  longitude: SortOrderSchema,
+  createdAt: SortOrderSchema,
+  updatedAt: SortOrderSchema,
+  _count: RegionPointCountOrderByAggregateInputObjectSchema,
+  _avg: RegionPointAvgOrderByAggregateInputObjectSchema,
+  _max: RegionPointMaxOrderByAggregateInputObjectSchema,
+  _min: RegionPointMinOrderByAggregateInputObjectSchema,
+  _sum: RegionPointSumOrderByAggregateInputObjectSchema,
+})

@@ -1,16 +1,12 @@
-import { z } from 'zod';
-import { RegionPointCreateManyRegionInputObjectSchema } from './RegionPointCreateManyRegionInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionPointCreateManyRegionInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionPointCreateManyRegionInputEnvelope> = z
-  .object({
-    data: z.union([
-      z.lazy(() => RegionPointCreateManyRegionInputObjectSchema),
-      z.lazy(() => RegionPointCreateManyRegionInputObjectSchema).array(),
-    ]),
-    skipDuplicates: z.boolean().optional(),
-  })
-  .strict();
-
-export const RegionPointCreateManyRegionInputEnvelopeObjectSchema = Schema;
+export const RegionPointCreateManyRegionInputEnvelopeObjectSchema = Yup.object({
+  data: Yup.mixed().oneOfSchemas([
+    RegionPointCreateManyRegionInputObjectSchema,
+    Yup.array().of(RegionPointCreateManyRegionInputObjectSchema),
+  ]),
+  skipDuplicates: Yup.boolean(),
+})

@@ -1,3 +1,3 @@
-import { z } from 'zod';
+import * as Yup from 'yup'
 
-export const SortOrderSchema = z.enum(['asc', 'desc']);
+export const SortOrderSchema = Yup.mixed().oneOf(['asc', 'desc'])

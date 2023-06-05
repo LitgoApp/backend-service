@@ -1,18 +1,14 @@
-import { z } from 'zod';
-import { RegionWhereUniqueInputObjectSchema } from './RegionWhereUniqueInput.schema';
-import { RegionCreateWithoutPointsInputObjectSchema } from './RegionCreateWithoutPointsInput.schema';
-import { RegionUncheckedCreateWithoutPointsInputObjectSchema } from './RegionUncheckedCreateWithoutPointsInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { RegionWhereUniqueInputObjectSchema } from '../internals'
+import { RegionCreateWithoutPointsInputObjectSchema } from '../internals'
+import { RegionUncheckedCreateWithoutPointsInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionCreateOrConnectWithoutPointsInput> = z
-  .object({
-    where: z.lazy(() => RegionWhereUniqueInputObjectSchema),
-    create: z.union([
-      z.lazy(() => RegionCreateWithoutPointsInputObjectSchema),
-      z.lazy(() => RegionUncheckedCreateWithoutPointsInputObjectSchema),
-    ]),
-  })
-  .strict();
-
-export const RegionCreateOrConnectWithoutPointsInputObjectSchema = Schema;
+export const RegionCreateOrConnectWithoutPointsInputObjectSchema = Yup.object({
+  where: RegionWhereUniqueInputObjectSchema,
+  create: Yup.mixed().oneOfSchemas([
+    RegionCreateWithoutPointsInputObjectSchema,
+    RegionUncheckedCreateWithoutPointsInputObjectSchema,
+  ]),
+})

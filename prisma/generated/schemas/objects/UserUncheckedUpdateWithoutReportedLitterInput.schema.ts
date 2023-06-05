@@ -1,81 +1,51 @@
-import { z } from 'zod';
-import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
-import { IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
-import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
-import { LitterSiteUncheckedUpdateManyWithoutCollectorUserNestedInputObjectSchema } from './LitterSiteUncheckedUpdateManyWithoutCollectorUserNestedInput.schema';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
+import { StringFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { IntFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { DateTimeFieldUpdateOperationsInputObjectSchema } from '../internals'
+import { LitterSiteUncheckedUpdateManyWithoutCollectorUserNestedInputObjectSchema } from '../internals'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.UserUncheckedUpdateWithoutReportedLitterInput> =
-  z
-    .object({
-      userId: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      email: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      name: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      password: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      level: z
-        .union([
-          z.number(),
-          z.lazy(() => IntFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      points: z
-        .union([
-          z.number(),
-          z.lazy(() => IntFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      fraudLevel: z
-        .union([
-          z.number(),
-          z.lazy(() => IntFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      address: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema),
-        ])
-        .optional(),
-      collectedLitter: z
-        .lazy(
-          () =>
-            LitterSiteUncheckedUpdateManyWithoutCollectorUserNestedInputObjectSchema,
-        )
-        .optional(),
-    })
-    .strict();
-
-export const UserUncheckedUpdateWithoutReportedLitterInputObjectSchema = Schema;
+export const UserUncheckedUpdateWithoutReportedLitterInputObjectSchema =
+  Yup.object({
+    userId: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    email: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    name: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    password: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    level: Yup.mixed().oneOfSchemas([
+      Yup.number(),
+      IntFieldUpdateOperationsInputObjectSchema,
+    ]),
+    points: Yup.mixed().oneOfSchemas([
+      Yup.number(),
+      IntFieldUpdateOperationsInputObjectSchema,
+    ]),
+    fraudLevel: Yup.mixed().oneOfSchemas([
+      Yup.number(),
+      IntFieldUpdateOperationsInputObjectSchema,
+    ]),
+    address: Yup.mixed().oneOfSchemas([
+      Yup.string(),
+      StringFieldUpdateOperationsInputObjectSchema,
+    ]),
+    createdAt: Yup.mixed().oneOfSchemas([
+      DateTimeFieldUpdateOperationsInputObjectSchema,
+    ]),
+    updatedAt: Yup.mixed().oneOfSchemas([
+      DateTimeFieldUpdateOperationsInputObjectSchema,
+    ]),
+    collectedLitter:
+      LitterSiteUncheckedUpdateManyWithoutCollectorUserNestedInputObjectSchema,
+  })

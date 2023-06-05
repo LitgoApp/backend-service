@@ -1,11 +1,7 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.RegionWhereUniqueInput> = z
-  .object({
-    regionId: z.string().optional(),
-  })
-  .strict();
-
-export const RegionWhereUniqueInputObjectSchema = Schema;
+export const RegionWhereUniqueInputObjectSchema = Yup.object({
+  regionId: Yup.string(),
+})

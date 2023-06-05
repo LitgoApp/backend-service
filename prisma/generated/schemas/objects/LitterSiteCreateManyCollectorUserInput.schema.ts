@@ -1,19 +1,14 @@
-import { z } from 'zod';
+// @ts-nocheck
+import * as Yup from 'yup'
+import '../helpers/oneOfSchemas.helper.ts'
 
-import type { Prisma } from '@prisma/client';
-
-const Schema: z.ZodType<Prisma.LitterSiteCreateManyCollectorUserInput> = z
-  .object({
-    litterSiteId: z.string().optional(),
-    reporterUserId: z.string(),
-    isCollected: z.boolean().optional(),
-    image: z.instanceof(Buffer),
-    harmful: z.boolean().optional(),
-    latitude: z.number(),
-    longitude: z.number(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-  })
-  .strict();
-
-export const LitterSiteCreateManyCollectorUserInputObjectSchema = Schema;
+export const LitterSiteCreateManyCollectorUserInputObjectSchema = Yup.object({
+  litterSiteId: Yup.string(),
+  reporterUserId: Yup.string().required(),
+  isCollected: Yup.boolean(),
+  harmful: Yup.boolean(),
+  latitude: Yup.number().required(),
+  longitude: Yup.number().required(),
+  createdAt: Yup.date(),
+  updatedAt: Yup.date(),
+})

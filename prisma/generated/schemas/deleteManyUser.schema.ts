@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { UserWhereInputObjectSchema } from './objects/UserWhereInput.schema';
+import * as Yup from 'yup'
+import { UserWhereInputObjectSchema } from './internals'
 
-export const UserDeleteManySchema = z.object({
-  where: UserWhereInputObjectSchema.optional(),
-});
+export const UserDeleteManySchema = Yup.object({
+  UserWhereInputObjectSchema,
+}).required()

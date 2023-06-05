@@ -1,19 +1,16 @@
-import { z } from 'zod';
-import { UserWhereInputObjectSchema } from './objects/UserWhereInput.schema';
-import { UserOrderByWithAggregationInputObjectSchema } from './objects/UserOrderByWithAggregationInput.schema';
-import { UserScalarWhereWithAggregatesInputObjectSchema } from './objects/UserScalarWhereWithAggregatesInput.schema';
-import { UserScalarFieldEnumSchema } from './enums/UserScalarFieldEnum.schema';
+import * as Yup from 'yup'
+import {
+  UserWhereInputObjectSchema,
+  UserOrderByWithAggregationInputObjectSchema,
+  UserScalarWhereWithAggregatesInputObjectSchema,
+} from './internals'
+import { UserScalarFieldEnumSchema } from './internals'
 
-export const UserGroupBySchema = z.object({
-  where: UserWhereInputObjectSchema.optional(),
-  orderBy: z
-    .union([
-      UserOrderByWithAggregationInputObjectSchema,
-      UserOrderByWithAggregationInputObjectSchema.array(),
-    ])
-    .optional(),
-  having: UserScalarWhereWithAggregatesInputObjectSchema.optional(),
-  take: z.number().optional(),
-  skip: z.number().optional(),
-  by: z.array(UserScalarFieldEnumSchema),
-});
+export const UserGroupBySchema = Yup.object({
+  where: UserWhereInputObjectSchema,
+  orderBy: UserOrderByWithAggregationInputObjectSchema,
+  having: UserScalarWhereWithAggregatesInputObjectSchema,
+  take: Yup.number(),
+  skip: Yup.number(),
+  by: Yup.array().of(UserScalarFieldEnumSchema).required(),
+}).required()
