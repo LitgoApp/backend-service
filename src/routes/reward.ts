@@ -33,8 +33,6 @@ router.post('/', async (req: Request, res: Response) => {
                 name: req.body.name,
                 cost: req.body.cost,
                 description: req.body.description,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)
@@ -54,8 +52,6 @@ router.put('/:id', async (req: Request, res: Response) => {
                 name: req.body.name,
                 cost: req.body.cost,
                 description: req.body.description,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)

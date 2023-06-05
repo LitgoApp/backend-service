@@ -33,8 +33,6 @@ router.post('/', async (req: Request, res: Response) => {
                 regionId: req.body.regionId,
                 municipalityId: req.body.municipalityId,
                 points: req.body.points,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)
@@ -54,8 +52,6 @@ router.put('/:id', async (req: Request, res: Response) => {
                 regionId: req.body.regionId,
                 municipalityId: req.body.municipalityId,
                 points: req.body.points,
-                createdAt: req.body.createdAt,
-                updatedAt: req.body.updatedAt
             },
         })
         res.json(result)
