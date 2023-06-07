@@ -37,13 +37,14 @@ model Municipality {
   phoneNumber    String
   regions        Region[]
   disposalSites  DisposalSite[]
+  rewards        Reward[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
 
 model Region {
   regionId       String        @id @default(uuid())
-  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId])
+  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
   municipalityId String
   points         RegionPoint[]
   createdAt      DateTime      @default(now())
@@ -52,7 +53,7 @@ model Region {
 
 model RegionPoint {
   regionPointId String   @id @default(uuid())
-  region        Region   @relation(fields: [regionId], references: [regionId])
+  region        Region   @relation(fields: [regionId], references: [regionId], onDelete: Cascade)
   regionId      String
   latitude      Float
   longitude     Float
@@ -64,7 +65,7 @@ model RegionPoint {
 
 model DisposalSite {
   disposalSiteId String       @id @default(uuid())
-  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId])
+  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
   municipalityId String
   latitude       Float
   longitude      Float
@@ -92,10 +93,12 @@ model LitterSite {
 }
 
 model Reward {
-  rewardId    String   @id @default(uuid())
-  name        String
-  cost        Int
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  rewardId       String       @id @default(uuid())
+  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
+  municipalityId String
+  name           String
+  cost           Int
+  description    String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
