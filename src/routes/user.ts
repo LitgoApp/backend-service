@@ -8,16 +8,7 @@ import logger from "../logger";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while getting all users" });
-  }
-});
+// TODO:  exclude password from all json responses
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {

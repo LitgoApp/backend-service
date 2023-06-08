@@ -4,6 +4,7 @@ import { loggerMiddleware } from "./logger";
 import regionRouter from "./routes/region";
 import rewardRouter from "./routes/reward";
 import userRouter from "./routes/user";
+import loginRouter from "./routes/login";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ const port = process.env.PORT || 3001;
 baseRouter.use("/user", userRouter);
 baseRouter.use("/reward", rewardRouter);
 baseRouter.use("/region", regionRouter);
+baseRouter.use("/login", loginRouter);
 
 app.use(loggerMiddleware);
 app.use("/api", baseRouter);
