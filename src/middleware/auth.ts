@@ -6,7 +6,7 @@ interface RequestWithUser extends Request {
   user: User;
 }
 
-export const verifyToken = (req: RequestWithUser, res: Response, next: NextFunction) => {
+export const auth = (req: RequestWithUser, res: Response, next: NextFunction) => {
   const token = req.header('auth-token');
   if (!token) return res.status(401).send('Access Denied');
 
