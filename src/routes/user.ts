@@ -5,6 +5,8 @@ import {
   UserUpdateInputObjectSchema,
 } from "../../prisma/generated/schemas/objects";
 import logger from "../logger";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -84,6 +86,53 @@ router.delete("/:id", async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "An error occurred while deleting a user" });
+  }
+});
+
+router.post('/register', async (req: Request, res: Response) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+  try {
+    const body = UserUpdateInputObjectSchema.validateSync(req.body);
+    const user = await prisma.user.create({
+      data: {
+          ...body,
+          password: hashedPassword,
+      },
+    });
+    res.send({ user: user.userId });
+  } catch (error: any) {
+    if (error?.name === "ValidationError") {
+      const message =
+        "Invalid body contents. Please include all fields for a user.";
+      logger.error(message);
+      res.status(400).send(message);
+    } else {
+      res
+        .status(500)
+        .json({ message: "An error occurred while creating a user" });
+    }
+  }
+});
+
+router.post('/login', async (req: Request, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({
+        where: {
+          email: req.body.email,
+        },
+    });
+    if (!user) {
+        return res.status(400).send('Email is not found');
+    }
+    const validPass = await bcrypt.compare(req.body.password, user.password);
+    if (!validPass) return res.status(400).send('Invalid password');
+
+    const token = jwt.sign({ _id: user.userId }, process.env.TOKEN_SECRET as string);
+    res.header('auth-token', token).send(token);
+  } catch (error) {
+      res.status(500).json({ message: "An error occurred while getting a user" });
   }
 });
 
