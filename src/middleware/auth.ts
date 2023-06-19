@@ -18,11 +18,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
     if (user) {
-      if (
-        req.path.includes('municipality') ||
-        req.path.includes('region') ||
-        req.path.includes('reward')
-      ) {
+      if (req.path.includes('municipality') || req.path.includes('region')) {
         return res.status(401).send('Access Denied')
       }
       if (!req.context) req.context = {}
