@@ -36,8 +36,7 @@ baseRouter.use('/litter-site', litterSiteRouter)
 
 app.use(express.json())
 app.use(loggerMiddleware)
-// Adds middleware to all routes except unauthedRoutes
-// app.use(unless(unauthedRoutes, auth))
+app.use(unless(unauthedRoutes, auth))
 app.use('/api', baseRouter)
 
 app.get('/', (req: Request, res: Response) => {
