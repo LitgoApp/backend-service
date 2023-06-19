@@ -1,12 +1,21 @@
 import express, { Request, Response } from 'express'
+import { number, object, string } from 'yup'
 import prisma from '../../prisma'
-import {
-  RewardCreateInputObjectSchema,
-  RewardUpdateInputObjectSchema,
-} from '../../prisma/generated/schemas/objects'
 import logger from '../logger'
 
 const router = express.Router()
+
+const createSchema = object().shape({
+  name: string().required(),
+  description: string().required(),
+  cost: number().required(),
+})
+
+const updateSchema = object().shape({
+  name: string(),
+  description: string(),
+  cost: number(),
+})
 
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -39,7 +48,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const data = RewardCreateInputObjectSchema.validateSync(req.body)
+    const data = createSchema.validateSync(req.body)
     const result = await prisma.reward.create({ data })
     res.json(result)
   } catch (error: any) {
@@ -61,7 +70,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const data = RewardUpdateInputObjectSchema.validateSync(req.body)
+    const data = updateSchema.validateSync(req.body)
     const result = await prisma.reward.update({
       where: {
         rewardId: id,

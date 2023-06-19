@@ -10,10 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator yup {
-  provider = "prisma-yup-generator"
-}
-
 model User {
   userId          String       @id @default(uuid())
   email           String       @unique
@@ -37,7 +33,6 @@ model Municipality {
   phoneNumber    String
   regions        Region[]
   disposalSites  DisposalSite[]
-  rewards        Reward[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -94,8 +89,6 @@ model LitterSite {
 
 model Reward {
   rewardId       String       @id @default(uuid())
-  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
-  municipalityId String
   name           String
   cost           Int
   description    String
