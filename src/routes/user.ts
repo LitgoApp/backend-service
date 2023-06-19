@@ -1,139 +1,133 @@
-import express, { Request, Response } from "express";
-import prisma from "../../prisma";
-import {
-  UserCreateInputObjectSchema,
-  UserUpdateInputObjectSchema,
-} from "../../prisma/generated/schemas/objects";
-import logger from "../logger";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
+import express, { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
+import { object, string } from 'yup'
+import prisma from '../../prisma'
+import logger from '../logger'
 
-const router = express.Router();
+const router = express.Router()
+
+const registrationSchema = object().shape({
+  email: string().email().required(),
+  password: string().required(),
+  name: string().required(),
+  address: string().required(),
+})
+
+export const loginSchema = object().shape({
+  email: string().email().required(),
+  password: string().required(),
+})
+
+const updateSchema = object().shape({
+  email: string().email(),
+  password: string(),
+  name: string(),
+  address: string(),
+})
 
 // TODO:  exclude password from all json responses
 
-router.get("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const user = await prisma.user.findUnique({
-      where: {
-        userId: id,
-      },
-    });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: "An error occurred while getting a user" });
-  }
-});
+router.get('/', async (req: Request, res: Response) => {
+  const { user } = req.context
+  if (!user) return res.status(401).json({ message: 'Unauthorized' })
+  res.json(req.context.user)
+})
 
-router.post("/", async (req: Request, res: Response) => {
+router.put('/', async (req: Request, res: Response) => {
   try {
-    const data = UserCreateInputObjectSchema.validateSync(req.body);
-    const result = await prisma.user.create({ data });
-    res.json(result);
-  } catch (error: any) {
-    if (error?.name === "ValidationError") {
-      const message =
-        "Invalid body contents. Please include all fields for a user.";
-      logger.error(message);
-      res.status(400).send(message);
-    } else {
-      res
-        .status(500)
-        .json({ message: "An error occurred while creating a user" });
-    }
-  }
-});
-
-router.put("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const data = UserUpdateInputObjectSchema.validateSync(req.body);
+    const { user } = req.context
+    if (!user) return res.status(401).json({ message: 'Unauthorized' })
+    const data = updateSchema.validateSync(req.body)
+    const salt = bcrypt.genSaltSync(10)
+    data.password = data.password
+      ? bcrypt.hashSync(data.password, salt)
+      : undefined
     const result = await prisma.user.update({
       where: {
-        userId: id,
+        userId: user.userId,
       },
       data,
-    });
-    res.json(result);
+    })
+    res.json(result)
   } catch (error: any) {
-    if (error?.name === "ValidationError") {
+    if (error?.name === 'ValidationError') {
       const message =
-        "Invalid body contents. Please include at least one field for the user.";
-      logger.error(message);
-      res.status(400).send(message);
+        'Invalid body contents. Please include at least one field for the user.'
+      logger.error(message)
+      res.status(400).send(message)
     }
-    res
-      .status(500)
-      .json({ message: "An error occurred while updating a user" });
+    res.status(500).json({ message: 'An error occurred while updating a user' })
   }
-});
+})
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete('/', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { user } = req.context
+    if (!user) return res.status(401).json({ message: 'Unauthorized' })
     const result = await prisma.user.delete({
       where: {
-        userId: id,
+        userId: user.userId,
       },
-    });
-    res.json(result);
+    })
+    res.json(result)
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while deleting a user" });
+    res.status(500).json({ message: 'An error occurred while deleting a user' })
   }
-});
+})
 
 router.post('/register', async (req: Request, res: Response) => {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
   try {
-    const body = UserUpdateInputObjectSchema.validateSync(req.body);
+    const body = registrationSchema.validateSync(req.body)
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(body.password, salt)
     const user = await prisma.user.create({
       data: {
-          ...body,
-          password: hashedPassword,
+        ...body,
+        password: hashedPassword,
       },
-    });
-    res.send({ user: user.userId });
+    })
+    res.send({ user: user.userId })
   } catch (error: any) {
-    if (error?.name === "ValidationError") {
+    if (error?.name === 'ValidationError') {
       const message =
-        "Invalid body contents. Please include all fields for a user.";
-      logger.error(message);
-      res.status(400).send(message);
+        'Invalid body contents. Please include all fields for registration.'
+      logger.error(message)
+      res.status(400).send(message)
     } else {
       res
         .status(500)
-        .json({ message: "An error occurred while creating a user" });
+        .json({ message: 'An error occurred while creating a user' })
     }
   }
-});
+})
+
+const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
 router.post('/login', async (req: Request, res: Response) => {
+  const data = loginSchema.validateSync(req.body)
   try {
     const user = await prisma.user.findUnique({
-        where: {
-          email: req.body.email,
-        },
-    });
+      where: {
+        email: data.email,
+      },
+    })
     if (!user) {
-        return res.status(400).send('Email is not found');
+      return res.status(400).send('Email is not found')
     }
-    const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) return res.status(400).send('Invalid password');
+    const validPass = await bcrypt.compare(data.password, user.password)
+    if (!validPass) return res.status(400).send('Invalid password')
 
-    const token = jwt.sign({ _id: user.userId }, process.env.TOKEN_SECRET as string);
-    res.header('auth-token', token).send(token);
-  } catch (error) {
-      res.status(500).json({ message: "An error occurred while getting a user" });
+    const token = jwt.sign({ _id: user.userId }, tokenSecret)
+    res.header('auth-token', token).send(token)
+  } catch (error: any) {
+    if (error?.name === 'ValidationError') {
+      return res
+        .status(400)
+        .json({ message: 'Please provide a username and password' })
+    }
+    res.status(500).json({ message: 'An error occurred while getting a user' })
   }
-});
+})
 
-export default router;
+export default router

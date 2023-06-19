@@ -1,10 +1,16 @@
 import express, { Request, Response } from 'express'
-import * as Yup from 'yup'
+import { array, number, object } from 'yup'
 import prisma from '../../prisma'
-import { RegionPointUpdateWithoutRegionInputObjectSchema } from '../../prisma/generated/schemas/objects'
 import logger from '../logger'
 
 const router = express.Router()
+
+const pointsSchema = array(
+  object().shape({
+    latitude: number().max(90).min(-90).required(),
+    longitude: number().max(180).min(-180).required(),
+  })
+).required()
 
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -36,11 +42,17 @@ router.get('/:id', async (req: Request, res: Response) => {
 })
 
 router.post('/:id', async (req: Request, res: Response) => {
+  const { municipality } = req.context
+  if (!municipality)
+    return res.status(404).json({ message: 'Municipality not found' })
+  const points = pointsSchema.validateSync(req.body)
   try {
-    const municipalityId = req.params.id
     const result = await prisma.region.create({
       data: {
-        municipalityId,
+        municipalityId: municipality.municipalityId,
+        points: {
+          create: points,
+        },
       },
     })
     res.json(result)
@@ -55,17 +67,21 @@ router.post('/:id', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const points = Yup.array(RegionPointUpdateWithoutRegionInputObjectSchema)
-      .required()
-      .validateSync(req.body)
-    const result = await prisma.regionPoint.updateMany({
+    const points = pointsSchema.validateSync(req.body)
+    await prisma.regionPoint.deleteMany({
       where: {
-        regionPointId: {
-          in: points.map(({ regionPointId }) => regionPointId),
-        },
         regionId: id,
       },
-      data: points,
+    })
+    const result = await prisma.region.update({
+      where: {
+        regionId: id,
+      },
+      data: {
+        points: {
+          create: points,
+        },
+      },
     })
     res.json(result)
   } catch (error: any) {
