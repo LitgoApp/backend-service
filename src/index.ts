@@ -47,9 +47,11 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
 
+export type UserWithoutPassword = Omit<User, 'password'>
+export type MunicipalityWithoutPassword = Omit<Municipality, 'password'>
 interface RequestContext {
-  user?: User
-  municipality?: Municipality
+  user?: UserWithoutPassword
+  municipality?: MunicipalityWithoutPassword
 }
 
 // Add context types to Express Request
