@@ -15,9 +15,7 @@ model User {
   email           String       @unique
   name            String
   password        String
-  level           Int          @default(0)
   points          Int          @default(0)
-  fraudLevel      Int          @default(0)
   address         String
   reportedLitter  LitterSite[] @relation("reportedLitter")
   collectedLitter LitterSite[] @relation("collectedLitter")
@@ -39,7 +37,7 @@ model Municipality {
 
 model Region {
   regionId       String        @id @default(uuid())
-  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId])
+  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
   municipalityId String
   points         RegionPoint[]
   createdAt      DateTime      @default(now())
@@ -48,24 +46,32 @@ model Region {
 
 model RegionPoint {
   regionPointId String   @id @default(uuid())
-  region        Region   @relation(fields: [regionId], references: [regionId])
+  region        Region   @relation(fields: [regionId], references: [regionId], onDelete: Cascade)
   regionId      String
   latitude      Float
   longitude     Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
   @@index([latitude, longitude])
 }
 
 model DisposalSite {
   disposalSiteId String       @id @default(uuid())
-  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId])
+  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
   municipalityId String
   latitude       Float
   longitude      Float
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
   @@index([latitude, longitude])
+}
+
+enum HarmLevel {
+  HAZARDOUS
+  CAUTION
+  NONE
 }
 
 model LitterSite {
@@ -75,20 +81,23 @@ model LitterSite {
   collectorUser   User?    @relation("collectedLitter", fields: [collectorUserId], references: [userId])
   collectorUserId String?
   isCollected     Boolean  @default(false)
+  litterCount     Int
   image           Bytes
-  harmful         Boolean  @default(false)
+  harm         HarmLevel  @default(NONE)
+  description     String
   latitude        Float
   longitude       Float
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
   @@index([latitude, longitude])
 }
 
 model Reward {
-  rewardId    String   @id @default(uuid())
-  name        String
-  cost        Int
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  rewardId       String       @id @default(uuid())
+  name           String
+  cost           Int
+  description    String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
