@@ -43,7 +43,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     req.context.municipality = municipalityWithoutPassword
     next()
   } catch (err) {
-    console.log(err)
     res.status(400).send('Invalid Token')
   }
 }

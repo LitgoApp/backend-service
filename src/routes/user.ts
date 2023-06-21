@@ -51,7 +51,8 @@ router.put('/', async (req: Request, res: Response) => {
       },
       data,
     })
-    res.json(result)
+    const { password, ...userWithoutPassword } = result
+    res.json(userWithoutPassword)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while updating a user')
@@ -67,7 +68,8 @@ router.delete('/', async (req: Request, res: Response) => {
         userId: user.userId,
       },
     })
-    res.json(result)
+    const { password, ...userWithoutPassword } = result
+    res.json(userWithoutPassword)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while deleting a user')

@@ -30,12 +30,17 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
+    const { municipality } = req.context
+    if (!municipality) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const region = await prisma.region.findUnique({
       where: {
         regionId: id,
       },
     })
+    if (region?.municipalityId !== municipality.municipalityId) {
+      return res.status(401).send('Unauthorized')
+    }
     res.json(region)
   } catch (error) {
     logger.error(error)
@@ -46,15 +51,10 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { municipality } = req.context
-    if (!municipality)
-      return res.status(404).json({ message: 'Municipality not found' })
+    if (!municipality) return res.status(401).send('Unauthorized')
     const parsedBody = pointsSchema.safeParse(req.body)
     if (!parsedBody.success) {
-      return res
-        .status(400)
-        .send(
-          'Invalid body contents. Please provide an array of points in the body.'
-        )
+      return res.status(400).send(parsedBody.error)
     }
     const { data } = parsedBody
 
@@ -69,9 +69,7 @@ router.post('/', async (req: Request, res: Response) => {
     res.json(result)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
-      message: 'An error occurred while creating a region',
-    })
+    res.status(500).send('An error occurred while creating a region')
   }
 })
 
@@ -107,6 +105,17 @@ router.put('/:id', async (req: Request, res: Response) => {
 
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
+    const { municipality } = req.context
+    if (!municipality) return res.status(401).send('Unauthorized')
+    const region = await prisma.region.findUnique({
+      where: {
+        regionId: req.params.id,
+      },
+    })
+    if (!region) return res.status(404).send('Region not found')
+    if (region.municipalityId !== municipality.municipalityId) {
+      return res.status(401).send('Unauthorized')
+    }
     const { id } = req.params
     const result = await prisma.region.delete({
       where: {

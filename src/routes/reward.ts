@@ -57,6 +57,11 @@ router.post('/', async (req: Request, res: Response) => {
   }
 })
 
+router.post('/:id', async (req: Request, res: Response) => {
+  // TODO: Redeem reward
+  return res.sendStatus(501)
+})
+
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
