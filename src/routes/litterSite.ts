@@ -20,6 +20,11 @@ router.get('/', async (req: Request, res: Response) => {
   res.sendStatus(501)
 })
 
+router.get('/created', async (req: Request, res: Response) => {
+  // TODO get all litter sites submitted by user
+  res.sendStatus(501)
+})
+
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
@@ -30,7 +35,10 @@ router.get('/:id', async (req: Request, res: Response) => {
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
     const { image, ...rest } = litterSite
-    res.json(rest)
+    res.json({
+      ...rest,
+      image: image.toString('base64'),
+    })
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting a litter site')
@@ -84,13 +92,14 @@ router.delete('/:id', async (req: Request, res: Response) => {
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
     if (litterSite.reporterUserId !== user.userId)
-      return res.status(403).send('Forbidden')
+      return res.status(401).send('Unauthorized')
     const result = await prisma.litterSite.delete({
       where: {
         litterSiteId: id,
       },
     })
-    res.json(result)
+    const { image, ...rest } = result
+    res.json(rest)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while deleting a litter site')
