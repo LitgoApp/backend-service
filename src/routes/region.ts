@@ -1,26 +1,30 @@
 import express, { Request, Response } from 'express'
-import { array, number, object } from 'yup'
+import { z } from 'zod'
 import prisma from '../../prisma'
 import logger from '../logger'
 
 const router = express.Router()
 
-const pointsSchema = array(
-  object().shape({
-    latitude: number().max(90).min(-90).required(),
-    longitude: number().max(180).min(-180).required(),
+const pointsSchema = z.array(
+  z.object({
+    latitude: z.number().max(90).min(-90),
+    longitude: z.number().max(180).min(-180),
   })
-).required()
+)
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const regions = await prisma.region.findMany()
+    const { municipality } = req.context
+    if (!municipality) return res.status(401).send('Unauthorized')
+    const regions = await prisma.region.findMany({
+      where: {
+        municipalityId: municipality.municipalityId,
+      },
+    })
     res.json(regions)
   } catch (error) {
     logger.error(error)
-    res
-      .status(500)
-      .json({ message: 'An error occurred while getting all regions' })
+    res.status(500).send('An error occurred while getting all regions')
   }
 })
 
@@ -33,30 +37,37 @@ router.get('/:id', async (req: Request, res: Response) => {
       },
     })
     res.json(region)
-  } catch (error: any) {
+  } catch (error) {
     logger.error(error)
-    res
-      .status(500)
-      .json({ message: 'An error occurred while getting a region' })
+    res.status(500).send('An error occurred while getting a region')
   }
 })
 
-router.post('/:id', async (req: Request, res: Response) => {
-  const { municipality } = req.context
-  if (!municipality)
-    return res.status(404).json({ message: 'Municipality not found' })
-  const points = pointsSchema.validateSync(req.body)
+router.post('/', async (req: Request, res: Response) => {
   try {
+    const { municipality } = req.context
+    if (!municipality)
+      return res.status(404).json({ message: 'Municipality not found' })
+    const parsedBody = pointsSchema.safeParse(req.body)
+    if (!parsedBody.success) {
+      return res
+        .status(400)
+        .send(
+          'Invalid body contents. Please provide an array of points in the body.'
+        )
+    }
+    const { data } = parsedBody
+
     const result = await prisma.region.create({
       data: {
         municipalityId: municipality.municipalityId,
         points: {
-          create: points,
+          create: data,
         },
       },
     })
     res.json(result)
-  } catch (error: any) {
+  } catch (error) {
     logger.error(error)
     res.status(500).json({
       message: 'An error occurred while creating a region',
@@ -67,7 +78,11 @@ router.post('/:id', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const points = pointsSchema.validateSync(req.body)
+    const parsedBody = pointsSchema.safeParse(req.body)
+    if (!parsedBody.success) {
+      return res.status(400).send(parsedBody.error)
+    }
+    const { data } = parsedBody
     await prisma.regionPoint.deleteMany({
       where: {
         regionId: id,
@@ -79,24 +94,14 @@ router.put('/:id', async (req: Request, res: Response) => {
       },
       data: {
         points: {
-          create: points,
+          create: data,
         },
       },
     })
     res.json(result)
-  } catch (error: any) {
-    if (error?.name === 'ValidationError') {
-      const message =
-        'Invalid body contents. Please provide an array of points in the body.'
-      logger.error(message)
-      res.status(400).send(message)
-      return
-    } else {
-      logger.error(error)
-      res
-        .status(500)
-        .json({ message: 'An error occurred while updating a region' })
-    }
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while updating a region')
   }
 })
 
@@ -111,9 +116,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     res.json(result)
   } catch (error) {
     logger.error(error)
-    res
-      .status(500)
-      .json({ message: 'An error occurred while deleting a region' })
+    res.status(500).send('An error occurred while deleting a region')
   }
 })
 

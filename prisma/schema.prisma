@@ -15,9 +15,7 @@ model User {
   email           String       @unique
   name            String
   password        String
-  level           Int          @default(0)
   points          Int          @default(0)
-  fraudLevel      Int          @default(0)
   address         String
   reportedLitter  LitterSite[] @relation("reportedLitter")
   collectedLitter LitterSite[] @relation("collectedLitter")
@@ -70,6 +68,12 @@ model DisposalSite {
   @@index([latitude, longitude])
 }
 
+enum HarmLevel {
+  HAZARDOUS
+  CAUTION
+  NONE
+}
+
 model LitterSite {
   litterSiteId    String   @id @default(uuid())
   reporterUser    User     @relation("reportedLitter", fields: [reporterUserId], references: [userId])
@@ -77,8 +81,10 @@ model LitterSite {
   collectorUser   User?    @relation("collectedLitter", fields: [collectorUserId], references: [userId])
   collectorUserId String?
   isCollected     Boolean  @default(false)
+  litterCount     Int
   image           Bytes
-  harmful         Boolean  @default(false)
+  harm         HarmLevel  @default(NONE)
+  description     String
   latitude        Float
   longitude       Float
   createdAt       DateTime @default(now())
