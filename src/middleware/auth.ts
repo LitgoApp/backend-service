@@ -14,39 +14,36 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const verified = jwt.verify(token, tokenSecret)
     if (typeof verified === 'string') throw new Error('Invalid Token')
     const id: string = verified._id
-    const user = (await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         userId: id,
       },
-      select: {
-        password: false,
-      },
-    })) as UserWithoutPassword | null
+    })
     if (user) {
       if (req.path.includes('municipality') || req.path.includes('region')) {
         return res.status(401).send('Access Denied')
       }
+      const { password, ...userWithoutPassword } = user
       if (!req.context) req.context = {}
-      req.context.user = user
+      req.context.user = userWithoutPassword
       next()
       return
     }
-    const municipality = (await prisma.municipality.findUnique({
+    const municipality = await prisma.municipality.findUnique({
       where: {
         municipalityId: id,
       },
-      select: {
-        password: false,
-      },
-    })) as MunicipalityWithoutPassword | null
+    })
     if (!municipality) throw new Error('Invalid Token')
     if (req.path.includes('user')) {
       return res.status(401).send('Access Denied')
     }
+    const { password, ...municipalityWithoutPassword } = municipality
     if (!req.context) req.context = {}
-    req.context.municipality = municipality
+    req.context.municipality = municipalityWithoutPassword
     next()
   } catch (err) {
+    console.log(err)
     res.status(400).send('Invalid Token')
   }
 }

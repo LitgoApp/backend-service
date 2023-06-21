@@ -5,7 +5,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "nodemon",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "build": "tsc -p .",
     "db-build": "docker build -t postgres_image . && docker create --name postgres_container -p 5432:5432  postgres_image",
     "db-up": "docker start postgres_container",
@@ -34,6 +34,6 @@
     "jsonwebtoken": "^9.0.0",
     "prisma": "^4.15.0",
     "winston": "^3.9.0",
-    "yup": "^1.2.0"
+    "zod": "^3.21.4"
   }
 }

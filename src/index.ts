@@ -1,6 +1,6 @@
 import { Municipality, User } from '@prisma/client'
 import * as dotenv from 'dotenv'
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
 import { loggerMiddleware } from './logger'
 import { auth } from './middleware/auth'
 import unless from './middleware/unless'
@@ -34,17 +34,13 @@ baseRouter.use('/region', regionRouter)
 baseRouter.use('/municipality', municipalRouter)
 baseRouter.use('/litter-site', litterSiteRouter)
 
-app.use(express.json())
+app.use(express.json({ limit: '5mb' }))
 app.use(loggerMiddleware)
 app.use(unless(unauthedRoutes, auth))
 app.use('/api', baseRouter)
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server')
-})
-
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+  console.log(`Server is running on port ${port}!`)
 })
 
 export type UserWithoutPassword = Omit<User, 'password'>

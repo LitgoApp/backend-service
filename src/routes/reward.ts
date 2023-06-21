@@ -1,20 +1,20 @@
 import express, { Request, Response } from 'express'
-import { number, object, string } from 'yup'
+import { z } from 'zod'
 import prisma from '../../prisma'
 import logger from '../logger'
 
 const router = express.Router()
 
-const createSchema = object().shape({
-  name: string().required(),
-  description: string().required(),
-  cost: number().required(),
+const createSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  cost: z.number(),
 })
 
-const updateSchema = object().shape({
-  name: string(),
-  description: string(),
-  cost: number(),
+const updateSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  cost: z.number().optional(),
 })
 
 router.get('/', async (req: Request, res: Response) => {
@@ -23,9 +23,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.json(rewards)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
-      message: 'An error occurred while getting all rewards',
-    })
+    res.status(500).send('An error occurred while getting rewards')
   }
 })
 
@@ -40,37 +38,33 @@ router.get('/:id', async (req: Request, res: Response) => {
     res.json(reward)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
-      message: 'An error occurred while getting a reward',
-    })
+    res.status(500).send('An error occurred while getting a reward')
   }
 })
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const data = createSchema.validateSync(req.body)
+    const parsedBody = createSchema.safeParse(req.body)
+    if (!parsedBody.success) {
+      return res.status(400).send(parsedBody.error)
+    }
+    const { data } = parsedBody
     const result = await prisma.reward.create({ data })
     res.json(result)
-  } catch (error: any) {
-    if (error?.name === 'ValidationError') {
-      const message =
-        'Invalid body contents. Please include all fields for a reward.'
-      logger.error(message)
-      res.status(400).send(message)
-      return
-    } else {
-      logger.error(error)
-      res.status(500).json({
-        message: 'An error occurred while creating a reward',
-      })
-    }
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while creating a reward')
   }
 })
 
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const data = updateSchema.validateSync(req.body)
+    const parsedBody = updateSchema.safeParse(req.body)
+    if (!parsedBody.success) {
+      return res.status(400).send(parsedBody.error)
+    }
+    const { data } = parsedBody
     const result = await prisma.reward.update({
       where: {
         rewardId: id,
@@ -80,9 +74,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     res.json(result)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
-      message: 'An error occurred while updating a reward',
-    })
+    res.status(500).send('An error occurred while updating a reward')
   }
 })
 
@@ -97,9 +89,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     res.json(result)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
-      message: 'An error occurred while deleting a reward',
-    })
+    res.status(500).send('An error occurred while deleting a reward')
   }
 })
 

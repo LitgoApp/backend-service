@@ -16,7 +16,7 @@ Finally, run the following commands from anywhere in the repository:
     npm install
     npm run db-build
     npm run db-up
-    npx prisma generate
+    npx prisma migrate dev
 
 This will install all of the node packages you need, as well as create a local PostgreSQL database for your own development!
     
