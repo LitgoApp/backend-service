@@ -15,13 +15,71 @@ const createSchema = z.object({
   image: z.string(),
 })
 
-router.get('/', async (req: Request, res: Response) => {
-  // TODO get all litter sites, potentially based on location
-  res.sendStatus(501)
-})
 
+type Point = [number, number];
+
+// check if a point is inside a polygon
+function inside(point: Point, vs: Point[]): boolean {
+  const x = point[0], y = point[1];
+  
+  let inside = false;
+  for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      const xi = vs[i][0], yi = vs[i][1];
+      const xj = vs[j][0], yj = vs[j][1];
+      
+      const intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+  }
+  return inside;
+};
+
+// get all litter sites in a region
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const { user } = req.context;
+    if (!user) return res.status(401).send('Unauthorized');
+    
+    const regionId = req.query.regionId; // pass regionId as query param
+    
+    const region = await prisma.region.findUnique({
+      where: {
+        regionId: regionId,
+      },
+      include: {
+        points: true,
+      },
+    });
+
+    const polygon: Point[] = region.points.map((p: { latitude: number; longitude: number }) => [p.latitude, p.longitude]);
+
+    const allLitterSites = await prisma.litterSite.findMany();
+
+    const litterSitesInRegion = allLitterSites.filter((site: { latitude: number; longitude: number }) => inside([site.latitude, site.longitude], polygon));
+    res.json(litterSitesInRegion)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while getting all litter sites')
+  }
+  res.sendStatus(501)
+});
+
+// get all litter sites submitted by a user
 router.get('/created', async (req: Request, res: Response) => {
-  // TODO get all litter sites submitted by user
+  try {
+    const { user } = req.context;
+    if (!user) return res.status(401).send('Unauthorized');
+
+    const litterSites = await prisma.litterSite.findMany({
+      where: {
+        reporterUserId: user.userId,
+      },
+    })
+    res.json(litterSites)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while getting all litter sites')
+  }
   res.sendStatus(501)
 })
 
