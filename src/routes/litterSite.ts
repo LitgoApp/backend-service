@@ -40,16 +40,18 @@ router.get('/', async (req: Request, res: Response) => {
     const { user } = req.context;
     if (!user) return res.status(401).send('Unauthorized');
     
-    const regionId = req.query.regionId; // pass regionId as query param
+    const regionIdQuery = req.query.regionId; // pass regionId as query param
     
     const region = await prisma.region.findUnique({
       where: {
-        regionId: regionId,
+        regionId: regionIdQuery as string,
       },
       include: {
         points: true,
       },
     });
+
+    if (!region) return res.status(404).send('Region not found');
 
     const polygon: Point[] = region.points.map((p: { latitude: number; longitude: number }) => [p.latitude, p.longitude]);
 
