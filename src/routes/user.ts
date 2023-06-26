@@ -119,7 +119,7 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!validPass) return res.status(400).send('Invalid password')
 
     const token = jwt.sign({ _id: user.userId }, tokenSecret)
-    res.header('auth-token', token).send(token)
+    res.header('auth-token', token).send({ token })
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting a user')
