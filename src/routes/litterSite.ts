@@ -2,6 +2,7 @@ import { HarmLevel } from '@prisma/client'
 import express, { Request, Response } from 'express'
 import { z } from 'zod'
 import prisma from '../../prisma'
+import distance from '../helpers/distance'
 import logger from '../logger'
 
 const router = express.Router()
@@ -15,55 +16,38 @@ const createSchema = z.object({
   image: z.string(),
 })
 
+const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
 
-type Point = [number, number];
-
-// check if a point is inside a polygon
-function inside(point: Point, vs: Point[]): boolean {
-  const x = point[0], y = point[1];
-  
-  let inside = false;
-  for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-      const xi = vs[i][0], yi = vs[i][1];
-      const xj = vs[j][0], yj = vs[j][1];
-      
-      const intersect = ((yi > y) != (yj > y))
-          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) inside = !inside;
-  }
-  return inside;
-};
-
-// get all litter sites in a region
+// get closest 100 litter sites to a location, that are all withim 1km of locaiton
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { user } = req.context
     if (!user) return res.status(401).send('Unauthorized')
 
-    const regionIdQuery = req.query.regionId // pass regionId as query param
+    const { latitude: lat, longitude: long } = req.query // pass regionId as query param
+    if (!lat || !long) return res.status(400).send('Missing query param')
+    const latitude = Number(lat)
+    const longitude = Number(long)
 
-    const region = await prisma.region.findUnique({
+    const delta = 1000 / locationToMeters
+    const nearbyLitterSites = await prisma.litterSite.findMany({
       where: {
-        regionId: regionIdQuery as string,
-      },
-      include: {
-        points: true,
+        latitude: {
+          gte: latitude - delta,
+          lte: latitude + delta,
+        },
+        longitude: {
+          gte: longitude - delta,
+          lte: longitude + delta,
+        },
       },
     })
-
-    if (!region) return res.status(404).send('Region not found')
-
-    const polygon: Point[] = region.points.map(
-      (p: { latitude: number; longitude: number }) => [p.latitude, p.longitude]
+    nearbyLitterSites.sort(
+      (a, b) =>
+        distance(a, { latitude, longitude }) -
+        distance(b, { latitude, longitude })
     )
-
-    const allLitterSites = await prisma.litterSite.findMany()
-
-    const litterSitesInRegion = allLitterSites.filter(
-      (site: { latitude: number; longitude: number }) =>
-        inside([site.latitude, site.longitude], polygon)
-    )
-    res.json(litterSitesInRegion)
+    res.json(nearbyLitterSites.slice(0, 100))
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting all litter sites')
@@ -88,9 +72,13 @@ router.get('/created', async (req: Request, res: Response) => {
   }
 })
 
+// Get a litter site by id
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
+    const { latitude: lat, longitude: long } = req.query
+    const latitude = Number(lat)
+    const longitude = Number(long)
     const litterSite = await prisma.litterSite.findUnique({
       where: {
         litterSiteId: id,
@@ -98,6 +86,34 @@ router.get('/:id', async (req: Request, res: Response) => {
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
     const { image, ...rest } = litterSite
+    if (lat !== undefined && long !== undefined) {
+      // Find closest disposal site
+      const delta = 200 / locationToMeters
+      const nearbyDisposalSites = await prisma.disposalSite.findMany({
+        where: {
+          latitude: {
+            gte: latitude - delta,
+            lte: latitude + delta,
+          },
+          longitude: {
+            gte: longitude - delta,
+            lte: longitude + delta,
+          },
+        },
+      })
+      nearbyDisposalSites.sort(
+        (a, b) =>
+          distance(a, { latitude, longitude }) -
+          distance(b, { latitude, longitude })
+      )
+      if (nearbyDisposalSites.length > 0) {
+        return res.json({
+          ...rest,
+          image: image.toString('base64'),
+          disposalSite: nearbyDisposalSites[0],
+        })
+      }
+    }
     res.json({
       ...rest,
       image: image.toString('base64'),
@@ -134,9 +150,37 @@ router.post('/', async (req: Request, res: Response) => {
   }
 })
 
-router.put('/:id', async (req: Request, res: Response) => {
-  // TODO claim litter site (as completed)
-  res.sendStatus(501)
+router.post('/:id', async (req: Request, res: Response) => {
+  try {
+    const { user } = req.context
+    if (!user) return res.status(401).send('Unauthorized')
+    const { id } = req.params
+    const litterSite = await prisma.litterSite.findUnique({
+      where: {
+        litterSiteId: id,
+      },
+      select: { isCollected: true },
+    })
+    if (!litterSite) return res.status(404).send('Litter site not found')
+    if (litterSite.isCollected)
+      return res.status(409).send('Litter site already claimed')
+    const result = await prisma.litterSite.update({
+      where: {
+        litterSiteId: id,
+      },
+      data: {
+        collectorUserId: user.userId,
+        isCollected: true,
+      },
+    })
+    // TODO: Add points to collecting user based on litterCount
+    // TODO: Add anti fraud mechanisms
+    const { image, ...rest } = result
+    res.json(rest)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while creating a litter site')
+  }
 })
 
 router.delete('/:id', async (req: Request, res: Response) => {

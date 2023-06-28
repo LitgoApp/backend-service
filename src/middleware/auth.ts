@@ -20,7 +20,11 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
     if (user) {
-      if (req.path.includes('municipality') || req.path.includes('region')) {
+      if (
+        req.path.includes('municipality') ||
+        req.path.includes('region') ||
+        req.path.includes('disposalSite')
+      ) {
         return res.status(401).send('Access Denied')
       }
       const { password, ...userWithoutPassword } = user
