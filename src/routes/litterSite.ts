@@ -37,11 +37,11 @@ function inside(point: Point, vs: Point[]): boolean {
 // get all litter sites in a region
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context;
-    if (!user) return res.status(401).send('Unauthorized');
-    
-    const regionIdQuery = req.query.regionId; // pass regionId as query param
-    
+    const { user } = req.context
+    if (!user) return res.status(401).send('Unauthorized')
+
+    const regionIdQuery = req.query.regionId // pass regionId as query param
+
     const region = await prisma.region.findUnique({
       where: {
         regionId: regionIdQuery as string,
@@ -49,28 +49,32 @@ router.get('/', async (req: Request, res: Response) => {
       include: {
         points: true,
       },
-    });
+    })
 
-    if (!region) return res.status(404).send('Region not found');
+    if (!region) return res.status(404).send('Region not found')
 
-    const polygon: Point[] = region.points.map((p: { latitude: number; longitude: number }) => [p.latitude, p.longitude]);
+    const polygon: Point[] = region.points.map(
+      (p: { latitude: number; longitude: number }) => [p.latitude, p.longitude]
+    )
 
-    const allLitterSites = await prisma.litterSite.findMany();
+    const allLitterSites = await prisma.litterSite.findMany()
 
-    const litterSitesInRegion = allLitterSites.filter((site: { latitude: number; longitude: number }) => inside([site.latitude, site.longitude], polygon));
+    const litterSitesInRegion = allLitterSites.filter(
+      (site: { latitude: number; longitude: number }) =>
+        inside([site.latitude, site.longitude], polygon)
+    )
     res.json(litterSitesInRegion)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting all litter sites')
   }
-  res.sendStatus(501)
-});
+})
 
 // get all litter sites submitted by a user
 router.get('/created', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context;
-    if (!user) return res.status(401).send('Unauthorized');
+    const { user } = req.context
+    if (!user) return res.status(401).send('Unauthorized')
 
     const litterSites = await prisma.litterSite.findMany({
       where: {
@@ -82,7 +86,6 @@ router.get('/created', async (req: Request, res: Response) => {
     logger.error(error)
     res.status(500).send('An error occurred while getting all litter sites')
   }
-  res.sendStatus(501)
 })
 
 router.get('/:id', async (req: Request, res: Response) => {
@@ -103,7 +106,6 @@ router.get('/:id', async (req: Request, res: Response) => {
     logger.error(error)
     res.status(500).send('An error occurred while getting a litter site')
   }
-  res.sendStatus(501)
 })
 
 router.post('/', async (req: Request, res: Response) => {
