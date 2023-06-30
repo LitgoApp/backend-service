@@ -133,14 +133,34 @@ router.post('/', async (req: Request, res: Response) => {
       return res.status(400).send(parsedBody.error)
     }
     const { data } = parsedBody
-    const result = await prisma.litterSite.create({
+    const createLitterSite = prisma.litterSite.create({
       data: {
         ...data,
         image: Buffer.from(data.image, 'base64'),
         reporterUserId: user.userId,
       },
     })
-    // TODO: Add points to user based on litterCount
+    const pointChange = prisma.pointChange.create({
+      data: {
+        userId: user.userId,
+        amount: data.litterCount,
+      },
+    })
+    const updateUser = prisma.user.update({
+      where: {
+        userId: user.userId,
+      },
+      data: {
+        points: {
+          increment: data.litterCount,
+        },
+      },
+    })
+    const [result] = await prisma.$transaction([
+      createLitterSite,
+      pointChange,
+      updateUser,
+    ])
     // TODO: Add anti fraud mechanisms
     const { image, ...rest } = result
     res.json(rest)
@@ -150,6 +170,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 })
 
+// Claim a litter site
 router.post('/:id', async (req: Request, res: Response) => {
   try {
     const { user } = req.context
@@ -173,7 +194,23 @@ router.post('/:id', async (req: Request, res: Response) => {
         isCollected: true,
       },
     })
-    // TODO: Add points to collecting user based on litterCount
+    const pointChange = prisma.pointChange.create({
+      data: {
+        userId: user.userId,
+        amount: result.litterCount * 3,
+      },
+    })
+    const updateUser = prisma.user.update({
+      where: {
+        userId: user.userId,
+      },
+      data: {
+        points: {
+          increment: result.litterCount * 3,
+        },
+      },
+    })
+    await prisma.$transaction([pointChange, updateUser])
     // TODO: Add anti fraud mechanisms
     const { image, ...rest } = result
     res.json(rest)
