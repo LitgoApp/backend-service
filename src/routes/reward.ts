@@ -19,7 +19,13 @@ const updateSchema = z.object({
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const rewards = await prisma.reward.findMany()
+    const rewards = await prisma.reward.findMany({
+      select: {
+        rewardId: true,
+        name: true,
+        cost: true,
+      },
+    })
     res.json(rewards)
   } catch (error) {
     logger.error(error)
@@ -33,6 +39,11 @@ router.get('/:id', async (req: Request, res: Response) => {
     const reward = await prisma.reward.findUnique({
       where: {
         rewardId: id,
+      },
+      select: {
+        rewardId: true,
+        name: true,
+        cost: true,
       },
     })
     res.json(reward)
@@ -58,8 +69,46 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 router.post('/:id', async (req: Request, res: Response) => {
-  // TODO: Redeem reward
-  return res.sendStatus(501)
+  try {
+    const { user } = req.context
+    if (!user) return res.status(401).send('Unauthorized')
+    const { id } = req.params
+    const reward = await prisma.reward.findUnique({
+      where: {
+        rewardId: id,
+      },
+    })
+    if (!reward) return res.status(404).send('Reward not found')
+    if (reward.cost > user.points)
+      return res.status(403).send('Not enough points')
+    const transaction = prisma.rewardTransaction.create({
+      data: {
+        userId: user.userId,
+        rewardId: reward.rewardId,
+      },
+    })
+    const pointChange = prisma.pointChange.create({
+      data: {
+        userId: user.userId,
+        amount: -reward.cost,
+      },
+    })
+    const updateUser = prisma.user.update({
+      where: {
+        userId: user.userId,
+      },
+      data: {
+        points: {
+          decrement: reward.cost,
+        },
+      },
+    })
+    await prisma.$transaction([transaction, pointChange, updateUser])
+    res.json(reward)
+  } catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while redeeming a reward')
+  }
 })
 
 router.put('/:id', async (req: Request, res: Response) => {
