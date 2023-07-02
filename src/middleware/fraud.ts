@@ -25,7 +25,7 @@ async function createLitterSiteCheck(
   }
   const { data } = parsedBody
   const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000)
-  const existingLitterSites = await prisma.litterSite.findMany({
+  const existingLitterSite = await prisma.litterSite.findFirst({
     where: {
       isCollected: false,
       latitude: {
@@ -41,7 +41,7 @@ async function createLitterSiteCheck(
       },
     },
   })
-  if (existingLitterSites.length > 0)
+  if (existingLitterSite)
     return res.status(403).send('Litter site already exists in this area')
   else return next()
 }
