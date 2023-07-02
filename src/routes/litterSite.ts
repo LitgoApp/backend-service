@@ -7,7 +7,7 @@ import logger from '../logger'
 
 const router = express.Router()
 
-const createSchema = z.object({
+export const createSchema = z.object({
   latitude: z.number().max(90).min(-90),
   longitude: z.number().max(180).min(-180),
   harm: z.nativeEnum(HarmLevel),
@@ -16,7 +16,7 @@ const createSchema = z.object({
   image: z.string(),
 })
 
-const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
+export const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
 
 // get closest 100 litter sites to a location, that are all withim 1km of locaiton
 router.get('/', async (req: Request, res: Response) => {
@@ -161,7 +161,6 @@ router.post('/', async (req: Request, res: Response) => {
       pointChange,
       updateUser,
     ])
-    // TODO: Add anti fraud mechanisms
     const { image, ...rest } = result
     res.json(rest)
   } catch (error) {

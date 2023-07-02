@@ -3,7 +3,8 @@ import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express, { Express } from 'express'
 import { loggerMiddleware } from './logger'
-import { auth } from './middleware/auth'
+import authMiddleware from './middleware/auth'
+import fraudMiddleware from './middleware/fraud'
 import unless from './middleware/unless'
 import disposalSiteRouter from './routes/disposalSite'
 import litterSiteRouter from './routes/litterSite'
@@ -34,7 +35,8 @@ baseRouter.use('/disposal-site', disposalSiteRouter)
 app.use(cors())
 app.use(express.json({ limit: '5mb' }))
 app.use(loggerMiddleware)
-app.use(unless(unauthedRoutes, auth))
+app.use(unless(unauthedRoutes, authMiddleware))
+app.use(fraudMiddleware)
 app.use('/api', baseRouter)
 
 app.listen(port, () => {
