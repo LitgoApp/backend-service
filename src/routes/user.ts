@@ -51,7 +51,8 @@ router.put('/', async (req: Request, res: Response) => {
       },
       data,
     })
-    res.json(result)
+    const { password, ...userWithoutPassword } = result
+    res.json(userWithoutPassword)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while updating a user')
@@ -67,7 +68,8 @@ router.delete('/', async (req: Request, res: Response) => {
         userId: user.userId,
       },
     })
-    res.json(result)
+    const { password, ...userWithoutPassword } = result
+    res.json(userWithoutPassword)
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while deleting a user')
@@ -117,7 +119,7 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!validPass) return res.status(400).send('Invalid password')
 
     const token = jwt.sign({ _id: user.userId }, tokenSecret)
-    res.header('auth-token', token).send(token)
+    res.header('auth-token', token).send({ token })
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting a user')

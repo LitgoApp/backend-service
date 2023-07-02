@@ -1,9 +1,12 @@
 import { Municipality, User } from '@prisma/client'
+import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express, { Express } from 'express'
 import { loggerMiddleware } from './logger'
-import { auth } from './middleware/auth'
+import authMiddleware from './middleware/auth'
+import fraudMiddleware from './middleware/fraud'
 import unless from './middleware/unless'
+import disposalSiteRouter from './routes/disposalSite'
 import litterSiteRouter from './routes/litterSite'
 import municipalRouter from './routes/municipality'
 import regionRouter from './routes/region'
@@ -14,12 +17,6 @@ dotenv.config()
 const app: Express = express()
 const baseRouter = express.Router()
 const port = process.env.PORT || 3001
-
-// TODO: Add CORS
-// const cors = require('cors');
-// app.use(cors({
-//   origin: ['']
-// }));
 
 const unauthedRoutes = [
   '/api/user/register',
@@ -33,10 +30,13 @@ baseRouter.use('/reward', rewardRouter)
 baseRouter.use('/region', regionRouter)
 baseRouter.use('/municipality', municipalRouter)
 baseRouter.use('/litter-site', litterSiteRouter)
+baseRouter.use('/disposal-site', disposalSiteRouter)
 
+app.use(cors())
 app.use(express.json({ limit: '5mb' }))
 app.use(loggerMiddleware)
-app.use(unless(unauthedRoutes, auth))
+app.use(unless(unauthedRoutes, authMiddleware))
+app.use(fraudMiddleware)
 app.use('/api', baseRouter)
 
 app.listen(port, () => {

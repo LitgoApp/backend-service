@@ -1,12 +1,14 @@
-import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { MunicipalityWithoutPassword, UserWithoutPassword } from '..'
 import prisma from '../../prisma'
 
 const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+export default async function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const token = req.header('auth-token')
   if (!token) return res.status(401).send('Access Denied')
 
@@ -43,7 +45,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     req.context.municipality = municipalityWithoutPassword
     next()
   } catch (err) {
-    console.log(err)
     res.status(400).send('Invalid Token')
   }
 }
