@@ -124,6 +124,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+// Create a litter site
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { user } = req.context
