@@ -1,4 +1,4 @@
-import e, { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import prisma from '../../prisma'
 import distance from '../helpers/distance'
 import { createSchema, locationToMeters } from '../routes/litterSite'
