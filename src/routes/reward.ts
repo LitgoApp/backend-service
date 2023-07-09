@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
   try {
     const rewards = await prisma.reward.findMany({
       select: {
-        rewardId: true,
+        id: true,
         name: true,
         cost: true,
       },
@@ -38,10 +38,10 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const reward = await prisma.reward.findUnique({
       where: {
-        rewardId: id,
+        id: id,
       },
       select: {
-        rewardId: true,
+        id: true,
         name: true,
         cost: true,
       },
@@ -76,12 +76,12 @@ router.post('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
 
     const user = await prisma.user.findUnique({
-      where: {userId: userAccount.id},
+      where: {id: userAccount.id},
     })
     if (!user) return res.status(404).send('User not found')
 
     const reward = await prisma.reward.findUnique({
-      where: {rewardId: id,},
+      where: {id: id,},
     })
     if (!reward) return res.status(404).send('Reward not found')
 
@@ -92,19 +92,19 @@ router.post('/:id', async (req: Request, res: Response) => {
     const transaction = prisma.rewardTransaction.create({
       data: {
         userId: userAccount.id,
-        rewardId: reward.rewardId,
+        rewardId: reward.id,
         rewardCost: reward.cost, // save cost b/c reward cost can change (e.g. discounts)
       },
     })
     const pointChange = prisma.pointChange.create({
       data: {
-        userId: user.userId,
+        userId: user.id,
         amount: -reward.cost,
       },
     })
     const updateUser = prisma.user.update({
       where: {
-        userId: user.userId,
+        id: user.id,
       },
       data: {
         points: {
@@ -130,7 +130,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     const { data } = parsedBody
     const result = await prisma.reward.update({
       where: {
-        rewardId: id,
+        id: id,
       },
       data,
     })
@@ -146,7 +146,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const result = await prisma.reward.delete({
       where: {
-        rewardId: id,
+        id: id,
       },
     })
     res.json(result)

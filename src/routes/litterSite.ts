@@ -81,7 +81,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const longitude = Number(long)
     const litterSite = await prisma.litterSite.findUnique({
       where: {
-        litterSiteId: id,
+        id: id,
       },
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
@@ -148,7 +148,7 @@ router.post('/', async (req: Request, res: Response) => {
     })
     const updateUser = prisma.user.update({
       where: {
-        userId: userAccount.id,
+        id: userAccount.id,
       },
       data: {
         points: {
@@ -177,7 +177,7 @@ router.post('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
       where: {
-        litterSiteId: id,
+        id: id,
       },
       select: { isCollected: true },
     })
@@ -186,7 +186,7 @@ router.post('/:id', async (req: Request, res: Response) => {
       return res.status(409).send('Litter site already claimed')
     const result = await prisma.litterSite.update({
       where: {
-        litterSiteId: id,
+        id: id,
       },
       data: {
         collectorUserId: userAccount.id,
@@ -201,7 +201,7 @@ router.post('/:id', async (req: Request, res: Response) => {
     })
     const updateUser = prisma.user.update({
       where: {
-        userId: userAccount.id,
+        id: userAccount.id,
       },
       data: {
         points: {
@@ -226,7 +226,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
       where: {
-        litterSiteId: id,
+        id: id,
       },
       select: {
         reporterUserId: true,
@@ -237,7 +237,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
       return res.status(401).send('Unauthorized')
     const result = await prisma.litterSite.delete({
       where: {
-        litterSiteId: id,
+        id: id,
       },
     })
     const { image, ...rest } = result

@@ -63,7 +63,7 @@ async function main() {
   })
   const user = await prisma.user.create({
     data: {
-        userId: userAccount.id,
+        id: userAccount.id,
         name: 'Dev',
         address: '123 Fake St',
     },
@@ -77,7 +77,7 @@ async function main() {
   })
   const secondUser = await prisma.user.create({
     data: {
-        userId: secondUserAccount.id,
+        id: secondUserAccount.id,
         name: 'Dev 2',
         address: '123 Fake St',
     },
@@ -91,7 +91,7 @@ async function main() {
   })
   const municipality = await prisma.municipality.create({
     data: {
-        municipalityId: municipalityAccount.id,
+        id: municipalityAccount.id,
         name: 'Dev',
         phoneNumber: '1234567890',
     },
@@ -101,12 +101,12 @@ async function main() {
       points: {
         create: campus,
       },
-      municipalityId: municipality.municipalityId,
+      municipalityId: municipality.id,
     },
   })
   const createDispostalSites = prisma.disposalSite.createMany({
     data: garbageCans.map((point) => ({
-      municipalityId: municipality.municipalityId,
+      municipalityId: municipality.id,
       ...point,
     })),
   })
@@ -115,7 +115,7 @@ async function main() {
       latitude: 43.468682437466896,
       longitude: -80.54462483388113,
       image: Buffer.from(baseLitterImage, 'base64'),
-      reporterUserId: user.userId,
+      reporterUserId: user.id,
       description: 'This is a test litter site.',
       litterCount: 1,
     },
@@ -125,11 +125,11 @@ async function main() {
       latitude: 43.468682437466896,
       longitude: -80.54462483388113,
       image: Buffer.from(baseLitterImage, 'base64'),
-      reporterUserId: user.userId,
+      reporterUserId: user.id,
       description: 'This is a test litter site.',
       litterCount: 1,
       isCollected: true,
-      collectorUserId: secondUser.userId,
+      collectorUserId: secondUser.id,
     },
   })
   const createReward = prisma.reward.create({

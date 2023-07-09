@@ -31,7 +31,7 @@ router.get('/', async (req: Request, res: Response) => {
   if  (!municipalityAccount) return res.status(401).send('Unauthorized');
   try {
     const municipality = await prisma.municipality.findUnique({
-      where: { municipalityId: municipalityAccount.id},
+      where: { id: municipalityAccount.id},
     });
     res.json({...municipality, ...municipalityAccount})
   } 
@@ -73,7 +73,7 @@ router.put('/', async (req: Request, res: Response) => {
 
     const updated_municipality = await prisma.municipality.update({
       where: {
-        municipalityId: municipalityAccount.id,
+        id: municipalityAccount.id,
       },
       data: {
         name: data.name,
@@ -98,7 +98,7 @@ router.delete('/', async (req: Request, res: Response) => {
 
   try {
     await prisma.municipality.delete({ // cascades for Municipality model
-      where: {municipalityId: municipalityAccount.id,},
+      where: {id: municipalityAccount.id,},
     })
     res.json({}).status(204)
   } 
@@ -129,7 +129,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     await prisma.municipality.create({
       data: {
-        municipalityId: municipalityAccount.id,
+        id: municipalityAccount.id,
         name: data.name,
         phoneNumber: data.phoneNumber,
       },

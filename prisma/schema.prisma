@@ -22,8 +22,8 @@ model UserAccount {
 }
 
 model User {
-  account UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String      @id @unique
+  account UserAccount @relation(fields: [id], references: [id], onDelete: Cascade)
+  id      String      @id @unique
 
   name    String
   address String
@@ -47,8 +47,8 @@ model MunicipalityAccount {
 }
 
 model Municipality {
-  account        MunicipalityAccount @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
-  municipalityId String              @id @unique
+  account MunicipalityAccount @relation(fields: [id], references: [id], onDelete: Cascade)
+  id      String              @id @unique
 
   name        String
   phoneNumber String
@@ -58,39 +58,39 @@ model Municipality {
 }
 
 model Region {
-  regionId String @id @default(uuid())
+  id String @id @default(uuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  municipality   Municipality  @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
+  municipality   Municipality  @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
   municipalityId String
   points         RegionPoint[]
 }
 
 model RegionPoint {
-  regionPointId String @id @default(uuid())
+  id String @id @default(uuid())
 
   latitude  Float
   longitude Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  region   Region @relation(fields: [regionId], references: [regionId], onDelete: Cascade)
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
   regionId String
 
   @@index([latitude, longitude])
 }
 
 model DisposalSite {
-  disposalSiteId String @id @default(uuid())
+  id String @id @default(uuid())
 
   latitude  Float
   longitude Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  municipality   Municipality @relation(fields: [municipalityId], references: [municipalityId], onDelete: Cascade)
+  municipality   Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
   municipalityId String
 
   @@index([latitude, longitude])
@@ -103,7 +103,7 @@ enum HarmLevel {
 }
 
 model LitterSite {
-  litterSiteId String @id @default(uuid())
+  id String @id @default(uuid())
 
   isCollected Boolean   @default(false)
   litterCount Int
@@ -115,16 +115,16 @@ model LitterSite {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  reporterUser    User    @relation("reportedLitter", fields: [reporterUserId], references: [userId])
+  reporterUser    User    @relation("reportedLitter", fields: [reporterUserId], references: [id])
   reporterUserId  String
-  collectorUser   User?   @relation("collectedLitter", fields: [collectorUserId], references: [userId])
+  collectorUser   User?   @relation("collectedLitter", fields: [collectorUserId], references: [id])
   collectorUserId String?
 
   @@index([latitude, longitude])
 }
 
 model Reward {
-  rewardId String @id @default(uuid())
+  id String @id @default(uuid())
 
   name        String
   cost        Float
@@ -136,25 +136,25 @@ model Reward {
 }
 
 model RewardTransaction {
-  rewardTransactionId String @id @default(uuid())
+  id String @id @default(uuid())
 
   rewardCost Float
   madeAt     DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user     User   @relation(fields: [userId], references: [userId])
+  user     User   @relation(fields: [userId], references: [id])
   userId   String
-  reward   Reward @relation(fields: [rewardId], references: [rewardId])
+  reward   Reward @relation(fields: [rewardId], references: [id])
   rewardId String
 }
 
 model PointChange {
-  pointChangeId String @id @default(uuid())
+  id String @id @default(uuid())
 
   amount    Float
   occuredAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }

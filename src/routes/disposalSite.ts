@@ -33,7 +33,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const disposalSite = await prisma.disposalSite.findUnique({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!disposalSite) return res.status(404).send('Disposal site not found')
@@ -75,7 +75,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const disposalSite = await prisma.disposalSite.findUnique({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!disposalSite) return res.status(404).send('Disposal site not found')
@@ -84,7 +84,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
     const deleted = await prisma.disposalSite.delete({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!deleted)

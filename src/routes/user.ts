@@ -37,7 +37,7 @@ router.get('/', async (req: Request, res: Response) => {
   if  (!userAccount) return res.status(401).send('Unauthorized');
   try {
     const user = await prisma.user.findUnique({
-      where: { userId: userAccount?.id},
+      where: { id: userAccount?.id},
     });
     res.json({...user, ...userAccount})
   } 
@@ -73,7 +73,7 @@ router.put('/', async (req: Request, res: Response) => {
     })
     
     const updated_user = await prisma.user.update({
-      where: {userId: userAccount.id,},
+      where: {id: userAccount.id,},
       data: {
         name: data.name,
         address: data.address
@@ -128,7 +128,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     await prisma.user.create({
       data: {
-        userId: userAccount.id,
+        id: userAccount.id,
         name: data.name,
         address: data.address
       },

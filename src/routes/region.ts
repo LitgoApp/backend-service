@@ -35,7 +35,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const region = await prisma.region.findUnique({
       where: {
-        regionId: id,
+        id: id,
       },
     })
     if (region?.municipalityId !== municipalityAccount.id) {
@@ -88,7 +88,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     })
     const result = await prisma.region.update({
       where: {
-        regionId: id,
+        id: id,
       },
       data: {
         points: {
@@ -109,7 +109,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const region = await prisma.region.findUnique({
       where: {
-        regionId: req.params.id,
+        id: req.params.id,
       },
     })
     if (!region) return res.status(404).send('Region not found')
@@ -119,7 +119,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const { id } = req.params
     const result = await prisma.region.delete({
       where: {
-        regionId: id,
+        id: id,
       },
     })
     res.json(result)
