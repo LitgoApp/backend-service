@@ -8,13 +8,7 @@ import { loginSchema } from './user'
 
 const router = express.Router()
 
-const registrationSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  name: z.string(),
-  phoneNumber: z.string(),
-})
-
+// ==== Request DTOs ====
 const updateSchema = z.object({
   email: z.string().email().optional(),
   password: z.string().optional(),
@@ -22,106 +16,161 @@ const updateSchema = z.object({
   phoneNumber: z.string().optional(),
 })
 
+const registrationSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+  name: z.string(),
+  phoneNumber: z.string(),
+})
+// ========
+
+
+// GET: for debugging purposes
 router.get('/', async (req: Request, res: Response) => {
+  const { municipalityAccount } = req.context
+  if  (!municipalityAccount) return res.status(401).send('Unauthorized');
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
-    res.json(municipality)
-  } catch (error) {
+    const municipality = await prisma.municipality.findUnique({
+      where: { id: municipalityAccount.id},
+    });
+    res.json({...municipality, ...municipalityAccount})
+  } 
+  catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while getting all users')
+    res.status(500).send('An error occurred while getting municipality')
   }
+
 })
 
+
+// UPDATE
 router.put('/', async (req: Request, res: Response) => {
+  const { municipalityAccount } = req.context
+  if (!municipalityAccount) return res.status(401).send('Unauthorized')
+  
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
     const parsedBody = updateSchema.safeParse(req.body)
     if (!parsedBody.success) {
       return res.status(400).send(parsedBody.error)
     }
+
+    // Encrypt new password if it exists
     const { data } = parsedBody
     const salt = bcrypt.genSaltSync(10)
-    data.password = data.password
+    const new_password = data.password
       ? bcrypt.hashSync(data.password, salt)
       : undefined
-    const result = await prisma.municipality.update({
+
+    const updated_account = await prisma.municipalityAccount.update({
       where: {
-        municipalityId: municipality.municipalityId,
+        id: municipalityAccount.id,
       },
-      data,
+      data: {
+        email: data.email,
+        password: new_password,
+      }
     })
-    const { password, ...municipalityWithoutPassword } = result
-    res.json(municipalityWithoutPassword)
-  } catch (error) {
+
+    const updated_municipality = await prisma.municipality.update({
+      where: {
+        id: municipalityAccount.id,
+      },
+      data: {
+        name: data.name,
+        phoneNumber: data.phoneNumber,
+      }
+    })
+    
+    const { password, ...accountWithoutPassword } = updated_account
+    res.json({...accountWithoutPassword, ...updated_municipality})
+  } 
+  catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while updating a user')
   }
 })
 
+
+// DELETE
 router.delete('/', async (req: Request, res: Response) => {
+  const { municipalityAccount } = req.context
+  if (!municipalityAccount) return res.status(401).send('Unauthorized')
+
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
-    const result = await prisma.municipality.delete({
-      where: {
-        municipalityId: municipality.municipalityId,
-      },
+    await prisma.municipality.delete({ // cascades for Municipality model
+      where: {id: municipalityAccount.id,},
     })
-    const { password, ...municipalityWithoutPassword } = result
-    res.json(municipalityWithoutPassword)
-  } catch (error) {
+    res.json({}).status(204)
+  } 
+  catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while deleting a user')
+    res.status(500).send('An error occurred while deleting municipality')
   }
 })
 
+
+// REGISTER
 router.post('/register', async (req: Request, res: Response) => {
   try {
     const parsedBody = registrationSchema.safeParse(req.body)
-    if (!parsedBody.success) {
-      return res.status(400).send(parsedBody.error)
-    }
+    if (!parsedBody.success) return res.status(400).send(parsedBody.error)
     const { data } = parsedBody
+
+    // Encrypt password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(data.password, salt)
-    const municipality = await prisma.municipality.create({
+    
+    const municipalityAccount = await prisma.municipalityAccount.create({
       data: {
-        ...data,
+        email: data.email,
         password: hashedPassword,
       },
     })
-    res.send({ municipality: municipality.municipalityId })
-  } catch (error) {
-    res.status(500).send('An error occurred while registering a user')
+
+    await prisma.municipality.create({
+      data: {
+        id: municipalityAccount.id,
+        name: data.name,
+        phoneNumber: data.phoneNumber,
+      },
+    })
+
+    res.status(200).send()
+  } 
+  catch (error) {
+    res.status(500).send('An error occurred while registering municipality')
   }
 })
+
+
+// LOGIN
+const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
 router.post('/login', async (req: Request, res: Response) => {
   try {
     const parsedBody = loginSchema.safeParse(req.body)
-    if (!parsedBody.success) {
-      return res.status(400).send(parsedBody.error)
-    }
+    if (!parsedBody.success) return res.status(400).send(parsedBody.error)
     const { data } = parsedBody
-    const municipality = await prisma.municipality.findUnique({
-      where: {
-        email: data.email,
-      },
-    })
-    if (!municipality) {
-      return res.status(400).send('Email is not found')
-    }
-    const validPass = await bcrypt.compare(data.password, municipality.password)
-    if (!validPass) return res.status(400).send('Invalid password')
 
-    const token = jwt.sign(
-      { _id: municipality.municipalityId },
-      process.env.TOKEN_SECRET as string
-    )
-    res.header('auth-token', token).send(token)
-  } catch (error) {
+    const municipalityAccount = await prisma.municipalityAccount.findUnique({
+      where: {email: data.email,},
+    })
+
+    if (!municipalityAccount)
+      return res.status(404).send('Email was not found')
+
+    const validPass = await bcrypt.compare(data.password, municipalityAccount.password)
+    if (!validPass) return res.status(401).send('Invalid password')
+
+    await prisma.municipalityAccount.update({
+      where: {id: municipalityAccount.id},
+      data: {lastLoginAt: new Date().toISOString()}
+    })
+
+    const token = jwt.sign({ _id: municipalityAccount.id }, tokenSecret)
+    res.header('auth-token', token).send({ token })
+  } 
+  catch (error) {
     res.status(500).send('An error occurred while logging in a user')
   }
 })
