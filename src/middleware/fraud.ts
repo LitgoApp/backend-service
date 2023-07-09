@@ -58,7 +58,7 @@ async function claimLitterSiteCheck(
   const id = req.path.split('/')[3]
   const litterSite = await prisma.litterSite.findUnique({
     where: {
-      litterSiteId: id,
+      id,
     },
   })
   const { latitude: lat, longitude: long } = req.query
