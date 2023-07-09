@@ -21,8 +21,8 @@ export const locationToMeters = 111379 // 1 degree of latitude/longitude is 1113
 // get closest 100 litter sites to a location, that are all withim 1km of locaiton
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
+    const { userAccount } = req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
 
     const { latitude: lat, longitude: long } = req.query // pass regionId as query param
     if (!lat || !long) return res.status(400).send('Missing query param')
@@ -57,12 +57,12 @@ router.get('/', async (req: Request, res: Response) => {
 // get all litter sites submitted by a user
 router.get('/created', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
+    const { userAccount } = req.context
+    if (!userAccount ) return res.status(401).send('Unauthorized')
 
     const litterSites = await prisma.litterSite.findMany({
       where: {
-        reporterUserId: user.userId,
+        reporterUserId: userAccount.id,
       },
     })
     res.json(litterSites)
@@ -126,8 +126,8 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
+    const { userAccount } = req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
     const parsedBody = createSchema.safeParse(req.body)
     if (!parsedBody.success) {
       return res.status(400).send(parsedBody.error)
@@ -137,18 +137,18 @@ router.post('/', async (req: Request, res: Response) => {
       data: {
         ...data,
         image: Buffer.from(data.image, 'base64'),
-        reporterUserId: user.userId,
+        reporterUserId: userAccount.id,
       },
     })
     const pointChange = prisma.pointChange.create({
       data: {
-        userId: user.userId,
+        userId: userAccount.id,
         amount: data.litterCount,
       },
     })
     const updateUser = prisma.user.update({
       where: {
-        userId: user.userId,
+        userId: userAccount.id,
       },
       data: {
         points: {
@@ -172,8 +172,8 @@ router.post('/', async (req: Request, res: Response) => {
 // Claim a litter site
 router.post('/:id', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
+    const { userAccount }= req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
       where: {
@@ -189,19 +189,19 @@ router.post('/:id', async (req: Request, res: Response) => {
         litterSiteId: id,
       },
       data: {
-        collectorUserId: user.userId,
+        collectorUserId: userAccount.id,
         isCollected: true,
       },
     })
     const pointChange = prisma.pointChange.create({
       data: {
-        userId: user.userId,
+        userId: userAccount.id,
         amount: result.litterCount * 3,
       },
     })
     const updateUser = prisma.user.update({
       where: {
-        userId: user.userId,
+        userId: userAccount.id,
       },
       data: {
         points: {
@@ -221,8 +221,8 @@ router.post('/:id', async (req: Request, res: Response) => {
 
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
+    const { userAccount } = req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
       where: {
@@ -233,7 +233,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
       },
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
-    if (litterSite.reporterUserId !== user.userId)
+    if (litterSite.reporterUserId !== userAccount.id)
       return res.status(401).send('Unauthorized')
     const result = await prisma.litterSite.delete({
       where: {

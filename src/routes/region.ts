@@ -14,11 +14,11 @@ const pointsSchema = z.array(
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const regions = await prisma.region.findMany({
       where: {
-        municipalityId: municipality.municipalityId,
+        municipalityId: municipalityAccount.id,
       },
     })
     res.json(regions)
@@ -30,15 +30,15 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const region = await prisma.region.findUnique({
       where: {
         regionId: id,
       },
     })
-    if (region?.municipalityId !== municipality.municipalityId) {
+    if (region?.municipalityId !== municipalityAccount.id) {
       return res.status(401).send('Unauthorized')
     }
     res.json(region)
@@ -50,8 +50,8 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const parsedBody = pointsSchema.safeParse(req.body)
     if (!parsedBody.success) {
       return res.status(400).send(parsedBody.error)
@@ -60,7 +60,7 @@ router.post('/', async (req: Request, res: Response) => {
 
     const result = await prisma.region.create({
       data: {
-        municipalityId: municipality.municipalityId,
+        municipalityId: municipalityAccount.id,
         points: {
           create: data,
         },
@@ -105,15 +105,15 @@ router.put('/:id', async (req: Request, res: Response) => {
 
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const region = await prisma.region.findUnique({
       where: {
         regionId: req.params.id,
       },
     })
     if (!region) return res.status(404).send('Region not found')
-    if (region.municipalityId !== municipality.municipalityId) {
+    if (region.municipalityId !== municipalityAccount.id) {
       return res.status(401).send('Unauthorized')
     }
     const { id } = req.params

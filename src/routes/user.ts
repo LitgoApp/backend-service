@@ -7,9 +7,19 @@ import logger from '../logger'
 
 const router = express.Router()
 
+// ==== Request DTOs ====
+const updateSchema = z.object({
+  email: z.string().email().optional(),
+  password: z.string().optional(),
+
+  name: z.string().optional(),
+  address: z.string().optional(),
+})
+
 const registrationSchema = z.object({
   email: z.string().email(),
   password: z.string(),
+
   name: z.string(),
   address: z.string(),
 })
@@ -18,109 +28,149 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 })
+// ========
 
-const updateSchema = z.object({
-  email: z.string().email().optional(),
-  password: z.string().optional(),
-  name: z.string().optional(),
-  address: z.string().optional(),
-})
 
+// GET: for debugging purposes
 router.get('/', async (req: Request, res: Response) => {
-  const { user } = req.context
-  if (!user) return res.status(401).send('Unauthorized')
-  res.json(user)
+  const { userAccount } = req.context
+  if  (!userAccount) return res.status(401).send('Unauthorized');
+  try {
+    const user = await prisma.user.findUnique({
+      where: { userId: userAccount?.id},
+    });
+    res.json({...user, ...userAccount})
+  } 
+  catch (error) {
+    logger.error(error)
+    res.status(500).send('An error occurred while getting user')
+  }
 })
 
+
+// UPDATE
 router.put('/', async (req: Request, res: Response) => {
+  const { userAccount } = req.context
+  if  (!userAccount) return res.status(401).send('Unauthorized');
+  
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
     const parsedBody = updateSchema.safeParse(req.body)
-    if (!parsedBody.success) {
-      return res.status(400).send(parsedBody.error)
-    }
+    if (!parsedBody.success) return res.status(400).send(parsedBody.error)
     const { data } = parsedBody
+
+    // Encrypt new password if it exists
     const salt = bcrypt.genSaltSync(10)
-    data.password = data.password
+    const new_password = data.password
       ? bcrypt.hashSync(data.password, salt)
       : undefined
-    const result = await prisma.user.update({
-      where: {
-        userId: user.userId,
-      },
-      data,
+
+    const updated_account = await prisma.userAccount.update({
+      where: {id: userAccount.id,},
+      data: {
+        email: data.email,
+        password: new_password
+      }
     })
-    const { password, ...userWithoutPassword } = result
-    res.json(userWithoutPassword)
-  } catch (error) {
+    
+    const updated_user = await prisma.user.update({
+      where: {userId: userAccount.id,},
+      data: {
+        name: data.name,
+        address: data.address
+      }
+    })
+
+    const { password, ...accountWithoutPassword } = updated_account
+    res.json({...accountWithoutPassword, ...updated_user})
+  } 
+  catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while updating a user')
   }
 })
 
+
+// DELETE
 router.delete('/', async (req: Request, res: Response) => {
+  const { userAccount } = req.context
+  if (!userAccount) return res.status(401).send('Unauthorized')
+
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
-    const result = await prisma.user.delete({
-      where: {
-        userId: user.userId,
-      },
+    await prisma.userAccount.delete({ // cascades for User model
+      where: {id: userAccount.id,},
     })
-    const { password, ...userWithoutPassword } = result
-    res.json(userWithoutPassword)
-  } catch (error) {
+    res.json({}).status(204)
+  } 
+  catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while deleting a user')
+    res.status(500).send('An error occurred while deleting user')
   }
 })
 
+
+// REGISTER
 router.post('/register', async (req: Request, res: Response) => {
   try {
     const parsedBody = registrationSchema.safeParse(req.body)
-    if (!parsedBody.success) {
-      return res.status(400).send(parsedBody.error)
-    }
+    if (!parsedBody.success) return res.status(400).send(parsedBody.error)
     const { data } = parsedBody
+    
+    // Encrypt password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(data.password, salt)
-    const user = await prisma.user.create({
+
+    const userAccount = await prisma.userAccount.create({
       data: {
-        ...data,
+        email: data.email,
         password: hashedPassword,
       },
     })
-    res.send({ user: user.userId })
-  } catch (error) {
+
+    await prisma.user.create({
+      data: {
+        userId: userAccount.id,
+        name: data.name,
+        address: data.address
+      },
+    })
+
+    res.status(200).send()
+  } 
+  catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while creating a user')
+    res.status(500).send('An error occurred while creating user')
   }
 })
 
+
+// LOGIN
 const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
 router.post('/login', async (req: Request, res: Response) => {
   try {
     const parsedBody = loginSchema.safeParse(req.body)
-    if (!parsedBody.success) {
-      return res.status(400).send(parsedBody.error)
-    }
+    if (!parsedBody.success) return res.status(400).send(parsedBody.error)
     const { data } = parsedBody
-    const user = await prisma.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    })
-    if (!user) {
-      return res.status(400).send('Email is not found')
-    }
-    const validPass = await bcrypt.compare(data.password, user.password)
-    if (!validPass) return res.status(400).send('Invalid password')
 
-    const token = jwt.sign({ _id: user.userId }, tokenSecret)
+    const userAccount = await prisma.userAccount.findUnique({
+      where: {email: data.email,},
+    })
+
+    if (!userAccount)
+      return res.status(404).send('Email was not found')
+
+    const validPass = await bcrypt.compare(data.password, userAccount.password)
+    if (!validPass) return res.status(401).send('Invalid password')
+
+    await prisma.userAccount.update({
+      where: {id: userAccount.id},
+      data: {lastLoginAt: new Date().toISOString()}
+    })
+
+    const token = jwt.sign({ _id: userAccount.id }, tokenSecret)
     res.header('auth-token', token).send({ token })
-  } catch (error) {
+  } 
+  catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting a user')
   }

@@ -69,22 +69,31 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 router.post('/:id', async (req: Request, res: Response) => {
+  const { userAccount } = req.context
+  if (!userAccount) return res.status(401).send('Unauthorized')
+
   try {
-    const { user } = req.context
-    if (!user) return res.status(401).send('Unauthorized')
     const { id } = req.params
+
+    const user = await prisma.user.findUnique({
+      where: {userId: userAccount.id},
+    })
+    if (!user) return res.status(404).send('User not found')
+
     const reward = await prisma.reward.findUnique({
-      where: {
-        rewardId: id,
-      },
+      where: {rewardId: id,},
     })
     if (!reward) return res.status(404).send('Reward not found')
+
+
+
     if (reward.cost > user.points)
       return res.status(403).send('Not enough points')
     const transaction = prisma.rewardTransaction.create({
       data: {
-        userId: user.userId,
+        userId: userAccount.id,
         rewardId: reward.rewardId,
+        rewardCost: reward.cost, // save cost b/c reward cost can change (e.g. discounts)
       },
     })
     const pointChange = prisma.pointChange.create({
