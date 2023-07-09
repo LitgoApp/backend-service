@@ -4,47 +4,50 @@ import prisma from '../../prisma'
 
 const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
+const municipalityPaths = ['municipality', 'region']
+
 export default async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const token = req.header('auth-token')
-  if (!token) return res.status(401).send('Access Denied')
+  // Get JWT
+  const unsplitToken = req.header('Authorization') // "Bearer [Token]"
+  if (!unsplitToken || unsplitToken.split(' ')[0] != "Bearer") 
+    return res.status(401).send('Access Denied')
+  const token = unsplitToken.split(' ')[1]
 
   try {
     const verified = jwt.verify(token, tokenSecret)
     if (typeof verified === 'string') throw new Error('Invalid Token')
     const id: string = verified._id
-    const user = await prisma.user.findUnique({
-      where: {
-        userId: id,
-      },
+
+    // Authorize as User:
+    const userAccount = await prisma.userAccount.findUnique({
+      where: {id: id,},
     })
-    if (user) {
-      if (req.path.includes('municipality') || req.path.includes('region')) {
+    if (userAccount) {
+      if (!municipalityPaths.every(path => !req.path.includes(path))) { // if request path is for municipality...
         return res.status(401).send('Access Denied')
       }
-      const { password, ...userWithoutPassword } = user
+      const { password, ...accountWithoutPassword } = userAccount
       if (!req.context) req.context = {}
-      req.context.user = userWithoutPassword
-      next()
+      req.context.userAccount = accountWithoutPassword
+      next()  // executes the middleware succeeding the current middleware
       return
     }
-    const municipality = await prisma.municipality.findUnique({
-      where: {
-        municipalityId: id,
-      },
+
+    // Otherwise, Authorize as Municipality:
+    const municipalityAccount = await prisma.municipalityAccount.findUnique({
+      where: {id: id,},
     })
-    if (!municipality) throw new Error('Invalid Token')
-    if (req.path.includes('user')) {
-      return res.status(401).send('Access Denied')
-    }
-    const { password, ...municipalityWithoutPassword } = municipality
+    if (!municipalityAccount) throw new Error('Invalid Token')
+    const { password, ...accountWithoutPassword } = municipalityAccount
     if (!req.context) req.context = {}
-    req.context.municipality = municipalityWithoutPassword
+    req.context.municipalityAccount = accountWithoutPassword
     next()
-  } catch (err) {
+  } 
+  catch (err) {
     res.status(400).send('Invalid Token')
   }
 }

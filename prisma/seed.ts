@@ -5,9 +5,8 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 const prisma = new PrismaClient()
-const tokenSecret = process.env.TOKEN_SECRET || 'authSecret'
 
-const baseImage =
+const baseLitterImage =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+L+U4T8ABu8CpCYJ1DQAAAAASUVORK5CYII='
 
 const campus = [
@@ -55,28 +54,46 @@ const garbageCans = [
 async function main() {
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash('password', salt)
-  const user = await prisma.user.create({
+
+  const userAccount = await prisma.userAccount.create({
     data: {
       email: 'dev.user@litgo.com',
       password: hashedPassword,
-      name: 'Dev',
-      address: '123 Fake St',
+    },
+  })
+  const user = await prisma.user.create({
+    data: {
+        id: userAccount.id,
+        name: 'Dev',
+        address: '123 Fake St',
+    },
+  })
+
+  const secondUserAccount = await prisma.userAccount.create({
+    data: {
+        email: 'dev.user2@litgo.com',
+        password: hashedPassword,
     },
   })
   const secondUser = await prisma.user.create({
     data: {
-      email: 'dev.user2@litgo.com',
+        id: secondUserAccount.id,
+        name: 'Dev 2',
+        address: '123 Fake St',
+    },
+  })
+
+  const municipalityAccount = await prisma.municipalityAccount.create({
+    data: {
+      email: 'dev.municipality@litgo.com',
       password: hashedPassword,
-      name: 'Dev 2',
-      address: '123 Fake St',
     },
   })
   const municipality = await prisma.municipality.create({
     data: {
-      email: 'dev.municipality@litgo.com',
-      password: hashedPassword,
-      name: 'Dev',
-      phoneNumber: '1234567890',
+        id: municipalityAccount.id,
+        name: 'Dev',
+        phoneNumber: '1234567890',
     },
   })
   const createRegion = prisma.region.create({
@@ -84,12 +101,12 @@ async function main() {
       points: {
         create: campus,
       },
-      municipalityId: municipality.municipalityId,
+      municipalityId: municipality.id,
     },
   })
   const createDispostalSites = prisma.disposalSite.createMany({
     data: garbageCans.map((point) => ({
-      municipalityId: municipality.municipalityId,
+      municipalityId: municipality.id,
       ...point,
     })),
   })
@@ -97,8 +114,8 @@ async function main() {
     data: {
       latitude: 43.468682437466896,
       longitude: -80.54462483388113,
-      image: Buffer.from(baseImage, 'base64'),
-      reporterUserId: user.userId,
+      image: Buffer.from(baseLitterImage, 'base64'),
+      reporterUserId: user.id,
       description: 'This is a test litter site.',
       litterCount: 1,
     },
@@ -107,12 +124,12 @@ async function main() {
     data: {
       latitude: 43.468682437466896,
       longitude: -80.54462483388113,
-      image: Buffer.from(baseImage, 'base64'),
-      reporterUserId: user.userId,
+      image: Buffer.from(baseLitterImage, 'base64'),
+      reporterUserId: user.id,
       description: 'This is a test litter site.',
       litterCount: 1,
       isCollected: true,
-      collectorUserId: secondUser.userId,
+      collectorUserId: secondUser.id,
     },
   })
   const createReward = prisma.reward.create({

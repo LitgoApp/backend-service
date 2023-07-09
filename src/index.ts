@@ -1,4 +1,4 @@
-import { Municipality, User } from '@prisma/client'
+import { Municipality, MunicipalityAccount, User, UserAccount } from '@prisma/client'
 import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express, { Express } from 'express'
@@ -43,11 +43,11 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}!`)
 })
 
-export type UserWithoutPassword = Omit<User, 'password'>
-export type MunicipalityWithoutPassword = Omit<Municipality, 'password'>
+export type UserAccountWithoutPassword = Omit<UserAccount, 'password'>
+export type MunicipalityAccountWithoutPassword = Omit<MunicipalityAccount, 'password'>
 interface RequestContext {
-  user?: UserWithoutPassword
-  municipality?: MunicipalityWithoutPassword
+  userAccount?: UserAccountWithoutPassword
+  municipalityAccount?: MunicipalityAccountWithoutPassword
 }
 
 // Add context types to Express Request

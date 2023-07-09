@@ -12,11 +12,11 @@ const createSchema = z.object({
 
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const disposalSites = await prisma.disposalSite.findMany({
       where: {
-        municipalityId: municipality.municipalityId,
+        municipalityId: municipalityAccount.id,
       },
     })
     res.json(disposalSites)
@@ -28,12 +28,12 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const disposalSite = await prisma.disposalSite.findUnique({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!disposalSite) return res.status(404).send('Disposal site not found')
@@ -46,8 +46,8 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
 
     const parsedBody = createSchema.safeParse(req.body)
     if (!parsedBody.success) {
@@ -57,7 +57,7 @@ router.post('/', async (req: Request, res: Response) => {
     const result = await prisma.disposalSite.create({
       data: {
         ...data,
-        municipalityId: municipality.municipalityId,
+        municipalityId: municipalityAccount.id,
       },
     })
     res.json(result)
@@ -69,22 +69,22 @@ router.post('/', async (req: Request, res: Response) => {
 
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const { municipality } = req.context
-    if (!municipality) return res.status(401).send('Unauthorized')
+    const { municipalityAccount } = req.context
+    if (!municipalityAccount) return res.status(401).send('Unauthorized')
 
     const { id } = req.params
     const disposalSite = await prisma.disposalSite.findUnique({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!disposalSite) return res.status(404).send('Disposal site not found')
-    if (disposalSite.municipalityId !== municipality.municipalityId) {
+    if (disposalSite.municipalityId !== municipalityAccount.id) {
       return res.status(401).send('Unauthorized')
     }
     const deleted = await prisma.disposalSite.delete({
       where: {
-        disposalSiteId: id,
+        id: id,
       },
     })
     if (!deleted)
