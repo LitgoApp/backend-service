@@ -11,8 +11,11 @@ export default async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const token = req.header('auth-token') // TODO: Change this to Authorization: "bearer ..." scheme (RFC6750)
-  if (!token) return res.status(401).send('Access Denied')
+  // Get JWT
+  const unsplitToken = req.header('Authorization') // "Bearer [Token]"
+  if (!unsplitToken || unsplitToken.split(' ')[0] != "Bearer") 
+    return res.status(401).send('Access Denied')
+  const token = unsplitToken.split(' ')[1]
 
   try {
     const verified = jwt.verify(token, tokenSecret)
