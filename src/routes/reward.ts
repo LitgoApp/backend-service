@@ -5,6 +5,7 @@ import logger from '../logger'
 
 const router = express.Router()
 
+// ==== Request Entities ====
 const createSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -16,6 +17,8 @@ const updateSchema = z.object({
   description: z.string().optional(),
   cost: z.number().optional(),
 })
+// ========
+
 
 router.get('/', async (req: Request, res: Response) => {
   try {

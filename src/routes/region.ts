@@ -5,12 +5,15 @@ import logger from '../logger'
 
 const router = express.Router()
 
+// ==== Request Entities ====
 const pointsSchema = z.array(
   z.object({
     latitude: z.number().max(90).min(-90),
     longitude: z.number().max(180).min(-180),
   })
 )
+// ========
+
 
 router.get('/', async (req: Request, res: Response) => {
   try {

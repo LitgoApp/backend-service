@@ -7,6 +7,9 @@ import logger from '../logger'
 
 const router = express.Router()
 
+export const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
+
+// ==== Request Entities ====
 export const createSchema = z.object({
   latitude: z.number().max(90).min(-90),
   longitude: z.number().max(180).min(-180),
@@ -15,8 +18,8 @@ export const createSchema = z.object({
   litterCount: z.number().min(0),
   image: z.string(),
 })
+// ========
 
-export const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
 
 // get closest 100 litter sites to a location, that are all withim 1km of locaiton
 router.get('/', async (req: Request, res: Response) => {
