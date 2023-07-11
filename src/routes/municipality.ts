@@ -8,7 +8,7 @@ import { loginSchema } from './user'
 
 const router = express.Router()
 
-// ==== Request DTOs ====
+// ==== Request Entities ====
 const updateSchema = z.object({
   email: z.string().email().optional(),
   password: z.string().optional(),
@@ -25,7 +25,7 @@ const registrationSchema = z.object({
 // ========
 
 
-// GET: for debugging purposes
+// GET
 router.get('/', async (req: Request, res: Response) => {
   const { municipalityAccount } = req.context
   if  (!municipalityAccount) return res.status(401).send('Unauthorized');
@@ -33,7 +33,13 @@ router.get('/', async (req: Request, res: Response) => {
     const municipality = await prisma.municipality.findUnique({
       where: { id: municipalityAccount.id},
     });
-    res.json({...municipality, ...municipalityAccount})
+    if (!municipality) return res.status(404).send('Municipality not found');
+
+    // remove id from response to avoid confusion
+    var {id, ...municipalityAccountWithoutId} = municipalityAccount
+    var {id, ...municipalityWithoutId} = municipality
+
+    res.json({...municipalityAccountWithoutId, ...municipalityWithoutId})
   } 
   catch (error) {
     logger.error(error)
@@ -61,7 +67,7 @@ router.put('/', async (req: Request, res: Response) => {
       ? bcrypt.hashSync(data.password, salt)
       : undefined
 
-    const updated_account = await prisma.municipalityAccount.update({
+    const updatedAccount = await prisma.municipalityAccount.update({
       where: {
         id: municipalityAccount.id,
       },
@@ -71,7 +77,7 @@ router.put('/', async (req: Request, res: Response) => {
       }
     })
 
-    const updated_municipality = await prisma.municipality.update({
+    const updatedMunicipality = await prisma.municipality.update({
       where: {
         id: municipalityAccount.id,
       },
@@ -81,8 +87,10 @@ router.put('/', async (req: Request, res: Response) => {
       }
     })
     
-    const { password, ...accountWithoutPassword } = updated_account
-    res.json({...accountWithoutPassword, ...updated_municipality})
+    // remove id from response to avoid confusion
+    var {id, password, ...accountWithoutIdAndPassword } = updatedAccount
+    var {id, ...userWithoutId} = updatedMunicipality
+    res.json({...accountWithoutIdAndPassword, ...userWithoutId})
   } 
   catch (error) {
     logger.error(error)

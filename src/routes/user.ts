@@ -7,7 +7,7 @@ import logger from '../logger'
 
 const router = express.Router()
 
-// ==== Request DTOs ====
+// ==== Request Entities ====
 const updateSchema = z.object({
   email: z.string().email().optional(),
   password: z.string().optional(),
@@ -31,15 +31,22 @@ export const loginSchema = z.object({
 // ========
 
 
-// GET: for debugging purposes
+// GET
 router.get('/', async (req: Request, res: Response) => {
   const { userAccount } = req.context
   if  (!userAccount) return res.status(401).send('Unauthorized');
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userAccount?.id},
+      where: { id: userAccount.id},
+      
     });
-    res.json({...user, ...userAccount})
+    if (!user) return res.status(404).send('User not found');
+
+    // remove id from response to avoid confusion
+    var {id, ...userAccountWithoutId} = userAccount
+    var {id, ...userWithoutId} = user
+  
+    res.json({...userAccountWithoutId, ...userWithoutId})
   } 
   catch (error) {
     logger.error(error)
@@ -64,7 +71,7 @@ router.put('/', async (req: Request, res: Response) => {
       ? bcrypt.hashSync(data.password, salt)
       : undefined
 
-    const updated_account = await prisma.userAccount.update({
+    const updatedAccount = await prisma.userAccount.update({
       where: {id: userAccount.id,},
       data: {
         email: data.email,
@@ -72,7 +79,7 @@ router.put('/', async (req: Request, res: Response) => {
       }
     })
     
-    const updated_user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: {id: userAccount.id,},
       data: {
         name: data.name,
@@ -80,8 +87,11 @@ router.put('/', async (req: Request, res: Response) => {
       }
     })
 
-    const { password, ...accountWithoutPassword } = updated_account
-    res.json({...accountWithoutPassword, ...updated_user})
+    // remove id from response to avoid confusion
+    var {id, password, ...accountWithoutIdAndPassword } = updatedAccount
+    var {id, ...userWithoutId} = updatedUser
+    
+    res.json({...accountWithoutIdAndPassword, ...userWithoutId})
   } 
   catch (error) {
     logger.error(error)
