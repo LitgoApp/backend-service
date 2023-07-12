@@ -1,7 +1,7 @@
 # LitGo Backend Service
-This repository is the backend service for Litgo. It is build using Node.js, Express, TypeScript, and Prisma.
+This repository is the backend service for Litgo. It is built using Node.js, Express, TypeScript, and Prisma.
 
-To start developing in this repository, first ensure you have [git installed](https://git-scm.com/downloads) and then run `git clone https://github.com/LitgoApp/backend-service.git`, followed by `cd ./backend-service`. You should now be inside the repository to start developing!
+To start developing in this repository, ensure you have [git installed](https://git-scm.com/downloads) and then run `git clone https://github.com/LitgoApp/backend-service.git`, followed by `cd ./backend-service`. You should now be inside the repository to start developing!
 
 # Prerequisites
 To run the server locally, you need to install [Node.js](https://nodejs.org/en/download) and [Docker](https://docs.docker.com/get-docker/) on your computer (note that they require a computer restart once installed).
@@ -22,7 +22,7 @@ This will install all of the node packages you need, as well as create a local P
     
 # Running The Server
 
-To get the server up and running, run `npm run dev`. This will start a nodemon server that will automatically restart any time you change code. To test it, go to `http://localhost:3001`.
+To get the server up and running, run `npm run dev`. This will start a nodemon server that will automatically restart any time you save changes to your code. To test it, go to `http://localhost:3001`.
 
 # Database
 
@@ -37,4 +37,4 @@ Once your database is up-to-date, you can use [prisma](https://www.prisma.io/doc
 If you're interested in looking at the current contents of your database, simply run `npx prisma studio` to open a web app where you can interact with all the tables and rows!
 
 # Branches
-Both the `main` and `prod` branches are protected from direct pushes, instead make your own branch from an up-to-date version of `main`, and then submit a pull-request from your feature branch to main.
+Both the `main` and `prod` branches are protected from direct pushes, instead, make your own branch from an up-to-date version of `main`, and then submit a pull request from your feature branch to main.
