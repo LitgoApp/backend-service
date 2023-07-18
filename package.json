@@ -10,7 +10,8 @@
     "db-build": "docker build -t postgres_image . && docker create --name postgres_container -p 5432:5432  postgres_image",
     "db-up": "docker start postgres_container",
     "db-down": "docker stop postgres_container",
-    "db-remove": "docker rm postgres_container && docker rmi postgres_image"
+    "db-remove": "docker rm postgres_container && docker rmi postgres_image",
+    "db-reset": "npm run db-down && npm run db-remove && npm run db-build && npm run db-up"
   },
   "keywords": [],
   "author": "",
