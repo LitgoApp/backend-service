@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client'
+import { HarmLevel, PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import * as dotenv from 'dotenv'
+import * as fs from 'fs'
 
 dotenv.config()
 
@@ -63,37 +64,52 @@ async function main() {
   })
   const user = await prisma.user.create({
     data: {
-        id: userAccount.id,
-        name: 'Dev',
-        address: '123 Fake St',
+      id: userAccount.id,
+      name: 'Dev',
+      address: '123 Fake St',
     },
   })
 
   const secondUserAccount = await prisma.userAccount.create({
     data: {
-        email: 'dev.user2@litgo.com',
-        password: hashedPassword,
+      email: 'dev.user2@litgo.com',
+      password: hashedPassword,
     },
   })
   const secondUser = await prisma.user.create({
     data: {
-        id: secondUserAccount.id,
-        name: 'Dev 2',
-        address: '123 Fake St',
+      id: secondUserAccount.id,
+      name: 'Dev 2',
+      address: '123 Fake St',
+    },
+  })
+
+  const thirdUserAccount = await prisma.userAccount.create({
+    data: {
+      email: 'user@litgo.com',
+      password: hashedPassword,
+    },
+  })
+  const thirdUser = await prisma.user.create({
+    data: {
+      id: thirdUserAccount.id,
+      name: 'Litgo User',
+      address: '200 University Avenue West',
+      points: 532,
     },
   })
 
   const municipalityAccount = await prisma.municipalityAccount.create({
     data: {
-      email: 'dev.municipality@litgo.com',
+      email: 'waterloo@litgo.com',
       password: hashedPassword,
     },
   })
   const municipality = await prisma.municipality.create({
     data: {
-        id: municipalityAccount.id,
-        name: 'Dev',
-        phoneNumber: '1234567890',
+      id: municipalityAccount.id,
+      name: 'City of Waterloo',
+      phoneNumber: '1234567890',
     },
   })
   const createRegion = prisma.region.create({
@@ -110,41 +126,130 @@ async function main() {
       ...point,
     })),
   })
+
+  const image1 = Buffer.from(fs.readFileSync('./prisma/seed_images/1.jpg'))
+  const image2 = Buffer.from(fs.readFileSync('./prisma/seed_images/2.jpg'))
+  const image3 = Buffer.from(fs.readFileSync('./prisma/seed_images/3.jpg'))
+  const image4 = Buffer.from(fs.readFileSync('./prisma/seed_images/4.jpg'))
+
   const createLitterSite = prisma.litterSite.create({
     data: {
-      latitude: 43.468682437466896,
-      longitude: -80.54462483388113,
-      image: Buffer.from(baseLitterImage, 'base64'),
-      reporterUserId: user.id,
-      description: 'This is a test litter site.',
-      litterCount: 1,
+      latitude: 43.47226571727006,
+      longitude: -80.54820994389371,
+      image: image1,
+      reporterUserId: thirdUser.id,
+      description:
+        'Dumped litter in a section of grass. Be careful, as there is broken glass and a compressed air canister!',
+      harm: HarmLevel.HAZARDOUS,
+      litterCount: 21,
     },
   })
   const createClaimedLitterSite = prisma.litterSite.create({
     data: {
-      latitude: 43.468682437466896,
-      longitude: -80.54462483388113,
-      image: Buffer.from(baseLitterImage, 'base64'),
-      reporterUserId: user.id,
-      description: 'This is a test litter site.',
+      latitude: 43.469813292571246,
+      longitude: -80.54163663363836,
+      image: image2,
+      reporterUserId: thirdUser.id,
+      description: 'Mask alongside the path.',
+      collectorUserId: user.id,
       litterCount: 1,
-      isCollected: true,
-      collectorUserId: secondUser.id,
     },
   })
+  const createSelfReportedLitterSite = prisma.litterSite.create({
+    data: {
+      latitude: 43.475881056263525,
+      longitude: -80.54256047683482,
+      image: image3,
+      reporterUserId: thirdUser.id,
+      description: "Some bottles floating in the water, don't fall in!",
+      collectorUserId: thirdUser.id,
+      harm: HarmLevel.CAUTION,
+      litterCount: 7,
+    },
+  })
+  const createClaimedLitterSite2 = prisma.litterSite.create({
+    data: {
+      latitude: 43.47247991582963,
+      longitude: -80.54931948277049,
+      image: image4,
+      reporterUserId: secondUser.id,
+      description: 'A soda bottle on the side of the road.',
+      collectorUserId: thirdUser.id,
+      litterCount: 1,
+    },
+  })
+
   const createReward = prisma.reward.create({
     data: {
-      name: 'Test Reward',
-      description: 'This is a test reward.',
+      name: '$10 Starbucks Gift Card',
+      description: 'Code: 6068 5242 2596 9859',
       cost: 100,
     },
   })
+
+  const createSecondReward = prisma.reward.create({
+    data: {
+      name: '$5 Amazon Gift Card',
+      description: 'Code: 4895 4860 1238 5031',
+      cost: 50,
+    },
+  })
+
+  const thirdReward = await prisma.reward.create({
+    data: {
+      name: '$20 Tim Hortons Gift Card',
+      description: 'Code: 5913 3295 1293 9141',
+      cost: 200,
+    },
+  })
+
+  const createClaimedReward = prisma.rewardTransaction.create({
+    data: {
+      userId: thirdUser.id,
+      rewardId: thirdReward.id,
+      rewardCost: thirdReward.cost,
+    },
+  })
+  const pointChange = prisma.pointChange.createMany({
+    data: [
+      {
+        userId: thirdUser.id,
+        amount: 21,
+      },
+      {
+        userId: thirdUser.id,
+        amount: 1,
+      },
+      {
+        userId: thirdUser.id,
+        amount: 7,
+      },
+      {
+        userId: thirdUser.id,
+        amount: 35,
+      },
+      {
+        userId: thirdUser.id,
+        amount: 3,
+      },
+      {
+        userId: thirdUser.id,
+        amount: -thirdReward.cost,
+      },
+    ],
+  })
+
   await prisma.$transaction([
     createRegion,
     createDispostalSites,
     createLitterSite,
     createClaimedLitterSite,
+    createSelfReportedLitterSite,
+    createClaimedLitterSite2,
     createReward,
+    createSecondReward,
+    createClaimedReward,
+    pointChange,
   ])
 }
 main()
