@@ -61,7 +61,7 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/created', async (req: Request, res: Response) => {
   try {
     const { userAccount } = req.context
-    if (!userAccount ) return res.status(401).send('Unauthorized')
+    if (!userAccount) return res.status(401).send('Unauthorized')
 
     const litterSites = await prisma.litterSite.findMany({
       where: {
@@ -71,7 +71,28 @@ router.get('/created', async (req: Request, res: Response) => {
     res.json(litterSites)
   } catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while getting all litter sites')
+    res
+      .status(500)
+      .send('An error occurred while getting all created litter sites')
+  }
+})
+
+// get all litter sites cleaned by a user
+router.get('/cleaned', async (req: Request, res: Response) => {
+  try {
+    const { userAccount } = req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
+    const litterSites = await prisma.litterSite.findMany({
+      where: {
+        collectorUserId: userAccount.id,
+      },
+    })
+    res.json(litterSites)
+  } catch (error) {
+    logger.error(error)
+    res
+      .status(500)
+      .send('An error occurred while getting all cleaned litter sites')
   }
 })
 
@@ -176,7 +197,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Claim a litter site
 router.post('/:id', async (req: Request, res: Response) => {
   try {
-    const { userAccount }= req.context
+    const { userAccount } = req.context
     if (!userAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
@@ -214,7 +235,6 @@ router.post('/:id', async (req: Request, res: Response) => {
       },
     })
     await prisma.$transaction([pointChange, updateUser])
-    // TODO: Add anti fraud mechanisms
     const { image, ...rest } = result
     res.json(rest)
   } catch (error) {
