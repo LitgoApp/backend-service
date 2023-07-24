@@ -210,7 +210,7 @@ router.post('/', async (req: Request, res: Response) => {
     const pointChange = prisma.pointChange.create({
       data: {
         userId: userAccount.id,
-        amount: data.litterCount,
+        amount: data.litterCount * 3,
       },
     })
     const updateUser = prisma.user.update({
@@ -219,7 +219,7 @@ router.post('/', async (req: Request, res: Response) => {
       },
       data: {
         points: {
-          increment: data.litterCount,
+          increment: data.litterCount * 3,
         },
       },
     })
@@ -263,7 +263,7 @@ router.post('/:id', async (req: Request, res: Response) => {
     const pointChange = prisma.pointChange.create({
       data: {
         userId: userAccount.id,
-        amount: result.litterCount * 3,
+        amount: result.litterCount * 10,
       },
     })
     const updateUser = prisma.user.update({
@@ -272,7 +272,7 @@ router.post('/:id', async (req: Request, res: Response) => {
       },
       data: {
         points: {
-          increment: result.litterCount * 3,
+          increment: result.litterCount * 10,
         },
       },
     })

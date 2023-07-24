@@ -186,7 +186,7 @@ async function main() {
     data: {
       name: '$10 Starbucks Gift Card',
       description: 'Code: 6068 5242 2596 9859',
-      cost: 100,
+      cost: 200,
     },
   })
 
@@ -194,7 +194,7 @@ async function main() {
     data: {
       name: '$5 Amazon Gift Card',
       description: 'Code: 4895 4860 1238 5031',
-      cost: 50,
+      cost: 100,
     },
   })
 
@@ -202,7 +202,7 @@ async function main() {
     data: {
       name: '$20 Tim Hortons Gift Card',
       description: 'Code: 5913 3295 1293 9141',
-      cost: 200,
+      cost: 400,
     },
   })
 
