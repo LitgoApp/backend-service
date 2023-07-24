@@ -44,6 +44,20 @@ router.get('/', async (req: Request, res: Response) => {
           lte: longitude + delta,
         },
       },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
+      },
     })
     nearbyLitterSites.sort(
       (a, b) =>
@@ -67,6 +81,20 @@ router.get('/created', async (req: Request, res: Response) => {
       where: {
         reporterUserId: userAccount.id,
       },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
+      },
     })
     res.json(litterSites)
   } catch (error) {
@@ -85,6 +113,20 @@ router.get('/cleaned', async (req: Request, res: Response) => {
     const litterSites = await prisma.litterSite.findMany({
       where: {
         collectorUserId: userAccount.id,
+      },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
       },
     })
     res.json(litterSites)
