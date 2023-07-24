@@ -152,6 +152,7 @@ async function main() {
       reporterUserId: thirdUser.id,
       description: 'Mask alongside the path.',
       collectorUserId: user.id,
+      isCollected: true,
       litterCount: 1,
     },
   })
@@ -163,6 +164,7 @@ async function main() {
       reporterUserId: thirdUser.id,
       description: "Some bottles floating in the water, don't fall in!",
       collectorUserId: thirdUser.id,
+      isCollected: true,
       harm: HarmLevel.CAUTION,
       litterCount: 7,
     },
@@ -175,6 +177,7 @@ async function main() {
       reporterUserId: secondUser.id,
       description: 'A soda bottle on the side of the road.',
       collectorUserId: thirdUser.id,
+      isCollected: true,
       litterCount: 1,
     },
   })
