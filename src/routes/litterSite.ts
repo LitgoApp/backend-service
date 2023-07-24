@@ -7,6 +7,9 @@ import logger from '../logger'
 
 const router = express.Router()
 
+export const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
+
+// ==== Request Entities ====
 export const createSchema = z.object({
   latitude: z.number().max(90).min(-90),
   longitude: z.number().max(180).min(-180),
@@ -15,8 +18,8 @@ export const createSchema = z.object({
   litterCount: z.number().min(0),
   image: z.string(),
 })
+// ========
 
-export const locationToMeters = 111379 // 1 degree of latitude/longitude is 111379 meters
 
 // get closest 100 litter sites to a location, that are all withim 1km of locaiton
 router.get('/', async (req: Request, res: Response) => {
@@ -41,6 +44,20 @@ router.get('/', async (req: Request, res: Response) => {
           lte: longitude + delta,
         },
       },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
+      },
     })
     nearbyLitterSites.sort(
       (a, b) =>
@@ -58,17 +75,66 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/created', async (req: Request, res: Response) => {
   try {
     const { userAccount } = req.context
-    if (!userAccount ) return res.status(401).send('Unauthorized')
+    if (!userAccount) return res.status(401).send('Unauthorized')
 
     const litterSites = await prisma.litterSite.findMany({
       where: {
         reporterUserId: userAccount.id,
       },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
+      },
     })
     res.json(litterSites)
   } catch (error) {
     logger.error(error)
-    res.status(500).send('An error occurred while getting all litter sites')
+    res
+      .status(500)
+      .send('An error occurred while getting all created litter sites')
+  }
+})
+
+// get all litter sites cleaned by a user
+router.get('/cleaned', async (req: Request, res: Response) => {
+  try {
+    const { userAccount } = req.context
+    if (!userAccount) return res.status(401).send('Unauthorized')
+    const litterSites = await prisma.litterSite.findMany({
+      where: {
+        collectorUserId: userAccount.id,
+      },
+      select: {
+        id: true,
+        isCollected: true,
+        image: false,
+        harm: true,
+        description: true,
+        litterCount: true,
+        latitude: true,
+        longitude: true,
+        createdAt: true,
+        updatedAt: true,
+        reporterUserId: true,
+        collectorUserId: true,
+      },
+    })
+    res.json(litterSites)
+  } catch (error) {
+    logger.error(error)
+    res
+      .status(500)
+      .send('An error occurred while getting all cleaned litter sites')
   }
 })
 
@@ -124,6 +190,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+// Create a litter site
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { userAccount } = req.context
@@ -143,7 +210,7 @@ router.post('/', async (req: Request, res: Response) => {
     const pointChange = prisma.pointChange.create({
       data: {
         userId: userAccount.id,
-        amount: data.litterCount,
+        amount: data.litterCount * 3,
       },
     })
     const updateUser = prisma.user.update({
@@ -152,7 +219,7 @@ router.post('/', async (req: Request, res: Response) => {
       },
       data: {
         points: {
-          increment: data.litterCount,
+          increment: data.litterCount * 3,
         },
       },
     })
@@ -172,7 +239,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Claim a litter site
 router.post('/:id', async (req: Request, res: Response) => {
   try {
-    const { userAccount }= req.context
+    const { userAccount } = req.context
     if (!userAccount) return res.status(401).send('Unauthorized')
     const { id } = req.params
     const litterSite = await prisma.litterSite.findUnique({
@@ -196,7 +263,7 @@ router.post('/:id', async (req: Request, res: Response) => {
     const pointChange = prisma.pointChange.create({
       data: {
         userId: userAccount.id,
-        amount: result.litterCount * 3,
+        amount: result.litterCount * 10,
       },
     })
     const updateUser = prisma.user.update({
@@ -205,12 +272,11 @@ router.post('/:id', async (req: Request, res: Response) => {
       },
       data: {
         points: {
-          increment: result.litterCount * 3,
+          increment: result.litterCount * 10,
         },
       },
     })
     await prisma.$transaction([pointChange, updateUser])
-    // TODO: Add anti fraud mechanisms
     const { image, ...rest } = result
     res.json(rest)
   } catch (error) {
