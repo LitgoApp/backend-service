@@ -28,7 +28,8 @@ router.get('/', async (req: Request, res: Response) => {
     if (!userAccount) return res.status(401).send('Unauthorized')
 
     const { latitude: lat, longitude: long } = req.query // pass regionId as query param
-    if (!lat || !long) return res.status(400).send('Missing query param')
+    if (!lat || !long)
+      return res.status(400).send('Missing user location as query parameters')
     const latitude = Number(lat)
     const longitude = Number(long)
 
