@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express'
 import { z } from 'zod'
 import prisma from '../../prisma'
+import distance from '../helpers/distance'
 import logger from '../logger'
+import { locationToMeters } from './litterSite'
 
 const router = express.Router()
 
@@ -12,17 +14,45 @@ const createSchema = z.object({
 })
 // ========
 
-
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { municipalityAccount } = req.context
-    if (!municipalityAccount) return res.status(401).send('Unauthorized')
-    const disposalSites = await prisma.disposalSite.findMany({
-      where: {
-        municipalityId: municipalityAccount.id,
-      },
-    })
-    res.json(disposalSites)
+    const { municipalityAccount, userAccount } = req.context
+    if (municipalityAccount) {
+      const disposalSites = await prisma.disposalSite.findMany({
+        where: {
+          municipalityId: municipalityAccount.id,
+        },
+      })
+      return res.json(disposalSites)
+    } else if (userAccount) {
+      const { latitude: lat, longitude: long } = req.query
+      if (!lat || !long)
+        return res.status(400).send('Missing user location as query parameters')
+      const latitude = Number(lat)
+      const longitude = Number(long)
+      const delta = 500 / locationToMeters
+      const nearbyDisposalSites = await prisma.disposalSite.findMany({
+        where: {
+          latitude: {
+            gte: latitude - delta,
+            lte: latitude + delta,
+          },
+          longitude: {
+            gte: longitude - delta,
+            lte: longitude + delta,
+          },
+        },
+        include: {
+          municipality: true,
+        },
+      })
+      nearbyDisposalSites.sort(
+        (a, b) =>
+          distance(a, { latitude, longitude }) -
+          distance(b, { latitude, longitude })
+      )
+      return res.json(nearbyDisposalSites.slice(0, 100))
+    } else return res.status(401).send('Unauthorized')
   } catch (error) {
     logger.error(error)
     res.status(500).send('An error occurred while getting the disposal site')
