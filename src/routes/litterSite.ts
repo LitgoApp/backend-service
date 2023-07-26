@@ -44,6 +44,8 @@ router.get('/', async (req: Request, res: Response) => {
           gte: longitude - delta,
           lte: longitude + delta,
         },
+        isCollected: false,
+        collectorUserId: null,
       },
       select: {
         id: true,
