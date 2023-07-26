@@ -145,9 +145,6 @@ router.get('/cleaned', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const { latitude: lat, longitude: long } = req.query
-    const latitude = Number(lat)
-    const longitude = Number(long)
     const litterSite = await prisma.litterSite.findUnique({
       where: {
         id: id,
@@ -155,33 +152,32 @@ router.get('/:id', async (req: Request, res: Response) => {
     })
     if (!litterSite) return res.status(404).send('Litter site not found')
     const { image, ...rest } = litterSite
-    if (lat !== undefined && long !== undefined) {
-      // Find closest disposal site
-      const delta = 200 / locationToMeters
-      const nearbyDisposalSites = await prisma.disposalSite.findMany({
-        where: {
-          latitude: {
-            gte: latitude - delta,
-            lte: latitude + delta,
-          },
-          longitude: {
-            gte: longitude - delta,
-            lte: longitude + delta,
-          },
+    const { latitude, longitude } = rest
+    // Find closest disposal site
+    const delta = 200 / locationToMeters
+    const nearbyDisposalSites = await prisma.disposalSite.findMany({
+      where: {
+        latitude: {
+          gte: latitude - delta,
+          lte: latitude + delta,
         },
+        longitude: {
+          gte: longitude - delta,
+          lte: longitude + delta,
+        },
+      },
+    })
+    nearbyDisposalSites.sort(
+      (a, b) =>
+        distance(a, { latitude, longitude }) -
+        distance(b, { latitude, longitude })
+    )
+    if (nearbyDisposalSites.length > 0) {
+      return res.json({
+        ...rest,
+        image: image.toString('base64'),
+        disposalSite: nearbyDisposalSites[0],
       })
-      nearbyDisposalSites.sort(
-        (a, b) =>
-          distance(a, { latitude, longitude }) -
-          distance(b, { latitude, longitude })
-      )
-      if (nearbyDisposalSites.length > 0) {
-        return res.json({
-          ...rest,
-          image: image.toString('base64'),
-          disposalSite: nearbyDisposalSites[0],
-        })
-      }
     }
     res.json({
       ...rest,
